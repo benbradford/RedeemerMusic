@@ -1,0 +1,30 @@
+
+Hello all,
+
+
+The music and band for this coming $DATE is as follows.
+
+
+Music:
+
+1. $SONG1
+2. $SONG2
+3. $SONG3
+4. $SONG4
+5. $SONG5
+6. $SONG6
+
+
+Band:
+
+$INSTRUMENT1 - $PERSON1
+$INSTRUMENT2 - $PERSON2
+$INSTRUMENT3 - $PERSON3
+$INSTRUMENT4 - $PERSON4
+
+
+Any questions or concerns, please let me know.
+
+Thanks,
+
+Ben

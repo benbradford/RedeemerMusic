@@ -1,0 +1,8 @@
+src/token.pickle
+cred/
+credentials_drive.json
+credentials_gmail.json
+TODO
+drive_example.py
+res/email_recipients.txt
+*.pyc
