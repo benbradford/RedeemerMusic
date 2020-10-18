@@ -8,24 +8,27 @@ from google.auth.transport.requests import Request
 class EmailService:
 
     def __init__(self):
-        creds = self.create_credentials()
-        self.service = build('gmail', 'v1', credentials=creds)
+        creds = self._create_credentials()
+        self._service = build('gmail', 'v1', credentials=creds)
 
-    def create_credentials(self):
+    def send(self, message):
+        return self._service.users().messages().send(userId='me', body=message).execute()
+
+    def _create_credentials(self):
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
+        if os.path.exists('../bin/token.pickle'):
+            with open('../bin/token.pickle', 'rb') as token:
                 creds = pickle.load(token)
 
         if not creds or not creds.valid:
-            creds = self.login(creds)
+            creds = self._login(creds)
         return creds
 
-    def login(self, creds):
-        SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+    def _login(self, creds):
+        SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -34,6 +37,6 @@ class EmailService:
                 '../cred/credentials_gmail.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
+        with open('../bin/token.pickle', 'wb') as token:
             pickle.dump(creds, token)
         return creds

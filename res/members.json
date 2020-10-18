@@ -1,0 +1,29 @@
+{
+   "members":[
+      {
+         "id":"BenB_Guitar",
+         "name": "Ben B",
+         "instrument": "Guitar"
+      },
+      {
+         "id":"BenB_Guitar_Vox",
+         "name": "Ben B",
+         "instrument": "Guitar/Vocal"
+      },
+      {
+         "id":"Emma_Vox",
+         "name": "Emma",
+         "instrument": "Vocal"
+      },
+      {
+         "id":"Ellie_Vox",
+         "name": "Ellie",
+         "instrument": "Vocal"
+      },
+      {
+         "id":"Ben_A_Guitar",
+         "name": "Ben A",
+         "instrument": "Guitar"
+      }
+   ]
+}

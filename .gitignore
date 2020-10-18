@@ -6,3 +6,4 @@ TODO
 drive_example.py
 res/email_recipients.txt
 *.pyc
+bin/
