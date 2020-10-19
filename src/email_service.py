@@ -14,6 +14,9 @@ class EmailService:
     def send(self, message):
         return self._service.users().messages().send(userId='me', body=message).execute()
 
+    def draft(self, message):
+        return self._service.users().drafts().create(userId='me', body=message).execute()
+
     def _create_credentials(self):
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
@@ -28,7 +31,7 @@ class EmailService:
         return creds
 
     def _login(self, creds):
-        SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+        SCOPES = ['https://www.googleapis.com/auth/gmail.compose']
 
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())

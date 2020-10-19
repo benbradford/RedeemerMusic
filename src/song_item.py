@@ -8,10 +8,15 @@ class SongItem:
         self._lead = self.get_or_default(item, 'lead')
 
     def expand_html(self):
-        return '<li>' + self._name + ' - [lyrics] [chords] [lead]' + '</li>'
+        return '<li>{} - {}{}{}</li>'.format(self._name, \
+        self.hyperlink('lyrics', self._lyrics), \
+        self.hyperlink('chords', self._chords), \
+        self.hyperlink('lead', self._lead))
 
-    def expand(self):
-        return self._name
+    def hyperlink(self, name, prop):
+        if prop is not None:
+            return ' <a href="{}">[{}]</a> '.format(prop, name)
+        return ''
 
     def get_or_default(self, item, key, fallback = None):
         try:
