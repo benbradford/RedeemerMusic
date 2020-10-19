@@ -36,11 +36,18 @@ def main(param_filename):
 
     template = EmailTemplate(date, songs, band, lead, extra)
     email_from = base64.urlsafe_b64encode(open('../res/email_from.txt', "r").read())
-    email_to = open('../res/email_from.txt', "r").readline()[:-1]
-    message = template.create_message(date, email_from, email_to)
+    email_to = open('../res/email_recipients.txt', "r").readline()[:-1]
+    print('Will send to {}'.format(email_to))
+    print('email body can be checked in ../bin/email_output.html')
+    f = open("../bin/email_output.html", "w")
+    f.write(template._html)
+    f.close()
+    proceed_input = raw_input("Ok to proceed? (y/n): ")
 
-    raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
-    EmailService().send(raw_message)
+    if proceed_input is 'y':
+        message = template.create_message(date, email_from, email_to)
+        raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
+        EmailService().send(raw_message)
 
 if __name__ == '__main__':
     main('../res/email_param_template.json')

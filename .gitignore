@@ -7,3 +7,5 @@ drive_example.py
 res/email_recipients.txt
 *.pyc
 bin/
+res/email_from.txt
+res/email_recipients_final.txt

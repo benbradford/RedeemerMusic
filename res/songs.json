@@ -1,26 +1,43 @@
 {
    "songList":[
-      {
-         "id":"HolyHolyHolyD",
-         "name":"Holy Holy Holy",
-         "key":"D",
-         "lyrics":"google.com",
-         "chords":"example.org",
-         "lead":""
-      },
-      {
-         "id":"There is a redeemer C",
-         "name":"There is a redeemer",
-         "lyrics":"https://drive.google.com/file/d/1RGKyWZEG7-CPxqrxDzEo1XEX1y4jSBoI/view?usp=sharing",
-         "chords":"https://docs.google.com/document/d/11vsRjJ2Z_ofc4YoKaEMvJPVn7SC6l0ejz82RJZxISWE/edit?usp=sharing",
-         "lead":"https://drive.google.com/file/d/19GeMH6nqIlcnhAps2pbcPUspigosuGrc/view?usp=sharing"
-      },
-      {
-        "id":"To God Be The Glory Simple",
-        "name": "To God be the glory",
-        "lyrics": "https://docs.google.com/document/d/1jQ1iuE8Lnmp0NBoG6XJ0z6O0vMyC6Cu-OzW6duB-3nA/edit?usp=sharing",
-        "chords": "https://docs.google.com/document/d/1vhY8DxYbViWgIY48WSNJNINZo36L_mmUBLE87CZAYak/edit?usp=sharing",
-        "lead": "https://drive.google.com/file/d/1DfQY3kTvdpKo1vEQ3PKEV-pCd2tq8J20/view?usp=sharing"
-      }
+     {
+       "id":"To God Be The Glory - Simple - Praise",
+       "name":"To God Be The Glory",
+       "lyrics":"https://drive.google.com/file/d/1bQbSIrJXTbG9UzXPum3k-T8lW-aUQ9RL/view?usp=sharing",
+       "chords":"https://docs.google.com/document/d/1vhY8DxYbViWgIY48WSNJNINZo36L_mmUBLE87CZAYak/edit?usp=sharing"
+     },
+     {
+       "id":"There is a fountain - G - Praise",
+       "name":"There is a fountain",
+       "lyrics":"https://drive.google.com/file/d/1Pgj7qxkVi20IuA-7z1dh21SO6C4g1qrR/view?usp=sharing",
+       "chords":"https://docs.google.com/document/d/1ahoyAANn72fC59ClXsEhNZSggvBbTJ6Dar_0kPxF2mQ/edit?usp=sharing"
+     },
+     {
+       "id":"You are always with me Jesus",
+       "name":"You are always with me Jesus",
+       "lyrics":"https://docs.google.com/document/d/1Jvrj9K6ivASy3k7Gtei0xnuXri2bRuiEwlGxJBcIUKc/edit?usp=sharing",
+       "chords":"https://docs.google.com/document/d/10i4DppMoQrG7AcyY8wjkmvIdYd02OOgM5yeQVllKwuw/edit?usp=sharing"
+     },
+     {
+       "id":"O Great God",
+       "name":"O Great God",
+       "lyrics":"https://docs.google.com/document/d/1QLR751U_yO-iyAiWW693qA-pHPjbpR7qOT9vfqzMTWQ/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1veZnOscA-7FtYvsYibtBtjySuxtKQ0im/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1dg7SX_SyaazUe6gYk9UsAImKcKIK2x1Q/view?usp=sharing"
+     },
+     {
+       "id":"Only By Grace",
+       "name":"Only By Grace",
+       "lyrics":"https://docs.google.com/document/d/1W7m-PGweQW_8ObpQGiji7WCwi_EpJs4DDbaSgCNn2SU/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1CK39BTdiroTwv_iNmZ6VWbLiW7atFLRb/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1ghrRT4wRqvm2Sdabv1vXlGeSEgK5Egrh/view?usp=sharing"
+     },
+    {
+      "id":"In Christ Alone",
+      "name":"In Christ Alone",
+      "lyrics":"https://docs.google.com/document/d/1HIRqfNqd0MJ3rmo0jf9GfrdT_kKNCtBhnxgqHflFvqI/edit?usp=sharing",
+      "chords":"https://drive.google.com/file/d/1NlRB5OgTb6IyM8nzOJmL1aB2B74d0K1q/view?usp=sharing",
+      "lead":"https://drive.google.com/file/d/1-9TEUeAIzuYhoGKA-oPE8vCS9LHgsrin/view?usp=sharing"
+    }
    ]
 }

@@ -4,8 +4,9 @@ class SongItem:
         self._id = self.get_or_default(item, 'id')
         self._key = self.get_or_default(item, 'key', 'default')
         self._lyrics = self.get_or_default(item, 'lyrics')
-        self._chords = self.get_or_default(item, 'chords')
-        self._lead = self.get_or_default(item, 'lead')
+        self._chords = self.get_or_default(item, 'chords', None)
+        self._lead = self.get_or_default(item, 'lead', None)
+        self._ppt = self.get_or_default(item, 'ppt', None) # :TODO: this should not have a fallback
 
     def expand_html(self):
         return '<li>{} - {}{}{}</li>'.format(self._name, \
@@ -18,10 +19,10 @@ class SongItem:
             return ' <a href="{}">[{}]</a> '.format(prop, name)
         return ''
 
-    def get_or_default(self, item, key, fallback = None):
+    def get_or_default(self, item, key, fallback = "error"):
         try:
             return item[key]
         except:
-            if fallback is None:
+            if fallback is "error":
                 raise Exception('cannot fallback for key ' + key)
             return fallback
