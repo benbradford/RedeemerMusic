@@ -1,0 +1,3 @@
+Usage: `python src/create_group_email.py -s './services/test_service.json' -f './res/email_from.txt' -t './res/email_recipients.txt'`
+
+Parameters used in the above example are also the defaults.
