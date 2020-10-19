@@ -5,6 +5,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
+TOKEN_FILE = 'bin/token.pickle'
+
 class EmailService:
 
     def __init__(self):
@@ -22,8 +24,8 @@ class EmailService:
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists('../bin/token.pickle'):
-            with open('../bin/token.pickle', 'rb') as token:
+        if os.path.exists(TOKEN_FILE):
+            with open(TOKEN_FILE, 'rb') as token:
                 creds = pickle.load(token)
 
         if not creds or not creds.valid:
@@ -37,9 +39,9 @@ class EmailService:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '../cred/credentials_gmail.json', SCOPES)
+                'cred/credentials_gmail.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('../bin/token.pickle', 'wb') as token:
+        with open(TOKEN_FILE, 'wb') as token:
             pickle.dump(creds, token)
         return creds

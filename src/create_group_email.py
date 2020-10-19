@@ -9,31 +9,19 @@ import sys, getopt
 all_song_items = SongItems('res/songs.json')
 all_members = Members('res/members.json')
 
-def get_songs(params):
+def get_songs(service):
     songs = []
-    for song in params['songs']:
+    for song in service['songs']:
         songs.append(all_song_items.get_by_id(song))
     return songs
 
-def get_band(params):
+def get_band(service):
     band = []
-    for member in params['band']:
+    for member in service['band']:
         band.append(all_members.get_by_id(member))
     return band
 
-def main(param_filename, email_from_file, email_to_file):
-
-    params = json.loads(open(param_filename, "r").read())
-
-    songs = get_songs(params)
-    band = get_band(params)
-    date = params['date']
-    lead = params['lead']
-    extra = params['extra']
-
-    template = EmailTemplate(date, songs, band, lead, extra)
-    email_from = base64.urlsafe_b64encode(open(email_from_file, "r").read())
-    email_to = open(email_to_file, "r").readline()[:-1]
+def attempt_send(template, email_from, email_to, date):
     print('Will send to {}'.format(email_to))
     print('email body can be checked in bin/email_output.html')
     f = open("bin/email_output.html", "w")
@@ -45,6 +33,22 @@ def main(param_filename, email_from_file, email_to_file):
         message = template.create_message(date, email_from, email_to)
         raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
         EmailService().send(raw_message)
+
+def create_and_send(service_filename, email_from_file, email_to_file):
+
+    service = json.loads(open(service_filename, "r").read())
+
+    songs = get_songs(service)
+    band = get_band(service)
+    date = service['date']
+    lead = service['lead']
+    extra = service['extra']
+
+    template = EmailTemplate(date, songs, band, lead, extra)
+    email_from = base64.urlsafe_b64encode(open(email_from_file, "r").read())
+    email_to = open(email_to_file, "r").readline()[:-1]
+
+    attempt_send(template, email_from, email_to, date)
 
 if __name__ == '__main__':
     argv = sys.argv[1:]
@@ -63,4 +67,4 @@ if __name__ == '__main__':
             email_from_file = arg
         elif opt in ('-t', '--to'):
             email_to_file = arg
-    main(service_file, email_from_file, email_to_file)
+    create_and_send(service_file, email_from_file, email_to_file)

@@ -10,4 +10,7 @@ class SongItems:
             self._items[item['id']] = SongItem(item)
 
     def get_by_id(self, id):
-        return self._items.get(id)
+        val = self._items.get(id)
+        if val is None:
+            raise Exception("invalid song id {}".format(id) )
+        return val

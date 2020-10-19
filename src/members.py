@@ -10,4 +10,7 @@ class Members:
             self._members[member['id']] = Member(member)
 
     def get_by_id(self, id):
-        return self._members.get(id)
+        val = self._members.get(id)
+        if val is None:
+            raise Exception("invalid member id {}".format(id))
+        return val
