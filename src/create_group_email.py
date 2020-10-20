@@ -2,6 +2,7 @@ from song_items import SongItems
 from email_template import EmailTemplate
 from members import Members
 from email_service import EmailService
+from powerpoint_creator import PowerpointCreator
 import base64
 import json
 import sys, getopt
@@ -44,11 +45,16 @@ def create_and_send(service_filename, email_from_file, email_to_file):
     lead = service['lead']
     extra = service['extra']
 
+    powerpoint = PowerpointCreator(songs, date)
+    powerpoint.create()
+    sys.exit(0)
     template = EmailTemplate(date, songs, band, lead, extra)
     email_from = base64.urlsafe_b64encode(open(email_from_file, "r").read())
     email_to = open(email_to_file, "r").readline()[:-1]
 
     attempt_send(template, email_from, email_to, date)
+
+
 
 if __name__ == '__main__':
     argv = sys.argv[1:]

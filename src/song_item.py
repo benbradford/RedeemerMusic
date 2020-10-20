@@ -1,3 +1,5 @@
+import json
+
 class SongItem:
     def __init__(self, item):
         self._name = self._get_or_default(item, 'name')
@@ -7,6 +9,12 @@ class SongItem:
         self._chords = self._get_or_default(item, 'chords', None)
         self._lead = self._get_or_default(item, 'lead', None)
         self._ppt = self._get_or_default(item, 'ppt', None) # :TODO: this should not have a fallback
+
+    def get_ppt(self):
+        if self._ppt is None:
+            return None
+        ppt_file = open(self._ppt, "r").read()
+        return json.loads(ppt_file)
 
     def expand_html(self):
         return '<li>{} - {}{}{}</li>'.format(self._name, \
