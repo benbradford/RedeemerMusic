@@ -8,13 +8,10 @@ class SongItem:
         self._lyrics = self._get_or_default(item, 'lyrics')
         self._chords = self._get_or_default(item, 'chords', None)
         self._lead = self._get_or_default(item, 'lead', None)
-        self._ppt = self._get_or_default(item, 'ppt', None) # :TODO: this should not have a fallback
+        self._ppt = self._get_or_default(item, 'ppt')
 
-    def get_ppt(self):
-        if self._ppt is None:
-            return None
-        ppt_file = open(self._ppt, "r").read()
-        return json.loads(ppt_file)
+    def get_ppt_file(self):
+        return self._ppt
 
     def expand_html(self):
         return '<li>{} - {}{}{}</li>'.format(self._name, \
@@ -32,5 +29,5 @@ class SongItem:
             return item[key]
         except:
             if fallback is "error":
-                raise Exception('cannot fallback for key ' + key)
+                raise Exception('cannot use fallback for {} in file {}'.format(key, self._id))
             return fallback

@@ -44,10 +44,13 @@ def create_and_send(service_filename, email_from_file, email_to_file):
     date = service['date']
     lead = service['lead']
     extra = service['extra']
+    ppt_file = service['ppt_file']
 
-    powerpoint = PowerpointCreator(songs, date)
+    powerpoint = PowerpointCreator(songs, ppt_file)
     powerpoint.create()
-    sys.exit(0)
+
+    print('created power point in {}'.format(ppt_file))
+
     template = EmailTemplate(date, songs, band, lead, extra)
     email_from = base64.urlsafe_b64encode(open(email_from_file, "r").read())
     email_to = open(email_to_file, "r").readline()[:-1]
