@@ -50,20 +50,19 @@ class PowerpointCreator:
         # loop until EOF
         while lyrics != '':
             next = file.readline()
-            while next != '\n' and next != '':
+            while next != '\n' and next != '' and len(next) > 2:
                 # keep adding to lyrics until end of file or empty line
                 lyrics = lyrics + next
                 next = file.readline()
 
             # add accumulated lyrics to a single page
-            if len(lyrics) > 1:
-                pages.append(lyrics)
+            pages.append(lyrics.replace('\r', ''))
 
             # skip blank lines
             lyrics = file.readline()
-            while lyrics == '\n':
+            while lyrics == '\n' or lyrics == '\r' or lyrics == ' ':
                 lyrics = file.readline()
-                
+
         return pages
 
     def _create_slide(self, prs):

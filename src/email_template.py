@@ -12,7 +12,7 @@ class EmailTemplate:
         .replace('_SONGS_', html_song_list) \
         .replace('_DATE_', date)\
         .replace('_MEMBERS_', html_member_list)\
-        .replace('_EXTRA_', extra)
+        .replace('_EXTRA_', self._get_extra_message(extra))
 
     def create_message(self, date, _from, to):
         message = MIMEMultipart()
@@ -33,3 +33,8 @@ class EmailTemplate:
         for member in members:
             member_list = member_list + member.expand_html(lead) + '\n'
         return member_list
+
+    def _get_extra_message(self, extra):
+        if extra == None:
+            return ''
+        return extra

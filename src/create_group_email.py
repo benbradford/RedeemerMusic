@@ -22,6 +22,11 @@ def get_band(service):
         band.append(all_members.get_by_id(member))
     return band
 
+def get_extra_message(service):
+    if 'extra' in service:
+        return service['extra']
+    return None
+
 def attempt_send(template, email_from, email_to, date):
     print('Will send to {}'.format(email_to))
     print('email body can be checked in bin/email_output.html')
@@ -43,7 +48,7 @@ def create_and_send(service_filename, email_from_file, email_to_file):
     band = get_band(service)
     date = service['date']
     lead = service['lead']
-    extra = service['extra']
+    extra = get_extra_message(service)
     ppt_file = service['ppt_file']
 
     powerpoint = PowerpointCreator(songs, ppt_file)

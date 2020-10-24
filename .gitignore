@@ -9,3 +9,4 @@ res/email_recipients.txt
 bin/
 res/email_from.txt
 res/email_recipients_final.txt
+.DS_Store

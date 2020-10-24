@@ -23,7 +23,7 @@
      },
      {
        "id":"O Great God",
-       "name":"O Great God",
+       "name":"O great God",
        "lyrics":"https://docs.google.com/document/d/1QLR751U_yO-iyAiWW693qA-pHPjbpR7qOT9vfqzMTWQ/edit?usp=sharing",
        "chords":"https://drive.google.com/file/d/1veZnOscA-7FtYvsYibtBtjySuxtKQ0im/view?usp=sharing",
        "lead":"https://drive.google.com/file/d/1dg7SX_SyaazUe6gYk9UsAImKcKIK2x1Q/view?usp=sharing",
@@ -31,19 +31,59 @@
      },
      {
        "id":"Only By Grace",
-       "name":"Only By Grace",
+       "name":"Only by grace",
        "lyrics":"https://docs.google.com/document/d/1W7m-PGweQW_8ObpQGiji7WCwi_EpJs4DDbaSgCNn2SU/edit?usp=sharing",
        "chords":"https://drive.google.com/file/d/1CK39BTdiroTwv_iNmZ6VWbLiW7atFLRb/view?usp=sharing",
        "lead":"https://drive.google.com/file/d/1ghrRT4wRqvm2Sdabv1vXlGeSEgK5Egrh/view?usp=sharing",
        "ppt":"res/ppt/Only_By_Grace.txt"
      },
-    {
-      "id":"In Christ Alone",
-      "name":"In Christ Alone",
-      "lyrics":"https://docs.google.com/document/d/1HIRqfNqd0MJ3rmo0jf9GfrdT_kKNCtBhnxgqHflFvqI/edit?usp=sharing",
-      "chords":"https://drive.google.com/file/d/1NlRB5OgTb6IyM8nzOJmL1aB2B74d0K1q/view?usp=sharing",
-      "lead":"https://drive.google.com/file/d/1-9TEUeAIzuYhoGKA-oPE8vCS9LHgsrin/view?usp=sharing",
-      "ppt":"res/ppt/In_Christ_Alone.txt"
-    }
+     {
+       "id":"In Christ Alone",
+       "name":"In Christ alone",
+       "lyrics":"https://docs.google.com/document/d/1HIRqfNqd0MJ3rmo0jf9GfrdT_kKNCtBhnxgqHflFvqI/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1NlRB5OgTb6IyM8nzOJmL1aB2B74d0K1q/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1-9TEUeAIzuYhoGKA-oPE8vCS9LHgsrin/view?usp=sharing",
+       "ppt":"res/ppt/In_Christ_Alone.txt"
+     },
+     {
+       "id":"Come People of the Risen King - A",
+       "name":"Come people of the risen King",
+       "lyrics":"https://docs.google.com/document/d/1n9RqBNrdoTidfTzEXfV_6-2aXOlgb9xl1J0MwTam3Nk/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1FZPtARdWRtfhjJ6VQVc9G1FpJ72EkF0D/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1LlY9-U_sPPf2clYYO6Ex1pLWhM3uN57I/view?usp=sharing",
+       "ppt":"res/ppt/Come People Of The Risen King.txt"
+     },
+     {
+       "id":"Your love will last forever",
+       "name":"Your love will last forever",
+       "lyrics":"https://docs.google.com/document/d/14l3R_JETbdDRAwjxzyFO1CB9oSqVTjpEOZN7b-0gk2M/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1Y-EDEmQuKs_k0f5iU4P1XbIqU6CRHiTW/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1JjQZZ3TCyygHEzxpx0M0Q57zzWlwfrY-/view?usp=sharing",
+       "ppt":"res/ppt/Your Love.txt"
+     },
+     {
+       "id":"Servant King",
+       "name":"From heaven you came (Servant King)",
+       "lyrics":"https://docs.google.com/document/d/1_6DiNuR0dwSXbyhjj-NApl8AYyW91T57YqlXoL0nQT8/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/151kcaC1AlBSRdaNYfWFh3JA34-n_DxYI/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/19qfUBkw_Th39iCgsdQVkplo9MadCk1Oi/view?usp=sharing",
+       "ppt":"res/ppt/The Servant King.txt"
+     },
+     {
+       "id":"When I Survey - newer tune",
+       "name":"When I survey",
+       "lyrics":"https://docs.google.com/document/d/1KWyJrRVbwv4Nxqui3sof90-Ympr_UYyqWIjQR4sNXyY/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1keJEhEZBNCGVpHm1dQSBRutpPnOQfJaR/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1kly4RITHsa-8vXyKN6Y77zgeK56QSWIt/view?usp=sharing",
+       "ppt":"res/ppt/When I Survey.txt"
+     },
+     {
+       "id":"Christ our hope in life and death",
+       "name":"Christ our hope in life and death",
+       "lyrics":"https://docs.google.com/document/d/1JxZaw2Pge-1L1juiXBS1BmeZdKU9ols_Cxxs3W0E1XQ/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1n12Qk5BFBDDo6o3Ho8gAYRgd--IwKINA/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1nWuFnTrifFrbR3ewP-_yEjmXYwFrDSrH/view?usp=sharing",
+       "ppt":"res/ppt/Christ Our Hope In Life And Death.txt"
+     }
    ]
 }
