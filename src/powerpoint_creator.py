@@ -10,63 +10,67 @@ class PowerpointCreator:
         self._songs = songs
 
     def create(self):
-        prs = self._create_empty_presentation()
+        presentation = self._create_empty_presentation()
 
         for song in self._songs:
-            self._add_song(prs,song)
-            self._add_blank_page(prs)
+            self._add_slides_for_song(presentation, song)
+            self._add_blank_page(presentation)
 
         outfile = "bin/{}".format(self._out_file)
-        prs.save(outfile)
+        presentation.save(outfile)
         return outfile
 
     def _create_empty_presentation(self):
-        prs = Presentation()
-        prs.slide_width = Inches(14)
-        blank_slide_layout = prs.slide_layouts[6]
-        return prs
+        empty = Presentation()
+        empty.slide_width = Inches(14)
+        blank_slide_layout = empty.slide_layouts[6]
+        return empty
 
-    def _add_song(self, prs, song):
-        pages = self._convert_lyrics_to_pages(song.get_ppt_file())
-        num_pages = len(pages)
+    def _add_slides_for_song(self, presentation, song):
+        paginated_lyrics = self._paginate_lyrics(song.get_ppt_file())
+        num_slides_with_lyrics = len(paginated_lyrics)
 
-        for i in range(num_pages):
-            lyrics = pages[i]
-            num_lines = lyrics.count('\n') + 1
-            slide = self._create_slide(prs)
-            paragraph = self._create_paragraph(slide, num_lines)
-            self._add_lyrics_to_paragraph(paragraph, lyrics)
-            if i == num_pages-1:
-                self._add_footer(slide, 'CCLI Licence No. 640402')
+        for i in range(num_slides_with_lyrics):
+            self._assemble_page(paginated_lyrics[i], presentation, i == num_slides_with_lyrics-1)
 
-    def _add_blank_page(self, prs):
-        self._create_slide(prs)
+    def _assemble_page(self, lyrics_on_page, presentation, is_last_slide):
+        num_lines = lyrics_on_page.count('\n') + 1
+        slide = self._create_slide(presentation)
+        paragraph = self._create_paragraph(slide, num_lines)
+        self._add_lyrics_to_paragraph(paragraph, lyrics_on_page)
+        if is_last_slide:
+            self._add_footer(slide, 'CCLI Licence No. 640402')
 
-    def _convert_lyrics_to_pages(self, song_file):
-        pages = []
+    def _add_blank_page(self, presentation):
+        self._create_slide(presentation)
+
+    def _paginate_lyrics(self, song_file):
+        # '\n' denotes a line seperator
+        paginated_lyrics = []
         file = open(song_file, "r")
-        lyrics = file.readline()
 
-        # loop until EOF
-        while lyrics != '':
+        next_line = file.readline()
+        while next_line != '':
+            self._append_lyrics_block(next_line, file, paginated_lyrics)
+            next_line = self._skip_blank_lines(file)
+
+        return paginated_lyrics
+
+    def _append_lyrics_block(self, accumulated, file, paginated_lyrics):
+        next = file.readline()
+        while next != '\n' and next != '' and len(next) > 2:
+            accumulated = accumulated + next
             next = file.readline()
-            while next != '\n' and next != '' and len(next) > 2:
-                # keep adding to lyrics until end of file or empty line
-                lyrics = lyrics + next
-                next = file.readline()
+        paginated_lyrics.append(accumulated.replace('\r', ''))
 
-            # add accumulated lyrics to a single page
-            pages.append(lyrics.replace('\r', ''))
+    def _skip_blank_lines(self, file):
+        accumulated = file.readline()
+        while accumulated == '\n' or accumulated == '\r' or accumulated == ' ':
+            accumulated = file.readline()
+        return accumulated
 
-            # skip blank lines
-            lyrics = file.readline()
-            while lyrics == '\n' or lyrics == '\r' or lyrics == ' ':
-                lyrics = file.readline()
-
-        return pages
-
-    def _create_slide(self, prs):
-        slide = prs.slides.add_slide(prs.slide_layouts[6])
+    def _create_slide(self, presentation):
+        slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         fill = slide.background.fill
         fill.solid()
         fill.fore_color.rgb = RGBColor(0, 0, 0)
@@ -101,7 +105,7 @@ class PowerpointCreator:
         try:
             return lines_to_inches[num_lines]
         except:
-            return 0
+            raise Exception("Exceeded max allowed lines on a page {}/{}".format(num_lines, 9))
 
     def _add_footer(self, slide, footer):
         width = height = Inches(1)

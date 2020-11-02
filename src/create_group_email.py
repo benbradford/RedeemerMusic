@@ -41,7 +41,6 @@ def attempt_send(template, email_from, email_to, date):
         EmailService().send(raw_message)
 
 def create_and_send(service_filename, email_from_file, email_to_file):
-
     service = json.loads(open(service_filename, "r").read())
 
     songs = get_songs(service)
@@ -66,7 +65,7 @@ def create_and_send(service_filename, email_from_file, email_to_file):
 
 if __name__ == '__main__':
     argv = sys.argv[1:]
-    service_file = 'services/test_service.json'
+    service_file = None
     email_from_file = 'res/email_from.txt'
     email_to_file = 'res/email_recipients.txt'
     try:
@@ -81,4 +80,6 @@ if __name__ == '__main__':
             email_from_file = arg
         elif opt in ('-t', '--to'):
             email_to_file = arg
+    if service_file == None:
+        raise Exception("Missing service use -s to specify")
     create_and_send(service_file, email_from_file, email_to_file)
