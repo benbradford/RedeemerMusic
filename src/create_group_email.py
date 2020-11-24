@@ -1,26 +1,10 @@
-from song_items import SongItems
 from email_template import EmailTemplate
-from members import Members
 from email_service import EmailService
 from powerpoint_creator import PowerpointCreator
+from service_retriever import get_songs, get_band, get_service_from_args
 import base64
 import json
 import sys, getopt
-
-all_song_items = SongItems('res/songs.json')
-all_members = Members('res/members.json')
-
-def get_songs(service):
-    songs = []
-    for song in service['songs']:
-        songs.append(all_song_items.get_by_id(song))
-    return songs
-
-def get_band(service):
-    band = []
-    for member in service['band']:
-        band.append(all_members.get_by_id(member))
-    return band
 
 def get_extra_message(service):
     if 'extra' in service:
@@ -40,9 +24,7 @@ def attempt_send(template, email_from, email_to, date):
         raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
         EmailService().send(raw_message)
 
-def create_and_send(service_filename, email_from_file, email_to_file):
-    service = json.loads(open(service_filename, "r").read())
-
+def create_and_send(service, email_from_file, email_to_file):
     songs = get_songs(service)
     band = get_band(service)
     date = service['date']
@@ -61,25 +43,22 @@ def create_and_send(service_filename, email_from_file, email_to_file):
 
     attempt_send(template, email_from, email_to, date)
 
-
-
 if __name__ == '__main__':
     argv = sys.argv[1:]
-    service_file = None
+    usage_error = 'create_group_email.py -s <service_file> -f <email_from_file> -t <email_to_file>'
     email_from_file = 'res/email_from.txt'
     email_to_file = 'res/email_recipients.txt'
+
     try:
         opts, args = getopt.getopt(argv, "s:f:t:",["service=","from=","to="])
     except getopt.GetoptError:
-        print 'create_group_email.py -s <service_file> -f <email_from_file> -t <email_to_file>'
-        sys.exit(2)
+        raise Exception(usage_error)
     for opt, arg in opts:
-        if opt in ('-s', '--service'):
-            service_file = arg
-        elif opt in ('-f', '--from'):
+        if opt in ('-f', '--from'):
             email_from_file = arg
         elif opt in ('-t', '--to'):
             email_to_file = arg
-    if service_file == None:
-        raise Exception("Missing service use -s to specify")
-    create_and_send(service_file, email_from_file, email_to_file)
+
+    service = get_service_from_args(usage_error)
+
+    create_and_send(service, email_from_file, email_to_file)
