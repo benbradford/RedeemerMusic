@@ -31,12 +31,12 @@ class PowerpointCreator:
         num_slides_with_lyrics = len(paginated_lyrics)
 
         for i in range(num_slides_with_lyrics):
-            self._assemble_page(paginated_lyrics[i], presentation, i == num_slides_with_lyrics-1)
+            self._assemble_page(paginated_lyrics[i], presentation, i == num_slides_with_lyrics-1, song._name)
 
-    def _assemble_page(self, lyrics_on_page, presentation, is_last_slide):
+    def _assemble_page(self, lyrics_on_page, presentation, is_last_slide, song):
         num_lines = lyrics_on_page.count('\n') + 1
         slide = self._create_slide(presentation)
-        paragraph = self._create_paragraph(slide, num_lines)
+        paragraph = self._create_paragraph(slide, num_lines, song)
         self._add_lyrics_to_paragraph(paragraph, lyrics_on_page)
         if is_last_slide:
             self._add_footer(slide, 'CCLI Licence No. 640402')
@@ -76,10 +76,10 @@ class PowerpointCreator:
         fill.fore_color.rgb = RGBColor(0, 0, 0)
         return slide
 
-    def _create_paragraph(self, slide, num_lines):
+    def _create_paragraph(self, slide, num_lines, song):
         width = height = Inches(1)
         left = Inches(6.5)
-        top = Inches(self._get_top_margin_in_inches(num_lines))
+        top = Inches(self._get_top_margin_in_inches(num_lines, song))
         txBox = slide.shapes.add_textbox(left, top, width, height)
         tf = txBox.text_frame
         return tf.add_paragraph()
@@ -90,7 +90,7 @@ class PowerpointCreator:
         p.font.color.rgb = RGBColor(255, 255, 255)
         p.alignment = PP_ALIGN.CENTER
 
-    def _get_top_margin_in_inches(self, num_lines):
+    def _get_top_margin_in_inches(self, num_lines, song):
         lines_to_inches = {
              1: 2.75,
              2: 2.5,
@@ -106,7 +106,7 @@ class PowerpointCreator:
         try:
             return lines_to_inches[num_lines]
         except:
-            raise Exception("Exceeded max allowed lines on a page {}/{}".format(num_lines, 10))
+            raise Exception("Exceeded max allowed lines on a page {}/{} for {}".format(num_lines, 10, song))
 
     def _add_footer(self, slide, footer):
         width = height = Inches(1)

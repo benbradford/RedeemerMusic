@@ -24,7 +24,7 @@ def get_service_from_args(improper_usage_message):
     service_file = None
 
     try:
-        opts, args = getopt.getopt(argv, "s:",["service=","from=","to="])
+        opts, args = getopt.getopt(argv, "s:f:t:",["service=","from=","to="])
     except getopt.GetoptError:
         raise Exception(improper_usage_message)
     for opt, arg in opts:

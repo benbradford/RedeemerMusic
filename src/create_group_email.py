@@ -47,7 +47,8 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     usage_error = 'create_group_email.py -s <service_file> -f <email_from_file> -t <email_to_file>'
     email_from_file = 'res/email_from.txt'
-    email_to_file = 'res/email_recipients.txt'
+    email_to_file = 'res/email_recipients_final.txt'
+    service = None
 
     try:
         opts, args = getopt.getopt(argv, "s:f:t:",["service=","from=","to="])
@@ -58,7 +59,7 @@ if __name__ == '__main__':
             email_from_file = arg
         elif opt in ('-t', '--to'):
             email_to_file = arg
-
-    service = get_service_from_args(usage_error)
+        elif opt in ('-s', '--service'):
+            service = json.loads(open(arg, "r").read())
 
     create_and_send(service, email_from_file, email_to_file)
