@@ -151,11 +151,9 @@
      },
      {
        "id":"Speak O Lord",
-       "name":"Speak O Lord",
        "lyrics":"https://docs.google.com/document/d/1DPtWQRsrqJHaXURJhST61Q2ONjJkIwHvLlwg_a0ymsQ/edit?usp=sharing",
        "chords":"https://drive.google.com/file/d/1q5YROhvsjesyHIPM75uRb9vqdMskplfA/view?usp=sharing",
-       "lead":"https://drive.google.com/file/d/16LpMMSB4Cw2PaEbvHMqGURbsI2yBj8Sf/view?usp=sharing",
-       "ppt":"res/ppt/Speak O Lord.txt"
+       "lead":"https://drive.google.com/file/d/16LpMMSB4Cw2PaEbvHMqGURbsI2yBj8Sf/view?usp=sharing"
      },
      {
        "id":"Jesus the name high over all - Praise",
@@ -360,6 +358,30 @@
        "lyrics":"https://drive.google.com/file/d/1yPluKbP7a_RydIBqVSWOKs7Qtr8CWDOr/view?usp=sharing",
        "chords":"https://drive.google.com/file/d/1YzEN6_SSI73ttR3gHV1Qs9TgOZXX5hHv/view?usp=sharing",
        "lead":"https://drive.google.com/file/d/1OPhoN6mkJHq3USL9Ja2a-iamkwzeTkFK/view?usp=sharing"
+     },
+     {
+       "id": "My God is so big",
+       "lyrics":"https://docs.google.com/document/d/10W2p3NvADt5GXUirfrsD1nKGix4pR2m_m_EH9DN9TeQ/edit?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1ZNZ9lQa0-3POaad7iAbCauhmnhbq6ezo/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/10oyde5c8m1pvoFziW7EMKC7xr9jZ7gXP/view?usp=sharing"
+     },
+     {
+       "id": "I stand amazed in the presence",
+       "lyrics":"https://drive.google.com/file/d/16ySjYf_ciiCpp_OrATeF3u8UQbo3MUo7/view?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1-X-zlnVhXLoZ4jtdJVj_DBBXJw1xJFt1/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1iuK92IwSpYYMbcnrytbyFOqk_Qc3i517/view?usp=sharing"
+     },
+     {
+       "id": "Come praise and glorify",
+       "lyrics":"https://drive.google.com/file/d/1UUJBXVJJ12b9XDNu5NfJHx7RYcea4cPY/view?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1S2MBy503Ucdsf9z1dmprpZlUu_buBhbT/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1oP3KtgG7v4MkfgQsgUukGak7_d40m_cl/view?usp=sharing"
+     },
+     {
+       "id": "Our God is a great big God",
+       "lyrics":"https://drive.google.com/file/d/1xJJPBkg6mhcTgj3cQOZaG9SV6IXx8VvW/view?usp=sharing",
+       "chords":"https://drive.google.com/file/d/1mmhAIPRrdXkylHrj5xDfWiPZ6L-Lpbtg/view?usp=sharing",
+       "lead":"https://drive.google.com/file/d/1KI01gxeislEWnxx8wDoPbJVJQGgVMQbo/view?usp=sharing"
      }
    ]
 }
