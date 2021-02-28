@@ -103,11 +103,9 @@
      },
      {
        "id":"There is a redeemer",
-       "name":"There is a redeemer",
        "lyrics":"https://docs.google.com/document/d/1rL5tFPPUmPsFScX7b0u6tYvlYQmKKRVInwkckVeUfIo/edit?usp=sharing",
        "chords":"https://drive.google.com/file/d/1ypIn4HJL2errBujYaODHSv93yB5KoPJg/view?usp=sharing",
-       "lead":"https://drive.google.com/file/d/1VvMenY0tCQLo6QnCV3eSR3pnsPkPT7Dj/view?usp=sharing",
-       "ppt":"res/ppt/There is a redeemer.txt"
+       "lead":"https://drive.google.com/file/d/1VvMenY0tCQLo6QnCV3eSR3pnsPkPT7Dj/view?usp=sharing"
      },
      {
        "id":"Jesus Shall Reign",
@@ -269,11 +267,9 @@
      },
      {
        "id":"God is a holy God",
-       "name":"God is a holy God",
        "lyrics":"https://drive.google.com/file/d/16WYpDZiPhV_jVWMgYTmKiTVaZ8f2sOyt/view?usp=sharing",
        "chords":"https://drive.google.com/file/d/1hoNPk6Vs6nFIhnvq7JLJwh8Ok2PE8iZp/view?usp=sharing",
-       "lead":"https://drive.google.com/file/d/1H0t75k8c6tcSTGJV0ue85NOoNCpGD3VU/view?usp=sharing",
-       "ppt":"res/ppt/God is a holy God.txt"
+       "lead":"https://drive.google.com/file/d/1H0t75k8c6tcSTGJV0ue85NOoNCpGD3VU/view?usp=sharing"
      },
      {
        "id":"Joy to the world - Praise",
@@ -413,13 +409,29 @@
        "lyrics":"https://drive.google.com/file/d/1GPF7ntrLxtiqVtQcAgTUsmc2QkbOtDRC/view?usp=sharing",
        "chords":"https://drive.google.com/file/d/1KhHvUMD-hwYdo9DaDpejQMlrKIztBKkJ/view?usp=sharing",
        "lead":"https://drive.google.com/file/d/1GkTuHLJRB1OiX5IY5DmoxDnUgaQnsu4j/view?usp=sharing"
-     }
-     ,
+     },
      {
        "id": "Behold our God",
        "lyrics":"https://drive.google.com/file/d/1qfx_EMq1CzGUdfllqz_pVCOO5NZd1aB_/view?usp=sharing",
        "chords":"https://drive.google.com/file/d/1jn74mJX1euFS7Y11V_tZCW2mFZyiUVlF/view?usp=sharing",
        "lead":"https://drive.google.com/file/d/1SwjGrM5PplwQwOYMIkxsvtePP97IHj84/view?usp=sharing"
-     }
+     },
+     {
+        "id": "Praise my soul the King of Heaven",
+        "lyrics":"https://drive.google.com/file/d/1DZW2l8VL-cniLhJpZgafswLCk4iiDN62/view?usp=sharing",
+        "chords":"https://drive.google.com/file/d/1k_doGekD2n4MEMouNlm0JcMpdX2AwYkn/view?usp=sharing",
+        "lead":"https://drive.google.com/file/d/1Epx1Wgd0AaALdkh7jIf1zdOugiiKFwax/view?usp=sharing"
+      },
+      {
+         "id": "God the uncreated One",
+         "lyrics":"https://drive.google.com/file/d/1PMeFY4iwlQGr83VMv9ZvFMtpihfxp69G/view?usp=sharing",
+         "chords":"https://drive.google.com/file/d/1_aTK4S36QtWxFwpp3X1CYcZpktSU0JGg/view?usp=sharing",
+         "lead":"https://drive.google.com/file/d/1WXVx1qnCbBkxRuC1oy2dikA9u5O8VdPF/view?usp=sharing"
+      },
+      {
+        "id": "Lo He comes with clouds descending",
+        "lyrics":"https://drive.google.com/file/d/1Pga5jNHYs-jvBYlVaKiqqrBVW-efLMTS/view?usp=sharing",
+        "lead":"https://drive.google.com/file/d/10BJJ_a-L3-7Sjq6cQuh0-tZxpPI2t0KO/view?usp=sharing"
+      }
    ]
 }
