@@ -14,9 +14,6 @@ from json_pp_creator import create_pp
 from email_service import EmailService
 
 
-
-
-
 def _get_song(id):
     id = int(id)
     songs = json.loads(open('../res/songs.json', "r").read())
@@ -25,31 +22,28 @@ def _get_song(id):
             return song, i
     return {}, -1
 
-def _get_slides(id):
-    song = _get_song(id)[0]
-    if 'name' not in song:
-        return "Error: no name in song"
-    print song['name']
-    ppt_file = '../res/slides/' + song['name'] + '.json'
-    file = open(ppt_file, "r").read()
+def _get_presentations():
+    file = open('../res/presentations.json', "r").read()
     return json.loads(file)
+
+def _get_slides(id):
+    id = int(id)
+    presentations = _get_presentations()
+    for p in presentations['presentations']:
+        if p['id'] == id:
+            return p
+    return "Error: Cannot get slides for " + str(id)
+
 
 def _get_songs():
     songsstring = open('../res/songs.json', "r").read()
     return json.loads(songsstring)
 
-def _get_powerpoint_paths(request):
-    service = _get_service(request)
-    songs = _get_songs()
+def _get_powerpoint_paths(service_id):
+    service = _get_service(service_id)
     result = []
-    for song in service['songs']:
-        for test in songs['songList']:
-            if test['id'] == song:
-                ppt_file = '../res/slides/' + test['name'] + '.json'
-                pp = open(ppt_file, "r").read()
-                pp_json = json.loads(pp)
-                print (jsonify(pp))
-                result.append(pp_json)
+    for song_id in service['songs']:
+        result.append(_get_slides(song_id))
     return result
 
 def _update_song(old_song, new_song, key):
@@ -58,25 +52,28 @@ def _update_song(old_song, new_song, key):
     return new_song
 
 def _get_services():
-    services = {}
-    services['services'] = []
-    for year_folder in os.listdir('../services'):
-        for service_file in os.listdir('../services/' + year_folder):
-            service = open('../services/' + year_folder + '/' + service_file, "r").read()
-            services['services'].append(json.loads(service));
-    return services
+    services = open('../res/services.json', "r").read()
+    return json.loads(services)
 
-def _get_service(request):
-    if 'id' in request.args:
-        id = request.args['id']
-    else:
-        return "Error: No id field provided. Please specify an id."
+def _get_service(id):
     id = int(request.args['id'])
     services = _get_services()
     for service in services['services']:
         if service['id'] == id:
             return service
     return "Error: could not find service"
+
+def _write_songs(songs):
+    with open('../res/songs.json', 'w+') as f:
+        json.dump(songs, f, indent=4, sort_keys=True)
+
+def _write_services(services):
+    with open('../res/services.json', 'w+') as f:
+        json.dump(services, f, indent=4, sort_keys=True)
+
+def _write_members(members):
+    with open('../res/members.json', 'w+') as f:
+        json.dump(members, f, indent=4, sort_keys=True)
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -105,12 +102,20 @@ def services():
 # ?id=<service-id>
 @app.route('/service', methods=['GET'])
 def service():
-    return jsonify(_get_service(request))
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+    return jsonify(_get_service(id))
 
 # ?id=<service_id>
 @app.route('/sendpowerpoint', methods=['GET'])
 def send_powerpoint():
-    songs_to_use = _get_powerpoint_paths(request)
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+    songs_to_use = _get_powerpoint_paths(id)
     created_pp = create_pp(songs_to_use)
 
     message = MIMEMultipart()
@@ -150,6 +155,7 @@ def add_song():
 
     new_song['id'] = len(songs['songList'])
     songs['songList'].append(new_song)
+    _write_songs(songs)
     return jsonify(songs)
 
 @app.route('/update_song', methods=['PUT'])
@@ -167,6 +173,7 @@ def update_song():
     for key in new_song.keys():
         _update_song(song, new_song, key)
     songs['songList'].append(song)
+    _write_songs(songs)
     return jsonify(songs)
 
 @app.route('/add_slides', methods=['POST'])
@@ -175,19 +182,14 @@ def add_slides():
         id = request.args['id']
     else:
         return "Error: No id field provided. Please specify an id."
-    id = id.replace('_', ' ')
+
     slides = request.get_json(force=True)
     if slides is None:
         return "Error: no json body supplied"
     if 'slides' in slides is None:
         return "Error: no slides in json"
 
-    song = _get_song(id)[0]
-
-    ppt_file = '../res/slides/' + song['name'] + '.json'
-    with open(ppt_file, 'w+') as f:
-        json.dump(slides, f)
-    return slides
+    return "Error: not implemented"
 
 @app.route('/get_slides', methods=['GET'])
 def get_slides():
@@ -217,10 +219,10 @@ def add_member():
     file = open('../res/members.json', "r").read()
     members = json.loads(file)
     for m in members['members']:
-        print m
         if m['id'] == new_member['id']:
             return "Error: member id already exists"
     members['members'].append(new_member)
+    _write_members(members)
     return jsonify(members)
 
 app.run()

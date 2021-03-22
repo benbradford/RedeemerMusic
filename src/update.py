@@ -1,34 +1,21 @@
 import json
+import os
 
 songsstring = open('../res/songs.json', "r").read()
-old_songs = json.loads(songsstring)['songList']
-new_songs = []
-i = 0
-for song in old_songs:
-    if 'name' not in song:
-        song['name'] = song['id']
+songs = json.loads(songsstring)
+slides = {}
+slides['presentations'] = []
+for slides_file in os.listdir('../res/slides'):
+    file = open('../res/slides/' + slides_file, "r").read()
+    print slides_file
+    output = json.loads(file)
+    id = -1
+    for song in songs['songList']:
+        print song
+        if slides_file == song['name'] + '.json':
+            id = song['id']
+    output['id'] = id
+    slides['presentations'].append(output);
 
-
-    if 'ppt' in song:
-        ppt_filename = '../' + song['ppt']
-    else:
-        ppt_filename = '../res/ppt/' + song['id'] + '.json'
-    ppt_filename = ppt_filename.replace('.txt', '.json')
-    print ('loading slides ' + ppt_filename)
-    slides_file = open(ppt_filename, "r").read()
-    slides = json.loads(slides_file)
-
-    new_slides_filename = '../res/slides/' + song['name'] + '.json'
-    with open(new_slides_filename, 'w+') as f:
-        json.dump(slides, f)
-
-    song['id'] = i
-    i = i + 1
-    song.pop('ppt', None)
-
-    new_songs.append(song)
-
-result = {}
-result['songList'] = new_songs
-with open('../res/new_songs.json', 'w+') as f:
-    json.dump(result, f)
+with open('../res/new_slides.json', 'w+') as f:
+    json.dump(slides, f, indent=4, sort_keys=True)
