@@ -13,33 +13,26 @@ from email.mime.application import MIMEApplication
 from json_pp_creator import create_pp
 from email_service import EmailService
 
-def _get_slides(id):
-    song = _get_song(id)[0]
-    if 'ppt' in song:
-        ppt_file = '../' + song['ppt']
-    else:
-        ppt_file = '../res/ppt/' + song['id'] + '.json'
-    file = open(ppt_file, "r").read()
-    return json.loads(file)
 
-def _get_service(request):
-    if 'id' in request.args:
-        id = request.args['id']
-    else:
-        return "Error: No id field provided. Please specify an id."
-    filename = '../services/'
-    filename += id.split('_')[0] + "/"
-    filename += id
-    service = open(filename, "r").read()
-    return json.loads(service)
+
+
 
 def _get_song(id):
-    name = id.replace('_', ' ')
+    id = int(id)
     songs = json.loads(open('../res/songs.json', "r").read())
     for i, song in enumerate(songs['songList']):
-        if song['id'] == name:
+        if song['id'] == id:
             return song, i
     return {}, -1
+
+def _get_slides(id):
+    song = _get_song(id)[0]
+    if 'name' not in song:
+        return "Error: no name in song"
+    print song['name']
+    ppt_file = '../res/slides/' + song['name'] + '.json'
+    file = open(ppt_file, "r").read()
+    return json.loads(file)
 
 def _get_songs():
     songsstring = open('../res/songs.json', "r").read()
@@ -52,14 +45,8 @@ def _get_powerpoint_paths(request):
     for song in service['songs']:
         for test in songs['songList']:
             if test['id'] == song:
-                pp_file = ""
-                if 'ppt' in test:
-                    pp_file = test['ppt']
-                else:
-                    pp_file = 'res/ppt/' + test['id'] + '.txt'
-                pp_file = '../' + pp_file
-                pp_file = pp_file.replace('.txt', '.json')
-                pp = open(pp_file, "r").read()
+                ppt_file = '../res/slides/' + test['name'] + '.json'
+                pp = open(ppt_file, "r").read()
                 pp_json = json.loads(pp)
                 print (jsonify(pp))
                 result.append(pp_json)
@@ -79,6 +66,18 @@ def _get_services():
             services['services'].append(json.loads(service));
     return services
 
+def _get_service(request):
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+    id = int(request.args['id'])
+    services = _get_services()
+    for service in services['services']:
+        if service['id'] == id:
+            return service
+    return "Error: could not find service"
+
 app = flask.Flask(__name__)
 CORS(app)
 app.config["DEBUG"] = True
@@ -97,7 +96,7 @@ def song():
         id = request.args['id']
     else:
         return "Error: No id field provided. Please specify an id."
-    return jsonify(_get_song(id))
+    return jsonify(_get_song(id)[0])
 
 @app.route('/services', methods=['GET'])
 def services():
@@ -129,7 +128,7 @@ def send_powerpoint():
         message.attach(part)
 
     raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
-    EmailService().send(raw_message)
+    # EmailService().send(raw_message)
 
     result = {}
     result['res'] = songs_to_use
@@ -141,14 +140,15 @@ def add_song():
     new_song = request.get_json(force=True)
     if new_song is None:
         return "Error: no json body supplied"
-    if 'id' not in new_song:
-        return "Error: no id in body"
-    if _get_song(new_song['id']):
-        return "Error: song already exists"
+
     if 'name' not in new_song:
-        new_song['name'] = new_song['id']
-    if 'ppt' not in new_song:
-        new_song['ppt'] = 'res/ppt/' + new_song['id'] + '.json'
+        return "Error: no song name"
+
+    for song in songs['songList']:
+        if (song['name'] == new_song['name']):
+            return "Error: song already exists"
+
+    new_song['id'] = len(songs['songList'])
     songs['songList'].append(new_song)
     return jsonify(songs)
 
@@ -184,10 +184,7 @@ def add_slides():
 
     song = _get_song(id)[0]
 
-    if 'ppt' in song:
-        ppt_file = '../' + song['ppt']
-    else:
-        ppt_file = '../res/ppt/' + song['id'] + '.json'
+    ppt_file = '../res/slides/' + song['name'] + '.json'
     with open(ppt_file, 'w+') as f:
         json.dump(slides, f)
     return slides
