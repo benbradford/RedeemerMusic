@@ -1,37 +1,52 @@
-
-Hear the call of the kingdom
-Lift your eyes to the King
-Let His song rise within you
-As a fragrant offering
-Of how God rich in mercy came in Christ to redeem
-All who trust in His unfailing grace
-
-Hear the call of the kingdom
-To be children of light
-With the mercy of heaven the humility of Christ
-Walking justly before Him
-Loving all that is right
-That the life of Christ may shine through us
-
-King of heaven we will answer the call
-We will follow bringing hope to the world
-Filled with passion filled with power to proclaim
-Salvation in Jesus' name
-
-Hear the call of the kingdom
-To reach out to the lost
-With the Father's compassion
-In the wonder of the cross
-Bringing peace and forgiveness
-And a hope yet to come
-Let the nations put their trust in Him
-
-King of heaven we will answer the call
-We will follow bringing hope to the world
-Filled with passion filled with power to proclaim
-Salvation in Jesus' name
-
-King of heaven we will answer the call
-We will follow bringing hope to the world
-Filled with passion filled with power to proclaim
-Salvation in Jesus' name
+{
+  "slides": [
+     [
+     "Hear the call of the kingdom",
+     "Lift your eyes to the King",
+     "Let His song rise within you",
+     "As a fragrant offering",
+     "Of how God rich in mercy came in Christ to redeem",
+     "All who trust in His unfailing grace"
+    ]
+    ,
+     [
+     "Hear the call of the kingdom",
+     "To be children of light",
+     "With the mercy of heaven the humility of Christ",
+     "Walking justly before Him",
+     "Loving all that is right",
+     "That the life of Christ may shine through us"
+    ]
+    ,
+     [
+     "King of heaven we will answer the call",
+     "We will follow bringing hope to the world",
+     "Filled with passion filled with power to proclaim",
+     "Salvation in Jesus' name"
+    ]
+    ,
+     [
+     "Hear the call of the kingdom",
+     "To reach out to the lost",
+     "With the Father's compassion",
+     "In the wonder of the cross",
+     "Bringing peace and forgiveness",
+     "And a hope yet to come",
+     "Let the nations put their trust in Him"
+    ]
+    ,
+     [
+     "King of heaven we will answer the call",
+     "We will follow bringing hope to the world",
+     "Filled with passion filled with power to proclaim",
+     "Salvation in Jesus' name"
+    ]
+    ,
+     [
+     "King of heaven we will answer the call",
+     "We will follow bringing hope to the world",
+     "Filled with passion filled with power to proclaim",
+     "Salvation in Jesus' name"
+    ]
+  ]
+}
