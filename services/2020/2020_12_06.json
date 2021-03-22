@@ -1,18 +1,17 @@
 {
-  "number": 7,
+  "id": 7,
    "songs":[
-     "The splendour of the King (How great is our God)",
-     "From the squalor of a borrowed stable (Immanuel)",
-     "God is a holy God",
-     "Praise to the Lord the Almighty the King of Creation - Praise",
-     "The Lord's my Shepherd (Psalm 23) (Townend)",
-     "Who O Lord could save themselves (You alone can rescue)"
+     31,
+     32,
+     34,
+     17,
+     33,
+     23
    ],
    "band":[
       "BenB_Guitar_Vox"
    ],
    "lead":"Ben B",
    "date":"Sunday 6th December",
-   "ppt_file":"2020.12.06 Worship list Redeemer.pptx",
    "extra":""
 }

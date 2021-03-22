@@ -1,12 +1,12 @@
 {
-  "number": 11,
+  "id": 11,
    "songs":[
-     "Praise to the Lord the Almighty the King of Creation - Praise",
-     "O come O come Emmanuel",
-     "God speaks, we listen",
-     "Speak O Lord",
-     "O Great God",
-     "Lord be my vision - praise"
+     17,
+     44,
+     43,
+     19,
+     3,
+     45
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 27th December",
-   "ppt_file":"2020.12.27 Worship list Redeemer.pptx",
    "extra":"This is for the service after Christmas on the 27th - there's not really a convenient time to send the reminder for this one, so hopefully this doesn't add any confusion!"
 }

@@ -1,12 +1,12 @@
 {
-  "number": 1,
+  "id": 1,
    "songs":[
-      "To God Be The Glory - Simple - Praise",
-      "There is a fountain - G - Praise",
-      "You are always with me Jesus",
-      "O Great God",
-      "Only By Grace",
-      "In Christ Alone"
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 25th October",
-   "ppt_file":"2020.10.25 Worship list Redeemer.pptx",
    "extra":"This email was auto-generated using a tool. Please let me know if there are any formatting or permissions issues."
 }

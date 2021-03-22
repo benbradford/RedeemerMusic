@@ -1,12 +1,12 @@
 {
-  "number": 16,
+  "id": 16,
    "songs":[
-      "Come praise and glorify",
-      "I stand amazed in the presence",
-      "We are the church",
-      "Prepare our hearts (show us christ)",
-      "O Great God",
-      "Amazing Grace"
+      50,
+      49,
+      52,
+      27,
+      3,
+      54
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 31st January",
-   "ppt_file":"2021.01.31 Worship list Redeemer.pptx",
    "extra":""
 }

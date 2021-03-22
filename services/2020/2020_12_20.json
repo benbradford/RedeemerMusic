@@ -1,12 +1,12 @@
 {
-  "number": 9,
+  "id": 9,
    "songs":[
-     "O come all ye faithful",
-     "O little town of bethlehem",
-     "Silent night",
-     "Joy to the world - Praise",
-     "From the squalor of a borrowed stable (Immanuel)",
-     "Hark the Herald - Praise"
+     39,
+     41,
+     42,
+     35,
+     32,
+     38
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 20th December",
-   "ppt_file":"2020.12.20 Worship list Redeemer.pptx",
    "extra":"Please join me in welcoming Emma back for some remote vocal duties!"
 }

@@ -1,12 +1,12 @@
 {
-  "number": 15,
+  "id": 15,
    "songs":[
-      "To God Be The Glory - Simple - Praise",
-      "I stand amazed in the presence",
-      "We are the church",
-      "Come praise and glorify",
-      "There is a hope",
-      "Christ our hope in life and death"
+      0,
+      49,
+      52,
+      50,
+      53,
+      10
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 24th January",
-   "ppt_file":"2021.01.24 Worship list Redeemer.pptx",
    "extra":""
 }

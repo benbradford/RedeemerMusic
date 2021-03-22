@@ -1,12 +1,12 @@
 {
-  "number": 14,
+  "id": 14,
    "songs":[
-      "Come praise and glorify",
-      "King of Kings",
-      "Our God is a great big God",
-      "Speak O Lord",
-      "I stand amazed in the presence",
-      "Hear the call of the kingdom"
+      50,
+      12,
+      51,
+      19,
+      49,
+      21
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 17th January",
-   "ppt_file":"2021.01.17 Worship list Redeemer.pptx",
    "extra":""
 }

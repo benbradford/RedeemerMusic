@@ -1,12 +1,12 @@
 {
-  "number": 18,
+  "id": 18,
    "songs":[
-      "Praise my soul the King of Heaven",
-      "Yet not I",
-      "We are the church",
-      "There is a redeemer",
-      "God the uncreated One",
-      "Lo He comes with clouds descending"
+      58,
+      56,
+      52,
+      13,
+      59,
+      60
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -14,6 +14,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 14th February",
-   "ppt_file":"2021.02.14 Worship list Redeemer.pptx",
    "extra":""
 }

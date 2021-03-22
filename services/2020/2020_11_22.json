@@ -1,18 +1,17 @@
 {
-  "number": 5,
+  "id": 5,
    "songs":[
-     "Holy holy holy",
-     "There is a redeemer",
-     "Your love will last forever",
-     "Who O Lord could save themselves (You alone can rescue)",
-     "He will hold me fast",
-     "Thine be the glory - Praise"
+     22,
+     13,
+     7,
+     23,
+     24,
+     25
    ],
    "band":[
       "BenB_Guitar_Vox"
    ],
    "lead":"Ben B",
    "date":"Sunday 22nd November",
-   "ppt_file":"2020.11.22 Worship list Redeemer.pptx",
    "extra":"Great to see the return of a couple of Emmanuel classics in this Sunday's worship!"
 }

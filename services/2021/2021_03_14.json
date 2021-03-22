@@ -1,10 +1,10 @@
 {
-  "number": 22,
+  "id": 22,
    "songs":[
-      "Crown him with many crowns - Praise",
-      "God speaks, we listen",
-      "Praise to the Lord the Almighty the King of Creation - Praise",
-      "I stand amazed in the presence"
+      16,
+      43,
+      17,
+      49
    ],
    "band":[
       "BenB_Guitar_Vox",
@@ -12,6 +12,5 @@
    ],
    "lead":"Ben B",
    "date":"Sunday 14th March",
-   "ppt_file":"2021.03.14 Worship list Redeemer.pptx",
    "extra":""
 }
