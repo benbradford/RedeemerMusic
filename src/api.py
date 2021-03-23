@@ -22,10 +22,6 @@ def _get_song(id):
             return song, i
     return {}, -1
 
-def _get_presentations():
-    file = open('../res/presentations.json', "r").read()
-    return json.loads(file)
-
 def _get_slides(id):
     id = int(id)
     presentations = _get_presentations()
@@ -33,11 +29,6 @@ def _get_slides(id):
         if p['id'] == id:
             return p
     return "Error: Cannot get slides for " + str(id)
-
-
-def _get_songs():
-    songsstring = open('../res/songs.json', "r").read()
-    return json.loads(songsstring)
 
 def _get_powerpoint_paths(service_id):
     service = _get_service(service_id)
@@ -51,10 +42,6 @@ def _update_song(old_song, new_song, key):
         old_song[key] = new_song[key]
     return new_song
 
-def _get_services():
-    services = open('../res/services.json', "r").read()
-    return json.loads(services)
-
 def _get_service(id):
     id = int(request.args['id'])
     services = _get_services()
@@ -63,6 +50,18 @@ def _get_service(id):
             return service
     return "Error: could not find service"
 
+def _get_services():
+    services = open('../res/services.json', "r").read()
+    return json.loads(services)
+
+def _get_presentations():
+    file = open('../res/presentations.json', "r").read()
+    return json.loads(file)
+
+def _get_songs():
+    songsstring = open('../res/songs.json', "r").read()
+    return json.loads(songsstring)
+
 def _write_songs(songs):
     with open('../res/songs.json', 'w+') as f:
         json.dump(songs, f, indent=4, sort_keys=True)
@@ -70,6 +69,10 @@ def _write_songs(songs):
 def _write_services(services):
     with open('../res/services.json', 'w+') as f:
         json.dump(services, f, indent=4, sort_keys=True)
+
+def _write_presentations(presentations):
+    with open('../res/presentations.json', 'w+') as f:
+        json.dump(presentations, f, indent=4, sort_keys=True)
 
 def _write_members(members):
     with open('../res/members.json', 'w+') as f:
@@ -93,15 +96,15 @@ app = flask.Flask(__name__)
 CORS(app)
 app.config["DEBUG"] = True
 
-@app.route('/', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def home():
-    return "<h1>Test page</h1><p>This route is unused</p>"
+    return "okidoki"
 
 @app.route('/songs', methods=['GET'])
 def songs():
     return jsonify(_get_songs())
 
-@app.route('/song', methods=['GET'])
+@app.route('/get_song', methods=['GET'])
 def song():
     if 'id' in request.args:
         id = request.args['id']
@@ -243,13 +246,25 @@ def add_slides():
     else:
         return "Error: No id field provided. Please specify an id."
 
-    slides = request.get_json(force=True)
-    if slides is None:
+    new_slides = request.get_json(force=True)
+    if new_slides is None:
         return "Error: no json body supplied"
-    if 'slides' in slides is None:
+    if 'slides' in new_slides is None:
         return "Error: no slides in json"
 
-    return "Error: not implemented"
+    presentations = presentations()
+    index = -1
+    for i, presentation in enumerate(presentations['presentations']):
+        if presentation['id'] == new_service['id']:
+            index = i
+            break
+    if index == -1:
+        return "Error: could not find presentation"
+
+    presentations['presentations'].pop(index)
+    presentations['presentations'].append(new_slides)
+    _write_presentations(presentations)
+    return jsonify(presentations)
 
 @app.route('/get_slides', methods=['GET'])
 def get_slides():
