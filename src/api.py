@@ -239,8 +239,8 @@ def update_song():
     _write_songs(songs)
     return jsonify(songs)
 
-@app.route('/add_slides', methods=['POST'])
-def add_slides():
+@app.route('/add_or_update_slides', methods=['POST'])
+def add_or_update_slides():
     if 'id' in request.args:
         id = request.args['id']
     else:
@@ -252,16 +252,13 @@ def add_slides():
     if 'slides' in new_slides is None:
         return "Error: no slides in json"
 
-    presentations = presentations()
-    index = -1
-    for i, presentation in enumerate(presentations['presentations']):
-        if presentation['id'] == new_service['id']:
-            index = i
-            break
-    if index == -1:
-        return "Error: could not find presentation"
+    presentations = _get_presentations()
 
-    presentations['presentations'].pop(index)
+    for i, presentation in enumerate(presentations['presentations']):
+        if presentation['id'] == new_slides['id']:
+            presentations['presentations'].pop(i)
+            break
+
     presentations['presentations'].append(new_slides)
     _write_presentations(presentations)
     return jsonify(presentations)
