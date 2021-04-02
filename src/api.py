@@ -209,6 +209,8 @@ def add_song():
     if new_song is None:
         return "Error: no json body supplied"
 
+    if 'id' not in new_song:
+            return "Error: no id in body"
     if 'name' not in new_song:
         return "Error: no song name"
 
@@ -216,10 +218,9 @@ def add_song():
         if (song['name'] == new_song['name']):
             return "Error: song already exists"
 
-    new_song['id'] = len(songs['songList'])
     songs['songList'].append(new_song)
     _write_songs(songs)
-    return jsonify(songs)
+    return jsonify(new_song)
 
 @app.route('/update_song', methods=['PUT'])
 def update_song():
@@ -241,12 +242,8 @@ def update_song():
 
 @app.route('/add_or_update_slides', methods=['POST'])
 def add_or_update_slides():
-    if 'id' in request.args:
-        id = request.args['id']
-    else:
-        return "Error: No id field provided. Please specify an id."
-
     new_slides = request.get_json(force=True)
+
     if new_slides is None:
         return "Error: no json body supplied"
     if 'slides' in new_slides is None:
@@ -256,6 +253,7 @@ def add_or_update_slides():
 
     for i, presentation in enumerate(presentations['presentations']):
         if presentation['id'] == new_slides['id']:
+            print ("got existing id")
             presentations['presentations'].pop(i)
             break
 
@@ -270,6 +268,8 @@ def get_slides():
     else:
         return "Error: No id field provided. Please specify an id."
     slides = _get_slides(id)
+    if slides is None:
+        raise 400
     return jsonify(slides)
 
 @app.route('/members', methods=['GET'])
