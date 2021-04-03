@@ -73,22 +73,6 @@
         {
             "band": [
                 "BenB_Guitar_Vox",
-                "Emma_Vox"
-            ],
-            "date": "Sunday 21st March",
-            "extra": "",
-            "id": 23,
-            "lead": "Ben B",
-            "songs": [
-                1,
-                15,
-                61,
-                62
-            ]
-        },
-        {
-            "band": [
-                "BenB_Guitar_Vox",
                 "Ellie_Vox"
             ],
             "date": "Sunday 31st January",
@@ -397,6 +381,68 @@
                 35,
                 32,
                 38
+            ]
+        },
+        {
+            "band": [
+                "BenB_Guitar",
+                "Ellie_Vox"
+            ],
+            "date": "Sunday 28th March",
+            "id": 24,
+            "lead": "Ben B",
+            "songs": [
+                58,
+                26,
+                63,
+                8
+            ]
+        },
+        {
+            "band": [
+                "BenB_Guitar_Vox",
+                "Ellie_Vox"
+            ],
+            "date": "Easter Sunday 4th April",
+            "id": 26,
+            "lead": "Ben B",
+            "songs": [
+                64,
+                63,
+                5,
+                25
+            ]
+        },
+        {
+            "band": [
+                "BenB_Guitar_Vox",
+                "Emma_Vox"
+            ],
+            "date": "Friday 2nd April",
+            "extra": "",
+            "id": 25,
+            "lead": "Ben B",
+            "songs": [
+                0,
+                49,
+                1,
+                61
+            ]
+        },
+        {
+            "band": [
+                "BenB_Guitar_Vox",
+                "Emma_Vox"
+            ],
+            "date": "Sunday 21st March",
+            "extra": "",
+            "id": 23,
+            "lead": "Ben B",
+            "songs": [
+                1,
+                15,
+                61,
+                62
             ]
         }
     ]

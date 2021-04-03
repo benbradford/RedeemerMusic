@@ -175,7 +175,7 @@ def add_service():
     _write_services(services)
     return jsonify(services)
 
-@app.route('/update_service', methods=['POST'])
+@app.route('/add_or_update_service', methods=['POST'])
 def update_service():
     songs = _get_songs()
     new_service = request.get_json(force=True)
@@ -194,10 +194,9 @@ def update_service():
         if service['id'] == new_service['id']:
             index = i
             break
-    if index == -1:
-        return "Error: could not find service"
+    if index != -1:
+        services['services'].pop(index)
 
-    services['services'].pop(index)
     services['services'].append(new_service)
     _write_services(services)
     return jsonify(services)
