@@ -6,11 +6,13 @@ import os
 
 from flask import request, jsonify
 from flask_cors import CORS
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+from email.mime.text import MIMEText
 
 from json_pp_creator import create_pp
+from json_email_creator import get_email_preview
+from json_email_creator import send_group_email
 from email_service import EmailService
 
 
@@ -126,8 +128,34 @@ def service():
     return jsonify(_get_service(id))
 
 # ?id=<service_id>
-@app.route('/sendpowerpoint', methods=['GET'])
-def send_powerpoint():
+@app.route('/send_powerpoint', methods=['POST'])
+def send_powerpoint_api():
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+    service = _get_service(id)
+    filename = '../bin/' + service['date'] + ' Slides.pptx'
+    songs_to_use = _get_powerpoint_paths(id)
+    created_pp = create_pp(songs_to_use, filename)
+
+    message = MIMEMultipart()
+    message.attach(MIMEText("<p> test message </p>", "html"))
+    message['to'] = request.headers['recipients']
+    message['from'] = base64.urlsafe_b64encode('ben.bradford80@gmail.com')
+    message['subject'] = 'Powerpoint test'
+
+    with open(filename, "rb") as fil:
+        part = MIMEApplication( fil.read(), Name= service['date'] + ' Slides.pptx')
+        # After the file is closed
+        part['Content-Disposition'] = 'attachment; filename="' +service['date'] + ' Slides.pptx"'
+        message.attach(part)
+
+    raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
+    return EmailService().send(raw_message)
+
+@app.route('/preview_powerpoint', methods=['GET'])
+def preview_powerpoint_api():
     if 'id' in request.args:
         id = request.args['id']
     else:
@@ -135,26 +163,8 @@ def send_powerpoint():
     songs_to_use = _get_powerpoint_paths(id)
     created_pp = create_pp(songs_to_use)
 
-    message = MIMEMultipart()
-    message.attach(MIMEText("<p> test message </p>", "html"))
-    message['to'] = 'ben.bradford80@gmail.com'
-    message['from'] = base64.urlsafe_b64encode('ben.bradford80@gmail.com')
-    message['subject'] = 'Powerpoint test'
+    return created_pp
 
-    outfile = '../bin/_outFile.pptx'
-
-    with open(outfile, "rb") as fil:
-        part = MIMEApplication( fil.read(), Name='_outFile.pptx')
-        # After the file is closed
-        part['Content-Disposition'] = 'attachment; filename="_outFile.pptx"'
-        message.attach(part)
-
-    raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
-    # EmailService().send(raw_message)
-
-    result = {}
-    result['res'] = songs_to_use
-    return jsonify(result)
 
 @app.route('/add_service', methods=['POST'])
 def add_service():
@@ -295,5 +305,26 @@ def add_member():
     members['members'].append(new_member)
     _write_members(members)
     return jsonify(members)
+
+@app.route('/get_email_preview', methods=['GET'])
+def get_email_preview_api():
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+    service = _get_service(id)
+    return get_email_preview(service)
+
+@app.route('/send_group_email', methods=['POST'])
+def send_group_email_api():
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+
+    recipients = request.headers['recipients']
+
+    service = _get_service(id)
+    return send_group_email(service, recipients)
 
 app.run()

@@ -91,11 +91,10 @@ def _create_slide(presentation):
 def _add_blank_page(presentation):
     _create_slide(presentation)
 
-def create_pp(songs):
+def create_pp(songs, filename):
     presentation = _create_empty_presentation()
     for song in songs:
         _add_slides_for_song(presentation, song['slides'])
         _add_blank_page(presentation)
-    outfile = "../bin/{}".format('_outFile.pptx')
-    presentation.save(outfile)
-    return outfile
+    presentation.save(filename)
+    return filename
