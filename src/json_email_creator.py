@@ -4,9 +4,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email_service import EmailService
 
-def _hyperlink(name, song):
-    if name in song:
-        return ' <a href="{}">[{}]</a> '.format(song['name'], name)
+def _hyperlink(value, song):
+    if value in song:
+        return ' <a href="{}">[{}]</a> '.format(song[value], value)
     return ''
 
 def _expand_song_html(song):
@@ -56,7 +56,7 @@ def _make_html_members_list(service):
 def _get_extra_message(service):
     if 'extra' in service:
         return service['extra']
-    return None
+    return ""
 
 def _create_html_message(service):
     html_template = open('../res/email_template.html', "r").read()
@@ -83,5 +83,5 @@ def send_group_email(service, recipients):
     message['from'] = email_from
     message['subject'] = 'Redeemer Music for {}'.format(service['date'])
     raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
+    print message
     return EmailService().send(raw_message)
-    

@@ -4,7 +4,7 @@ import mimetypes
 import base64
 import os
 
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 from flask_cors import CORS
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -139,11 +139,14 @@ def send_powerpoint_api():
     songs_to_use = _get_powerpoint_paths(id)
     created_pp = create_pp(songs_to_use, filename)
 
+    html_template = open('../res/powerpoint_email_template.html', "r").read()
+    html_template = html_template.replace('_DATE_', service['date'])
+
     message = MIMEMultipart()
-    message.attach(MIMEText("<p> test message </p>", "html"))
+    message.attach(MIMEText(html_template, "html"))
     message['to'] = request.headers['recipients']
     message['from'] = base64.urlsafe_b64encode('ben.bradford80@gmail.com')
-    message['subject'] = 'Powerpoint test'
+    message['subject'] = 'Powerpoint for ' + service['date']
 
     with open(filename, "rb") as fil:
         part = MIMEApplication( fil.read(), Name= service['date'] + ' Slides.pptx')
@@ -161,9 +164,12 @@ def preview_powerpoint_api():
     else:
         return "Error: No id field provided. Please specify an id."
     songs_to_use = _get_powerpoint_paths(id)
-    created_pp = create_pp(songs_to_use)
+    service = _get_service(id)
+    filename = '../bin/' + service['date'] + ' Slides.pptx'
 
-    return created_pp
+    create_pp(songs_to_use, filename)
+
+    return send_file(filename, attachment_filename = service['date'] + ' Slides.pptx')
 
 
 @app.route('/add_service', methods=['POST'])
