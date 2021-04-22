@@ -459,6 +459,21 @@
                 19, 
                 3
             ]
+        }, 
+        {
+            "band": [
+                "BenB_Guitar_Vox", 
+                "Emma_Vox"
+            ], 
+            "date": "Sunday 25th April", 
+            "id": 28, 
+            "lead": "Ben B", 
+            "songs": [
+                63, 
+                66, 
+                67, 
+                69
+            ]
         }
     ]
 }

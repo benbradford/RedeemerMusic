@@ -13,13 +13,6 @@
             "name": "You are always with me Jesus"
         }, 
         {
-            "chords": "https://drive.google.com/file/d/1veZnOscA-7FtYvsYibtBtjySuxtKQ0im/view?usp=sharing", 
-            "id": 3, 
-            "lead": "https://drive.google.com/file/d/1dg7SX_SyaazUe6gYk9UsAImKcKIK2x1Q/view?usp=sharing", 
-            "lyrics": "https://docs.google.com/document/d/1QLR751U_yO-iyAiWW693qA-pHPjbpR7qOT9vfqzMTWQ/edit?usp=sharing", 
-            "name": "O Great God"
-        }, 
-        {
             "chords": "https://drive.google.com/file/d/1CK39BTdiroTwv_iNmZ6VWbLiW7atFLRb/view?usp=sharing", 
             "id": 4, 
             "lead": "https://drive.google.com/file/d/1ghrRT4wRqvm2Sdabv1vXlGeSEgK5Egrh/view?usp=sharing", 
@@ -437,19 +430,6 @@
             "name": "Amazing Grace"
         }, 
         {
-            "chords": "https://docs.google.com/document/d/1D8K7b8QOqUDK4c1e35wh37LF8GZSYeJoE3LSt07Azao/edit?usp=sharing", 
-            "id": 66, 
-            "lead": "https://drive.google.com/file/d/1x0eFjTa7Gv-Vm3oXYQ8UhpzFiR37SdzZ/view?usp=sharing", 
-            "lyrics": "https://docs.google.com/document/d/1tF7P69ra3YtXHCUZexTnbrhEwErh7m6xiJWcj3a_XQo/edit?usp=sharing", 
-            "name": "Who is this man?"
-        }, 
-        {
-            "chords": "https://drive.google.com/file/d/1TvnP5gbLL7CR6W7WF2VlyKvEtuMFH28u/view?usp=sharing", 
-            "id": 68, 
-            "lead": "https://drive.google.com/file/d/1nxSsNvftaifwWhzIEw8N79XS6X9u438F/view?usp=sharing", 
-            "name": "Rejoice the Lord is king"
-        }, 
-        {
             "chords": "https://drive.google.com/file/d/1hFxzKng3BrHowi_IcTYCYb9Y2LlToxkR/view?usp=sharing", 
             "id": 67, 
             "lead": "https://drive.google.com/file/d/1-7ACvHYXvFc9QCNqoCYKba04RLPbybQ7/view?usp=sharing", 
@@ -469,6 +449,34 @@
             "lead": "https://drive.google.com/file/d/1LlY9-U_sPPf2clYYO6Ex1pLWhM3uN57I/view?usp=sharing", 
             "lyrics": "https://docs.google.com/document/d/1n9RqBNrdoTidfTzEXfV_6-2aXOlgb9xl1J0MwTam3Nk/edit?usp=sharing", 
             "name": "Come People Of The Risen King"
+        }, 
+        {
+            "chords": "https://drive.google.com/file/d/1TvnP5gbLL7CR6W7WF2VlyKvEtuMFH28u/view?usp=sharing", 
+            "id": 68, 
+            "lead": "https://drive.google.com/file/d/1nxSsNvftaifwWhzIEw8N79XS6X9u438F/view?usp=sharing", 
+            "lyrics": "https://docs.google.com/document/d/1y9uT17tHL8g1jB5v1tqdn8Moj04Db1f_0R527in5BE8/edit?usp=sharing", 
+            "name": "Rejoice the Lord is king"
+        }, 
+        {
+            "chords": "https://docs.google.com/document/d/1D8K7b8QOqUDK4c1e35wh37LF8GZSYeJoE3LSt07Azao/edit?usp=sharing", 
+            "id": 66, 
+            "lead": "https://drive.google.com/file/d/1x0eFjTa7Gv-Vm3oXYQ8UhpzFiR37SdzZ/view?usp=sharing", 
+            "lyrics": "https://docs.google.com/document/d/1tF7P69ra3YtXHCUZexTnbrhEwErh7m6xiJWcj3a_XQo/edit?usp=sharing", 
+            "name": "Who is this man?"
+        }, 
+        {
+            "chords": "https://drive.google.com/file/d/1veZnOscA-7FtYvsYibtBtjySuxtKQ0im/view?usp=sharing", 
+            "id": 3, 
+            "lead": "https://drive.google.com/file/d/1dg7SX_SyaazUe6gYk9UsAImKcKIK2x1Q/view?usp=sharing", 
+            "lyrics": "https://docs.google.com/document/d/1QLR751U_yO-iyAiWW693qA-pHPjbpR7qOT9vfqzMTWQ/edit?usp=sharing", 
+            "name": "O Great God"
+        }, 
+        {
+            "chords": "https://drive.google.com/file/d/1oQRx850js3Blf08TLjE45p8PulU0Ns31/view?usp=sharing", 
+            "id": 69, 
+            "lead": "https://drive.google.com/file/d/1_n0AyfGihWZW4o4UHlNI-mo8AZvdrVjt/view?usp=sharing", 
+            "lyrics": "https://drive.google.com/file/d/1HWBx8YKgzMu0WyWUMJbSArD-znMX3VN7/view?usp=sharing", 
+            "name": "I will offer up my life"
         }
     ]
 }
