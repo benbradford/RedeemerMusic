@@ -1,42 +1,6 @@
 {
     "presentations": [
         {
-            "id": 9, 
-            "slides": [
-                [
-                    "Speak O Lord as we come to You", 
-                    "To receive the food of Your holy word", 
-                    "Take Your truth plant it deep in us", 
-                    "Shape and fashion us in Your likeness", 
-                    "That the light of Christ might be seen today", 
-                    "In our acts of love and our deeds of faith", 
-                    "Speak O Lord and fulfill in us", 
-                    "All Your purposes for Your glory"
-                ], 
-                [
-                    "Teach us Lord full obedience", 
-                    "Holy reverence true humility", 
-                    "Test our thoughts and our attitudes", 
-                    "In the radiance of Your purity", 
-                    "Cause our faith to rise", 
-                    "Cause our eyes to see", 
-                    "Your majestic love and authority", 
-                    "Words of power that can never fail", 
-                    "Let their truth prevail over unbelief"
-                ], 
-                [
-                    "Speak O Lord and renew our minds", 
-                    "Help us grasp the heights of Your plans for us", 
-                    "Truths unchanged from the dawn of time", 
-                    "That will echo down through eternity", 
-                    "And by grace we'll stand on Your promises", 
-                    "And by faith we'll walk as You walk with us", 
-                    "Speak O Lord till Your church is built", 
-                    "And the earth is filled with Your glory"
-                ]
-            ]
-        }, 
-        {
             "id": 2, 
             "slides": [
                 [
@@ -1197,61 +1161,6 @@
                     "Behold our King", 
                     "Nothing can compare", 
                     "Come let us adore Him"
-                ]
-            ]
-        }, 
-        {
-            "id": 60, 
-            "slides": [
-                [
-                    "Lo! He comes with clouds descending,", 
-                    "once for favoured sinners slain;", 
-                    "thousand thousand saints attending", 
-                    "hail the King who comes again.", 
-                    "Hallelujah!", 
-                    "Hallelujah!", 
-                    "Hallelujah!", 
-                    "God appears, on earth to reign."
-                ], 
-                [
-                    "Every eye shall now behold him,", 
-                    "robed in awesome majesty;", 
-                    "those who mocked, despised and sold him,", 
-                    "pierced and nailed him to the tree,", 
-                    "deeply mourning,", 
-                    "deeply mourning,", 
-                    "deeply mourning,", 
-                    "shall the true Messiah see."
-                ], 
-                [
-                    "Those deep wounds of cross and passion", 
-                    "still his dazzling body bears,", 
-                    "cause of endless exultation", 
-                    "to his ransomed worshippers:", 
-                    "with what wonder,", 
-                    "with what wonder,", 
-                    "with what wonder,", 
-                    "we shall see those glorious scars!"
-                ], 
-                [
-                    "Now redemption, long expected,", 
-                    "see with solemn joy appear:", 
-                    "saints, whose faith this world rejected,", 
-                    "meet their Saviour in the air.", 
-                    "Hallelujah!", 
-                    "Hallelujah!", 
-                    "Hallelujah!", 
-                    "See the day of God appear."
-                ], 
-                [
-                    "Yes, Amen! let all adore you", 
-                    "high on your eternal throne!", 
-                    "Saviour, take the power and glory,", 
-                    "claim the kingdom for your own.", 
-                    "Come, Lord Jesus!", 
-                    "Come, Lord Jesus!", 
-                    "Come, Lord Jesus!", 
-                    "Everlasting God, come down"
                 ]
             ]
         }, 
@@ -2628,42 +2537,6 @@
             ]
         }, 
         {
-            "id": 10, 
-            "slides": [
-                [
-                    "Speak O Lord as we come to You", 
-                    "To receive the food of Your holy word", 
-                    "Take Your truth plant it deep in us", 
-                    "Shape and fashion us in Your likeness", 
-                    "That the light of Christ might be seen today", 
-                    "In our acts of love and our deeds of faith", 
-                    "Speak O Lord and fulfill in us", 
-                    "All Your purposes for Your glory"
-                ], 
-                [
-                    "Teach us Lord full obedience", 
-                    "Holy reverence true humility", 
-                    "Test our thoughts and our attitudes", 
-                    "In the radiance of Your purity", 
-                    "Cause our faith to rise", 
-                    "Cause our eyes to see", 
-                    "Your majestic love and authority", 
-                    "Words of power that can never fail", 
-                    "Let their truth prevail over unbelief"
-                ], 
-                [
-                    "Speak O Lord and renew our minds", 
-                    "Help us grasp the heights of Your plans for us", 
-                    "Truths unchanged from the dawn of time", 
-                    "That will echo down through eternity", 
-                    "And by grace we'll stand on Your promises", 
-                    "And by faith we'll walk as You walk with us", 
-                    "Speak O Lord till Your church is built", 
-                    "And the earth is filled with Your glory"
-                ]
-            ]
-        }, 
-        {
             "id": 62, 
             "slides": [
                 [
@@ -3279,6 +3152,235 @@
                     "Oh my words could not tell not even in part", 
                     "Of the debt of love that is owed", 
                     "By this thankful heart"
+                ]
+            ]
+        }, 
+        {
+            "id": 60, 
+            "slides": [
+                [
+                    "Lo! He comes with clouds descending,", 
+                    "once for favoured sinners slain;", 
+                    "thousand thousand saints attending", 
+                    "hail the King who comes again.", 
+                    "Hallelujah!", 
+                    "Hallelujah!", 
+                    "Hallelujah!", 
+                    "God appears, on earth to reign."
+                ], 
+                [
+                    "Every eye shall now behold him,", 
+                    "robed in awesome majesty;", 
+                    "those who mocked, despised and sold him,", 
+                    "pierced and nailed him to the tree,", 
+                    "deeply mourning,", 
+                    "deeply mourning,", 
+                    "deeply mourning,", 
+                    "shall the true Messiah see."
+                ], 
+                [
+                    "Those deep wounds of cross and passion", 
+                    "still his dazzling body bears,", 
+                    "cause of endless exultation", 
+                    "to his ransomed worshippers:", 
+                    "with what wonder,", 
+                    "with what wonder,", 
+                    "with what wonder,", 
+                    "we shall see those glorious scars!"
+                ], 
+                [
+                    "Now redemption, long expected,", 
+                    "see with solemn joy appear:", 
+                    "saints, whose faith this world rejected,", 
+                    "meet their Saviour in the air.", 
+                    "Hallelujah!", 
+                    "Hallelujah!", 
+                    "Hallelujah!", 
+                    "See the day of God appear."
+                ], 
+                [
+                    "Yes, Amen! let all adore you", 
+                    "high on your eternal throne!", 
+                    "Saviour, take the power and glory,", 
+                    "claim the kingdom for your own.", 
+                    "Come, Lord Jesus!", 
+                    "Come, Lord Jesus!", 
+                    "Come, Lord Jesus!", 
+                    "Everlasting God, come down"
+                ]
+            ]
+        }, 
+        {
+            "id": 9, 
+            "slides": [
+                [
+                    "When I survey the wondrous cross", 
+                    "on which the Prince of glory died,", 
+                    "my richest gain I count but loss,", 
+                    "and pour contempt on all my pride"
+                ], 
+                [
+                    "Forbid it, Lord, that I should boast", 
+                    "save in the death of Christ my God;", 
+                    "all the vain things that charm me most \u2013", 
+                    "I sacrifice them to his blood."
+                ], 
+                [
+                    "See from his head, his hands, his feet,", 
+                    "sorrow and love flow mingled down:", 
+                    "did ever such love and sorrow meet,", 
+                    "or thorns compose so rich a crown?"
+                ], 
+                [
+                    "His lifeblood, like a crimson robe,", 
+                    "clothes all his body on the tree:", 
+                    "then I am dead to all the world,", 
+                    "and all the world is dead to me!"
+                ], 
+                [
+                    "Were the whole realm of nature mine,", 
+                    "that were an offering far too small;", 
+                    "love so amazing, so divine,", 
+                    "demands my soul, my life, my all!"
+                ]
+            ]
+        }, 
+        {
+            "id": 70, 
+            "slides": [
+                [
+                    "Lord I lift Your name on high", 
+                    "Lord I love to sing Your praises", 
+                    "I'm so glad You're in my life", 
+                    "I'm so glad You came to save us"
+                ], 
+                [
+                    "You came from heaven to earth", 
+                    "To show the way", 
+                    "From the earth to the cross", 
+                    "My debt to pay", 
+                    "From the cross to the grave", 
+                    "From the grave to the sky", 
+                    "Lord I lift Your name on high"
+                ], 
+                [
+                    "Lord I lift Your name on high", 
+                    "Lord I love to sing Your praises", 
+                    "I'm so glad You're in my life", 
+                    "I'm so glad You came to save us"
+                ], 
+                [
+                    "You came from heaven to earth", 
+                    "To show the way", 
+                    "From the earth to the cross", 
+                    "My debt to pay", 
+                    "From the cross to the grave", 
+                    "From the grave to the sky", 
+                    "Lord I lift Your name on high"
+                ]
+            ]
+        }, 
+        {
+            "id": 71, 
+            "slides": [
+                [
+                    "O church arise and put your armour on", 
+                    "Hear the call of Christ our Captain", 
+                    "For now the weak can say that they are strong", 
+                    "In the strength that God has given", 
+                    "With shield of faith and belt of truth", 
+                    "We'll stand against the devil's lies", 
+                    "An army bold whose battle cry is Love", 
+                    "Reaching out to those in darkness"
+                ], 
+                [
+                    "Our call to war to love the captive soul", 
+                    "But to rage against the captor", 
+                    "And with the sword that makes the wounded whole", 
+                    "We will fight with faith and valour", 
+                    "When faced with trials on every side", 
+                    "We know the outcome is secure", 
+                    "And Christ will have the prize for which He died", 
+                    "An inheritance of nations"
+                ], 
+                [
+                    "Come see the cross where love and mercy meet", 
+                    "As the Son of God is stricken", 
+                    "Then see His foes lie crushed beneath His feet", 
+                    "For the Conqueror has risen", 
+                    "And as the stone is rolled away", 
+                    "And Christ emerges from the grave", 
+                    "This victory march continues till the day", 
+                    "Every eye and heart shall see Him"
+                ], 
+                [
+                    "So Spirit come put strength in every stride", 
+                    "Give grace for every hurdle", 
+                    "That we may run with faith to win the prize", 
+                    "Of a servant good and faithful", 
+                    "As saints of old still line the way", 
+                    "Retelling triumphs of His grace", 
+                    "We hear their calls and hunger for the day", 
+                    "When with Christ we stand in glory"
+                ]
+            ]
+        }, 
+        {
+            "id": 10, 
+            "slides": [
+                [
+                    "What is our hope in life and death?", 
+                    "Christ alone Christ alone", 
+                    "What is our only confidence?", 
+                    "That our souls to Him belong", 
+                    "Who holds our days within His hand?", 
+                    "What comes apart from His command?", 
+                    "And what will keep us to the end?", 
+                    "The love of Christ in which we stand"
+                ], 
+                [
+                    "O sing hallelujah!", 
+                    "Our hope springs eternal", 
+                    "O sing hallelujah!", 
+                    "Now and ever we confess", 
+                    "Christ our hope in life and death", 
+                    ""
+                ], 
+                [
+                    "What truth can calm the troubled soul?", 
+                    "God is good God is good", 
+                    "Where is His grace and goodness known?", 
+                    "In our great Redeemer's blood", 
+                    "Who holds our faith when fears arise?", 
+                    "Who stands above the stormy trial?", 
+                    "Who sends the waves that bring us nigh?", 
+                    "Unto the shore the rock of Christ"
+                ], 
+                [
+                    "O sing hallelujah!", 
+                    "Our hope springs eternal", 
+                    "O sing hallelujah!", 
+                    "Now and ever we confess", 
+                    "Christ our hope in life and death"
+                ], 
+                [
+                    "Unto the grave what will we sing?", 
+                    "Christ He lives! Christ He lives!", 
+                    "And what reward will heaven bring?", 
+                    "Everlasting life with Him", 
+                    "There we will rise to meet the Lord", 
+                    "Then sin and death will be destroyed", 
+                    "And we will feast in endless joy", 
+                    "When Christ is ours forevermore"
+                ], 
+                [
+                    "O sing hallelujah!", 
+                    "Our hope springs eternal", 
+                    "O sing hallelujah!", 
+                    "Now and ever we confess", 
+                    "Christ our hope in life and death", 
+                    "Now and ever we confess", 
+                    "Christ our hope in life and death"
                 ]
             ]
         }
