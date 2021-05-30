@@ -522,6 +522,40 @@
                 24, 
                 71
             ]
+        }, 
+        {
+            "band": [
+                "BenB_Guitar_Vox", 
+                "Emma_Vox"
+            ], 
+            "date": "Sunday 23rd May", 
+            "extra": "", 
+            "id": 32, 
+            "lead": "Ben B", 
+            "songs": [
+                63, 
+                56, 
+                52, 
+                72, 
+                71
+            ]
+        }, 
+        {
+            "band": [
+                "BenB_Guitar_Vox", 
+                "Emma_Vox"
+            ], 
+            "date": "Sunday 30th May", 
+            "extra": "", 
+            "id": 33, 
+            "lead": "Ben B", 
+            "songs": [
+                74, 
+                73, 
+                66, 
+                61, 
+                10
+            ]
         }
     ]
 }

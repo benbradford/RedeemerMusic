@@ -24,6 +24,11 @@
          "id":"Ben_A_Guitar",
          "name": "Ben A",
          "instrument": "Guitar"
+      },
+      {
+         "id":"Chris_Guitar",
+         "name": "Chris",
+         "instrument": "Guitar"
       }
    ]
 }
