@@ -556,6 +556,23 @@
                 61, 
                 10
             ]
+        }, 
+        {
+            "band": [
+                "BenB_Guitar_Vox", 
+                "Ellie_Vox"
+            ], 
+            "date": "Sunday 6th June", 
+            "extra": "", 
+            "id": 34, 
+            "lead": "Ben B", 
+            "songs": [
+                17, 
+                0, 
+                52, 
+                49, 
+                74
+            ]
         }
     ]
 }

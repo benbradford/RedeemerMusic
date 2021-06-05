@@ -293,13 +293,6 @@
             "name": "My God is so big"
         }, 
         {
-            "chords": "https://drive.google.com/file/d/1-X-zlnVhXLoZ4jtdJVj_DBBXJw1xJFt1/view?usp=sharing", 
-            "id": 49, 
-            "lead": "https://drive.google.com/file/d/1iuK92IwSpYYMbcnrytbyFOqk_Qc3i517/view?usp=sharing", 
-            "lyrics": "https://drive.google.com/file/d/16ySjYf_ciiCpp_OrATeF3u8UQbo3MUo7/view?usp=sharing", 
-            "name": "I stand amazed in the presence"
-        }, 
-        {
             "chords": "https://drive.google.com/file/d/1mmhAIPRrdXkylHrj5xDfWiPZ6L-Lpbtg/view?usp=sharing", 
             "id": 51, 
             "lead": "https://drive.google.com/file/d/1KI01gxeislEWnxx8wDoPbJVJQGgVMQbo/view?usp=sharing", 
@@ -513,6 +506,13 @@
             "lead": "https://drive.google.com/file/d/1nWuFnTrifFrbR3ewP-_yEjmXYwFrDSrH/view?usp=sharing", 
             "lyrics": "https://docs.google.com/document/d/1JxZaw2Pge-1L1juiXBS1BmeZdKU9ols_Cxxs3W0E1XQ/edit?usp=sharing", 
             "name": "Christ our hope in life and death"
+        }, 
+        {
+            "chords": "https://docs.google.com/document/d/1VmH1Tb2TZiCU7OzMilJL4uJT1kNjO-xJtPe6CkbrHtA/edit?usp=sharing", 
+            "id": 49, 
+            "lead": "https://drive.google.com/file/d/1iuK92IwSpYYMbcnrytbyFOqk_Qc3i517/view?usp=sharing", 
+            "lyrics": "https://drive.google.com/file/d/16ySjYf_ciiCpp_OrATeF3u8UQbo3MUo7/view?usp=sharing", 
+            "name": "I stand amazed in the presence"
         }
     ]
 }
