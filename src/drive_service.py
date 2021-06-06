@@ -48,7 +48,6 @@ class DriveService:
             print("[WARN] Cannot find " + type + " for " + song)
 
     def _get_file_id(self, song, type):
-        # Call the Drive v3 API
         results = self._service.files().list(
             pageSize=10,
             fields="nextPageToken, files(id, name)",

@@ -5,6 +5,7 @@ import os
 
 from drive_service import DriveService
 from sheets_service import SheetsService
+from gmail_service import GmailService
 from powerpoint import PowerpointCreator
 
 from googleapiclient.discovery import build
@@ -14,6 +15,7 @@ from flask_cors import CORS
 
 driveService = DriveService()
 sheetsService = SheetsService()
+gmailService = GmailService()
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -74,6 +76,11 @@ def add_service_api():
     if new_service is None:
         return "Error: no json body supplied"
     sheetsService.add_service(new_service)
+    return "ok"
+
+@app.route('/mail', methods=['GET'])
+def send_mail_api():
+    gmailService.send()
     return "ok"
 
 app.run()
