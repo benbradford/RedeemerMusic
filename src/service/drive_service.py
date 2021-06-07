@@ -14,8 +14,8 @@ folder_ids = {
 
 class DriveService:
 
-    def __init__(self):
-        self._service = build('drive', 'v3', credentials=get_credentials())
+    def __init__(self, creds):
+        self._service = build('drive', 'v3', credentials=creds)
 
     def get_service(self):
         return self._service

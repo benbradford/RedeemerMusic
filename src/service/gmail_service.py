@@ -10,8 +10,8 @@ from credentials import get_credentials
 
 class GmailService:
 
-    def __init__(self):
-        self._service = build('gmail', 'v1', credentials=get_credentials())
+    def __init__(self, creds):
+        self._service = build('gmail', 'v1', credentials=creds)
 
     def send(self, subject, body, recipients):
         email_output = body

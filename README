@@ -1,3 +1,3 @@
 api for redeemer_web project.
 
-`python api.py` to deploy
+`python app.py` to deploy

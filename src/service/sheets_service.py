@@ -7,8 +7,8 @@ sheets_id = '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY'
 
 class SheetsService:
 
-    def __init__(self):
-        self._service = build('sheets', 'v4', credentials=get_credentials())
+    def __init__(self, creds):
+        self._service = build('sheets', 'v4', credentials=creds)
         self._sheets = self._service.spreadsheets()
         self._headings = self._get_headings()
 
