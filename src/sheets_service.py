@@ -31,7 +31,10 @@ class SheetsService:
             for row in values:
                 service = {}
                 for j in range(0, len(self._headings)):
-                    service[self._headings[j]] = row[j]
+                    try:
+                        service[self._headings[j]] = row[j]
+                    except:
+                        pass
                 services.append(service)
 
         return services

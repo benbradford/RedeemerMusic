@@ -13,12 +13,12 @@ class GmailService:
     def __init__(self):
         self._service = build('gmail', 'v1', credentials=get_credentials())
 
-    def send(self):
-        email_output = "<html> <body>Here is the message <B> in html </B> </body></html>"
+    def send(self, subject, body, recipients):
+        email_output = body
         message = MIMEMultipart()
         message.attach(MIMEText(email_output, "html"))
-        message['to'] = "ben.bradford80@gmail.com"
+        message['to'] = recipients
         message['from'] = base64.urlsafe_b64encode("ben.bradford80@gmail.com")
-        message['subject'] = 'Test Email'
+        message['subject'] = subject
         raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
         return self._service.users().messages().send(userId='me', body=raw_message).execute()

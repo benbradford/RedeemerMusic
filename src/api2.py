@@ -7,6 +7,7 @@ from sheets_service import SheetsService
 from gmail_service import GmailService
 from powerpoint import PowerpointCreator
 from songs_retriever import SongsRetriever
+from email_creator import EmailCreator
 
 from googleapiclient.discovery import build
 
@@ -16,24 +17,23 @@ from flask_cors import CORS
 songsRetriever = SongsRetriever()
 sheetsService = SheetsService()
 gmailService = GmailService()
+emailCreator = EmailCreator()
 
 app = flask.Flask(__name__)
 CORS(app)
 app.config["DEBUG"] = True
 
-def _extract_song_param():
-    if 'song' in request.args:
-        return request.args['song']
+def _extract_required_param(name):
+    if name in request.args:
+        return request.args[name]
     else:
-        print "Error: No song field provided"
-        raise "<song> is missing"
+        raise "Error: Missing required parameters " + name
 
-def _extract_service_param():
-    if 'service' in request.args:
-        return request.args['service']
+def _extract_optional_param(name, default):
+    if name in request.args:
+        return request.args[name]
     else:
-        print "Error: No service field provided"
-        raise "<service> is missing"
+        return default
 
 @app.route('/health', methods=['GET'])
 def home():
@@ -65,7 +65,7 @@ def songs_api():
 
 @app.route('/song', methods=['GET'])
 def song_api():
-    song_name = _extract_song_param()
+    song_name = _extract_required_param('name')
     file_ids = songsRetriever.get_song(song_name)
     return jsonify(file_ids)
 
@@ -78,11 +78,24 @@ def services_api():
 
 @app.route('/service', methods=['GET'])
 def service_api():
-    service_id = _extract_service_param()
-    res = sheetsService.get_service(service_id)
-    if res is None:
+    service_id = _extract_required_param('id')
+    service = sheetsService.get_service(service_id)
+    if service is None:
         return {}
-    return jsonify(res)
+    recipients = _extract_optional_param('recipients', "ben.bradford80@gmail.com")
+    #'ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com'
+    return emailCreator.preview(service, recipients)
+
+@app.route('/send_music_email', methods=['GET'])
+def send_music_email_api():
+    service_id = _extract_required_param('id')
+    service = sheetsService.get_service(service_id)
+    if service is None:
+        return {}
+    body = emailCreator.body(service)
+    subject = emailCreator.subject(service)
+    gmailService.send(subject, body, "ben.bradford80@gmail.com")
+    return "ok"
 
 # curl -X POST -d'{"band1": "BenB_Guitar","band2": "Emma_Vox","band3": "","band4": "","band5": "","date": "Sunday 1st November","id": "2","lead": "Ben B","message": "","song1": "6","song2": "3","song3": "7","song4": "8","song5": "9","song6": "10"}' localhost:5000/service
 @app.route('/service', methods=['POST'])
@@ -91,11 +104,6 @@ def add_service_api():
     if new_service is None:
         return "Error: no json body supplied"
     sheetsService.add_service(new_service)
-    return "ok"
-
-@app.route('/mail', methods=['GET'])
-def send_mail_api():
-    gmailService.send()
     return "ok"
 
 app.run()

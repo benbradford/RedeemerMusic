@@ -24,7 +24,8 @@ class DriveService:
     def get_service(self):
         return self._service
 
-    def list_files(self, folder_id):
+    def list_files(self, component):
+        folder_id = folder_ids[component]
         items = []
         page_token = None
         while True:
@@ -48,14 +49,14 @@ class DriveService:
 
 
     def get_file_id(self, song, component):
+        folder_id = folder_ids[component]
         song_name = song['name'] + " (" + component + ")"
-        print "looking for " + song_name
         results = self._service.files().list(
             pageSize=100,
             fields="nextPageToken, files(id, name)",
             includeItemsFromAllDrives=True,
             supportsAllDrives=True,
-            q="name contains '" + song_name + "'"
+            q="name contains '" + song_name + "' and '" + folder_id + "' in parents"
         ).execute()
         items = results.get('files', [])
         return items[0]['id']
