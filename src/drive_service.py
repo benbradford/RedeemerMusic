@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import io
 
 import tika
@@ -11,49 +9,79 @@ from googleapiclient.http import MediaIoBaseDownload
 
 from credentials import get_credentials
 
+folder_ids = {
+    'lyrics': '1A0u-Fixg4uEjipe8ZL7rWoPg7E86cS5b',
+    'chords': '13G13PpGFPeSmMI6YEjXiBwi7VYVYQMm8',
+    'lead': '1PnliQdA9zmuu2s0n9PAzFbzz1JfLb6Hv',
+    'slides': '10_hTK6keFv1gWx-OkFuImuDtqFU8PVRN'
+}
+
 class DriveService:
 
     def __init__(self):
         self._service = build('drive', 'v3', credentials=get_credentials())
 
-    def get_file_ids(self, song):
-        file_ids = {}
-        self._add_file_details(file_ids, song, 'lyrics')
-        self._add_file_details(file_ids, song, 'chords')
-        self._add_file_details(file_ids, song, 'lead')
-        self._add_file_details(file_ids, song, 'slides')
-        return file_ids
+    def get_service(self):
+        return self._service
 
-    def create_slides_file(self, song):
-        file_id = self._get_file_id(song, 'slides')
-        request = self._service.files().export_media(fileId=file_id, mimeType='application/vnd.oasis.opendocument.text')
-        fh = io.FileIO('../bin/slides.doc', mode='wb')
-        downloader = MediaIoBaseDownload(fh, request)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
+    def list_files(self, folder_id):
+        items = []
+        page_token = None
+        while True:
+            param = {}
+            if page_token:
+                param['pageToken'] = page_token
+            param['q'] = "'" + folder_id + "' in parents"
+            param['pageSize']=10
+            param['fields']="nextPageToken, files(id, name)"
+            param['includeItemsFromAllDrives']=True
+            param['supportsAllDrives']=True
+            files = self._service.files().list(
+                **param
+            ).execute()
 
-        parsed = parser.from_file('../bin/slides.doc')
+            items.extend(files.get('files', []))
 
-        f = open("../bin/" + song + ".txt", "w")
-        slides = parsed["content"].replace(u"\u2018", "'").replace(u"\u2019", "'")
-        f.write(slides)
-        f.close()
+            page_token = files.get('nextPageToken')
+            if not page_token:
+                return items
 
-    def _add_file_details(self, file_ids, song, type):
-        try:
-            id = self._get_file_id(song, type)
-            file_ids[type] = id
-        except:
-            print("[WARN] Cannot find " + type + " for " + song)
 
-    def _get_file_id(self, song, type):
+    def get_file_id(self, song, component):
+        song_name = song['name'] + " (" + component + ")"
+        print "looking for " + song_name
         results = self._service.files().list(
-            pageSize=10,
+            pageSize=100,
             fields="nextPageToken, files(id, name)",
             includeItemsFromAllDrives=True,
             supportsAllDrives=True,
-            q="name contains '" + song + " (" + type + ")'"
+            q="name contains '" + song_name + "'"
         ).execute()
         items = results.get('files', [])
         return items[0]['id']
+
+    def upload_slide_file(self, filename):
+        file_metadata = {
+            'name': filename,
+            'parents': [folder_ids['slides']]
+        }
+        upload = MediaFileUpload(filename, mimetype='text/plain' )
+        file = self._service.files().create(
+            body=file_metadata,
+            media_body=upload,
+            fields='id',
+            supportsAllDrives=True
+        ).execute()
+
+    def download_slide(self, song, outfile):
+        request = self._service.files().get_media(
+            fileId=song['slides']['file_id'],
+            supportsAllDrives=True
+        )
+        fh = io.FileIO(outfile, mode='wb')
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        print "Downloading slides for " + song['name']
+        while done is False:
+            status, done = downloader.next_chunk()
+            print "Download %d%%." % int(status.progress() * 100)
