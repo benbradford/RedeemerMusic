@@ -1,9 +1,5 @@
 import io
 
-import tika
-tika.initVM()
-from tika import parser
-
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 
@@ -48,15 +44,15 @@ class DriveService:
                 return items
 
 
-    def get_file_id(self, song, component):
+    def get_file_id(self, song_name, component):
         folder_id = folder_ids[component]
-        song_name = song['name'] + " (" + component + ")"
+        song_file_name = song_name + " (" + component + ")"
         results = self._service.files().list(
             pageSize=100,
             fields="nextPageToken, files(id, name)",
             includeItemsFromAllDrives=True,
             supportsAllDrives=True,
-            q="name contains '" + song_name + "' and '" + folder_id + "' in parents"
+            q="name contains '" + song_file_name + "' and '" + folder_id + "' in parents"
         ).execute()
         items = results.get('files', [])
         return items[0]['id']
@@ -74,15 +70,14 @@ class DriveService:
             supportsAllDrives=True
         ).execute()
 
-    def download_slide(self, song, outfile):
+    def download_slide(self, file_id, outfile):
         request = self._service.files().get_media(
-            fileId=song['slides']['file_id'],
+            fileId=file_id,
             supportsAllDrives=True
         )
         fh = io.FileIO(outfile, mode='wb')
         downloader = MediaIoBaseDownload(fh, request)
         done = False
-        print "Downloading slides for " + song['name']
         while done is False:
             status, done = downloader.next_chunk()
             print "Download %d%%." % int(status.progress() * 100)

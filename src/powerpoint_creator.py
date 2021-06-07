@@ -4,20 +4,40 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 import json
 
-class PowerpointCreator:
-    def __init__(self, songs, out_file):
-        self._out_file = out_file
-        self._songs = songs
+import tika
+tika.initVM()
+from tika import parser
 
-    def create(self):
+class PowerpointCreator:
+    def __init__(self, drive_service):
+        self._drive_service = drive_service
+
+    def create(self, service, out_file):
+        song_files = self._download_song_files(service)
         presentation = self._create_empty_presentation()
 
-        for song in self._songs:
-            self._add_slides_for_song(presentation, song)
+        for song_file in song_files:
+            self._add_slides_for_song(presentation, song_file)
             self._add_blank_page(presentation)
 
-        presentation.save(self._out_file)
-        return self._out_file
+        presentation.save(out_file)
+        return out_file
+
+    def _download_song_files(self, service):
+        song_files = []
+        for index in [1,2,3,4,5, 6]:
+            song_key = "song" + str(index)
+            if song_key in service and service[song_key] != "":
+                song_file = "../bin/" + service[song_key] + ".txt"
+                file_id = self._drive_service.get_file_id(service[song_key], 'slides')
+                self._drive_service.download_slide(file_id, song_file)
+                parsed = parser.from_file(song_file)
+                f = open(song_file, "w")
+                slides = parsed["content"].replace(u"\u2018", "'").replace(u"\u2019", "'")
+                f.write(slides)
+                f.close()
+                song_files.append(song_file)
+        return song_files
 
     def _create_empty_presentation(self):
         empty = Presentation()
@@ -25,12 +45,12 @@ class PowerpointCreator:
         blank_slide_layout = empty.slide_layouts[6]
         return empty
 
-    def _add_slides_for_song(self, presentation, song):
-        paginated_lyrics = self._paginate_lyrics(song)
+    def _add_slides_for_song(self, presentation, song_file):
+        paginated_lyrics = self._paginate_lyrics(song_file)
         num_slides_with_lyrics = len(paginated_lyrics)
 
         for i in range(num_slides_with_lyrics):
-            self._assemble_page(paginated_lyrics[i], presentation, i == num_slides_with_lyrics-1, song)
+            self._assemble_page(paginated_lyrics[i], presentation, i == num_slides_with_lyrics-1, song_file)
 
     def _assemble_page(self, lyrics_on_page, presentation, is_last_slide, song):
         num_lines = lyrics_on_page.count('\n') + 1
@@ -43,10 +63,10 @@ class PowerpointCreator:
     def _add_blank_page(self, presentation):
         self._create_slide(presentation)
 
-    def _paginate_lyrics(self, song):
+    def _paginate_lyrics(self, song_file):
         # '\n' denotes a line seperator
         paginated_lyrics = []
-        file = open("../bin/" + song + ".txt", "r")
+        file = open(song_file, "r")
 
         next_line = file.readline()
         while next_line != '':
@@ -85,7 +105,7 @@ class PowerpointCreator:
 
     def _add_lyrics_to_paragraph(self, p, lyrics):
         p.text = lyrics
-        p.font.size = Pt(40)
+        p.font.size = Pt(54)
         p.font.color.rgb = RGBColor(255, 255, 255)
         p.alignment = PP_ALIGN.CENTER
 

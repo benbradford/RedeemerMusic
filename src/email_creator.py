@@ -1,12 +1,10 @@
-from songs_retriever import SongsRetriever
-
 EMAIL_COMPONENTS = ['lyrics', 'chords', 'lead']
 
 class EmailCreator:
-    def __init__(self):
+    def __init__(self, songs_retriever):
         self._template = open('../res/email_template.html', "r").read()
         self._confirmation_template = open('../res/email_send_confirmation_template.html' ,"r").read()
-        self._songsRetriever = SongsRetriever()
+        self._songsRetriever = songs_retriever
         self._components = ['lyrics', 'chords', 'lead']
 
     def body(self, service):

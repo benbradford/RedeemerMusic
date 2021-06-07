@@ -5,7 +5,7 @@ import os
 
 from sheets_service import SheetsService
 from gmail_service import GmailService
-from powerpoint import PowerpointCreator
+from powerpoint_creator import PowerpointCreator
 from songs_retriever import SongsRetriever
 from email_creator import EmailCreator
 
@@ -14,10 +14,14 @@ from googleapiclient.discovery import build
 from flask import request, jsonify, send_file
 from flask_cors import CORS
 
-songsRetriever = SongsRetriever()
+from drive_service import DriveService
+
+drive_service = DriveService()
+songsRetriever = SongsRetriever(drive_service)
 sheetsService = SheetsService()
 gmailService = GmailService()
-emailCreator = EmailCreator()
+emailCreator = EmailCreator(songsRetriever)
+powerpointCreator = PowerpointCreator(drive_service)
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -39,24 +43,12 @@ def _extract_optional_param(name, default):
 def home():
     return "okidoki"
 
-#@app.route('/slides', methods=['GET'])
-#def slides_api():
-#    song_name = _extract_song_param()
-#    song = get_song(song_name)
-#    outfile = '../bin/' + song['name'] + ' (slides).txt'
-#    file_id = song['file_ids']['slides']
-#    self.download_slide(file_id, out_file)
-#    parsed = parser.from_file(out_file)
-
-#    f = open("../bin/" + song + ".txt", "w")
-#    slides = parsed["content"].replace(u"\u2018", "'").replace(u"\u2019", "'")
-##    f.write(slides)
- ##   f.close()
-#  #  driveService.create_slides_file(song)
-#   # songs = [song_name]
-#    #ppc = PowerpointCreator(songs, '../bin/slides.pptx')
-#    ppc.create()
-#    return "ok"
+@app.route('/slides', methods=['GET'])
+def slides_api():
+    service_id = _extract_required_param('id')
+    service = sheetsService.get_service(service_id)
+    powerpointCreator.create(service, '../bin/powerpoint.pptx')
+    return "ok"
 
 @app.route('/songs', methods=['GET'])
 def songs_api():

@@ -1,12 +1,10 @@
 
-from drive_service import DriveService
-
 COMPONENTS = ['lyrics', 'chords', 'lead', 'slides']
 
 class SongsRetriever:
 
-    def __init__(self):
-        self._drive_service = DriveService()
+    def __init__(self, drive_service):
+        self._drive_service = drive_service
 
     def get_song(self, name, components = COMPONENTS):
         song = {}
@@ -14,7 +12,7 @@ class SongsRetriever:
         song['file_ids'] = {}
         for component in components:
             try:
-                id = self._drive_service.get_file_id(song, component)
+                id = self._drive_service.get_file_id(song['name'], component)
                 song['file_ids'][component] = id
             except:
                 print("[WARN] Cannot find " + component + " for " + song['name'])
