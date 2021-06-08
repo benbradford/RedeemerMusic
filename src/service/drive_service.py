@@ -2,6 +2,7 @@ import io
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
+from googleapiclient.http import MediaFileUpload
 
 from credentials import get_credentials
 
