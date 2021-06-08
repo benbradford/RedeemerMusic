@@ -1,24 +1,21 @@
 EMAIL_COMPONENTS = ['lyrics', 'chords', 'lead']
 
-class EmailCreator:
+class EmailView:
     def __init__(self, songs_retriever):
         self._template = open('../res/email_template.html', "r").read()
         self._confirmation_template = open('../res/email_send_confirmation_template.html' ,"r").read()
         self._songsRetriever = songs_retriever
         self._components = ['lyrics', 'chords', 'lead']
 
-    def body(self, service):
+    def render(self, service):
         return self._main_section(service)\
             .replace("_PUBLISH_BUTTON_", "")
 
-    def preview(self, service, recipients):
+    def render_with_prompt(self, service, recipients):
         return self._main_section(service)\
             .replace("_PUBLISH_BUTTON_", self._confirmation_template)\
             .replace("_SERVICE_", service['id'])\
             .replace("_RECIPIENTS_", recipients)
-
-    def subject(self, service):
-        return "Redeemer Music for " + service['date']
 
     def _main_section(self, service):
         return self._template\

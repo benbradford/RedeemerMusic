@@ -1,10 +1,10 @@
 
 
-class ServicePicker:
+class ServicesView:
     def __init__(self):
         self._template = open('../res/services_select.html', "r").read()
 
-    def display(self, services):
+    def render(self, services):
         return self._template.replace("_SERVICES_", self._display_options(services))
 
     def _display_options(self, services):

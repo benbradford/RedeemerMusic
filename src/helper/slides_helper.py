@@ -4,11 +4,11 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 import json
 
-class PowerpointCreator:
+class SlidesHelper:
     def __init__(self, drive_service):
         self._drive_service = drive_service
 
-    def create(self, service, out_file):
+    def create_powerpoint(self, service, out_file):
         song_files = self._download_song_files(service)
         presentation = self._create_empty_presentation()
 
@@ -19,6 +19,18 @@ class PowerpointCreator:
         presentation.save(out_file)
         return out_file
 
+    def paginate_lyrics(self, song_file):
+        # '\n' denotes a line seperator
+        paginated_lyrics = []
+        file = open(song_file, "r")
+
+        next_line = file.readline()
+        while next_line != '':
+            self._append_lyrics_block(next_line, file, paginated_lyrics)
+            next_line = self._skip_blank_lines(file)
+
+        return paginated_lyrics
+
     def _download_song_files(self, service):
         song_files = []
         for index in [1,2,3,4,5, 6]:
@@ -27,11 +39,6 @@ class PowerpointCreator:
                 song_file = "../bin/" + service[song_key] + ".txt"
                 file_id = self._drive_service.get_file_id(service[song_key], 'slides')
                 self._drive_service.download_slide(file_id, song_file)
-                #parsed = parser.from_file(song_file)
-                #f = open(song_file, "w")
-                #slides = parsed["content"].replace(u"\u2018", "'").replace(u"\u2019", "'")
-                #f.write(slides)
-                #f.close()
                 song_files.append(song_file)
         return song_files
 
@@ -58,18 +65,6 @@ class PowerpointCreator:
 
     def _add_blank_page(self, presentation):
         self._create_slide(presentation)
-
-    def _paginate_lyrics(self, song_file):
-        # '\n' denotes a line seperator
-        paginated_lyrics = []
-        file = open(song_file, "r")
-
-        next_line = file.readline()
-        while next_line != '':
-            self._append_lyrics_block(next_line, file, paginated_lyrics)
-            next_line = self._skip_blank_lines(file)
-
-        return paginated_lyrics
 
     def _append_lyrics_block(self, accumulated, file, paginated_lyrics):
         next = file.readline()
