@@ -4,10 +4,6 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 import json
 
-import tika
-tika.initVM()
-from tika import parser
-
 class PowerpointCreator:
     def __init__(self, drive_service):
         self._drive_service = drive_service
@@ -31,11 +27,11 @@ class PowerpointCreator:
                 song_file = "../bin/" + service[song_key] + ".txt"
                 file_id = self._drive_service.get_file_id(service[song_key], 'slides')
                 self._drive_service.download_slide(file_id, song_file)
-                parsed = parser.from_file(song_file)
-                f = open(song_file, "w")
-                slides = parsed["content"].replace(u"\u2018", "'").replace(u"\u2019", "'")
-                f.write(slides)
-                f.close()
+                #parsed = parser.from_file(song_file)
+                #f = open(song_file, "w")
+                #slides = parsed["content"].replace(u"\u2018", "'").replace(u"\u2019", "'")
+                #f.write(slides)
+                #f.close()
                 song_files.append(song_file)
         return song_files
 

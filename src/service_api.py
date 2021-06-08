@@ -7,7 +7,7 @@ from api_common import app, extract_required_param, extract_optional_param, extr
 from service.service_factory import get_service_factory
 from helper.helper_factory import get_helper_factory
 
-from helper.service_picker import ServicePicker
+from display.service_picker import ServicePicker
 
 powerpoint_creator = get_helper_factory().get_powerpoint_creator()
 sheets_service = get_service_factory().get_sheets_service()
