@@ -1,5 +1,6 @@
 from api_common import app
 
+from view.view_base import ViewBase
 import songs_api
 import service_api
 
@@ -9,6 +10,6 @@ def home():
 
 @app.route('/', methods=['GET'])
 def index():
-    return open('../res/index.html', "r").read()
+    return ViewBase().render(open('../res/index.html', "r").read())
 
 app.run()

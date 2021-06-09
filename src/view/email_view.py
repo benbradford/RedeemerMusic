@@ -1,4 +1,4 @@
-EMAIL_COMPONENTS = ['lyrics', 'chords', 'lead']
+from view_base import ViewBase
 
 class EmailView:
     def __init__(self, songs_retriever):
@@ -8,8 +8,8 @@ class EmailView:
         self._components = ['lyrics', 'chords', 'lead']
 
     def render(self, service):
-        return self._main_section(service)\
-            .replace("_PUBLISH_BUTTON_", "")
+        return ViewBase().render(self._main_section(service)\
+            .replace("_PUBLISH_BUTTON_", ""))
 
     def render_with_prompt(self, service, recipients):
         return self._main_section(service)\
@@ -39,7 +39,7 @@ class EmailView:
 
     def _get_song(self, service, song_key):
         output = '<li>{} -'.format(service[song_key])
-        file_ids = self._songsRetriever.get_song(service[song_key], EMAIL_COMPONENTS)['file_ids']
+        file_ids = self._songsRetriever.get_song(service[song_key], self._components)['file_ids']
         for component in self._components:
             href = "https://drive.google.com/file/d/" + file_ids[component] + "/view?usp=sharing"
             output = output + ' <a href="{}">[{}]</a>' .format(href, component)

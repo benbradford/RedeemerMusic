@@ -1,3 +1,4 @@
+from view_base import ViewBase
 
 class SongView:
     def __init__(self, drive_service, slides_helper):
@@ -6,12 +7,12 @@ class SongView:
         self._slides_helper = slides_helper
 
     def render(self, song):
-        return self._template\
+        return ViewBase().render(self._template\
             .replace("_SONG_NAME_", song['name'])\
             .replace("_LYRICS_", self._render_component(song, 'lyrics'))\
             .replace("_CHORDS_", self._render_component(song, 'chords'))\
             .replace("_LEAD_", self._render_component(song, 'lead'))\
-            .replace("_SLIDES_", self._render_slides(song))
+            .replace("_SLIDES_", self._render_slides(song)))
 
     def _render_component(self, song, component):
         if component in song['file_ids']:
@@ -28,4 +29,4 @@ class SongView:
         slides = self._slides_helper.paginate_lyrics(slides_file)
         for slide in slides:
             output = output + "<p>" + slide.replace('\n', '</br>').decode('utf-8') + "</p>"
-            return output
+        return output

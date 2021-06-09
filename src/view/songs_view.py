@@ -1,10 +1,11 @@
+from view_base import ViewBase
 
 class SongsView:
     def __init__(self):
         self._template = open('../res/songs_select.html', "r").read()
 
     def render(self, song_names):
-        return self._template.replace("_SONGS_", self._display_options(song_names))
+        return ViewBase().render(self._template.replace("_SONGS_", self._display_options(song_names)))
 
     def _display_options(self, song_names):
         output = ""
