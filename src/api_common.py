@@ -4,19 +4,25 @@ from flask import request, jsonify, send_file
 
 from helper.helper_factory import init_helper_factory, get_helper_factory
 from service.service_factory import get_service_factory
+from data.data_factory import init_data_factory
 
 app = flask.Flask(__name__)
 CORS(app)
 app.config["DEBUG"] = True
 
 init_helper_factory(get_service_factory())
+init_data_factory(
+    get_service_factory().get_drive_service(),
+    get_service_factory().get_sheets_service(),
+    get_helper_factory().get_slides_helper()
+)
 
 def extract_required_param(name):
     if name in request.args:
         return request.args[name]
     else:
         print "Error: Missing required parameters " + name
-        raise "Error: Missing required parameters "
+        raise Exception("Error: Missing required parameters ")
 
 def extract_optional_param(name, default):
     if name in request.args:

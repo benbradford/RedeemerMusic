@@ -1,21 +1,19 @@
 from view_base import ViewBase
 
 class EmailView: # todo split remove email creation to helper and rename this to ServiceView
-    def __init__(self, songs_retriever):
+    def __init__(self, data_retriever):
         self._template = open('../res/email_template.html', "r").read()
         self._confirmation_template = open('../res/email_send_confirmation_template.html' ,"r").read()
-        self._songsRetriever = songs_retriever
         self._components = ['lyrics', 'chords', 'lead']
+        self._data_retriever = data_retriever
 
     def render(self, service):
         return ViewBase().render(self._main_section(service)\
-            .replace("_PUBLISH_BUTTON_", "")\
-            .replace("_EDIT_SERVICE_PARAMS_", ""))
+            .replace("_PUBLISH_BUTTON_", ""))
 
-    def render_with_prompt(self, service, recipients, optional_service_params):
+    def render_with_prompt(self, service, recipients):
         return self._main_section(service)\
             .replace("_PUBLISH_BUTTON_", self._confirmation_template)\
-            .replace("_EDIT_SERVICE_PARAMS_", self._edit_params(service, optional_service_params))\
             .replace("_SERVICE_", service['id'])\
             .replace("_RECIPIENTS_", recipients)
 
@@ -41,7 +39,11 @@ class EmailView: # todo split remove email creation to helper and rename this to
 
     def _get_song(self, service, song_key):
         output = '<li>{} -'.format(service[song_key])
-        file_ids = self._songsRetriever.get_song(service[song_key], self._components)['file_ids']
+        retrieved_song = self._data_retriever.get_song(service[song_key])
+        if retrieved_song is None:
+            output += "missing </li>"
+            return output
+        file_ids = retrieved_song['file_ids']
         for component in self._components:
             if component in file_ids:
                 href = "https://drive.google.com/file/d/" + file_ids[component] + "/view?usp=sharing"

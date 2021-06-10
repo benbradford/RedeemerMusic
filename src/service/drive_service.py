@@ -19,9 +19,6 @@ class DriveService:
     def __init__(self, creds):
         self._service = build('drive', 'v3', credentials=creds)
 
-    def get_service(self):
-        return self._service
-
     def list_files(self, component):
         folder_id = folder_ids[component]
         items = []
@@ -49,7 +46,9 @@ class DriveService:
 
     def get_file_id(self, song_name, component):
         folder_id = folder_ids[component]
+        print "getting file id for " + song_name
         song_file_name = song_name + " (" + component + ")"
+        song_file_name = song_file_name.replace("'", "\\'")
         if component == 'slides':
             song_file_name += ".txt"
         results = self._service.files().list(

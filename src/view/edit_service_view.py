@@ -8,8 +8,7 @@ class EditServiceView:
         .replace("_LEAD_", self._display_bullet(service, 'lead'))\
         .replace("_EXTRA_", self._display_bullet(service, 'extra'))
         .replace("_BAND_", self._band(service))\
-        .replace("_SONGS_", self._songs(service))\
-        .replace("_EDIT_SERVICE_PARAMS_", self._edit_params(service, optional_service_params)))
+        .replace("_SONGS_", self._songs(service))
 
     def _display_bullet(self, service, component):
         if component in service[component]:

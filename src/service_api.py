@@ -9,9 +9,10 @@ from helper.helper_factory import get_helper_factory
 from view.email_view import EmailView
 from view.services_view import ServicesView
 from view.service_view import ServiceView
+from data.data_factory import get_data_factory
 
+data_retriever = get_data_factory().get_data_retriever()
 slides_helper = get_helper_factory().get_slides_helper()
-service_retriever = get_helper_factory().get_songs_retriever()
 sheets_service = get_service_factory().get_sheets_service()
 gmail_service = get_service_factory().get_gmail_service()
 
@@ -20,16 +21,6 @@ def _get_service_from_id_param():
     service = sheets_service.get_service(service_id)
     if service is None:
         return {}
-    return service
-
-optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6']
-
-def _get_service_from_params():
-    service = {}
-    service['id'] = extract_required_param('id')
-    for opt in optional_service_params:
-        print "got param {} value {}".format(opt, extract_optional_param(opt, ''))
-        service[opt] = extract_optional_param(opt, '').replace("%20", ' ')
     return service
 
 @app.route('/slides', methods=['GET'])
@@ -46,9 +37,9 @@ def services_api():
 
 @app.route('/service', methods=['GET'])
 def service_api():
-    service = _get_service_from_id_param()
+    service = data_retriever.get_service(extract_required_param('id'))
     recipients = extract_optional_param('recipients', "ben.bradford80@gmail.com")#"ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com")
-    return EmailView(service_retriever).render_with_prompt(service, recipients, optional_service_params)
+    return EmailView(data_retriever).render_with_prompt(service, recipients)
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
@@ -59,7 +50,7 @@ def service_edit_api():
 def send_music_email_api():
     service = _get_service_from_id_param() # todo this could be passed in
     recipients = extract_required_param('recipients')
-    body = EmailView(service_retriever).render(service)
+    body = EmailView(data_retriever).render(service)
     subject = "Redeemer Music for " + service['date']
     gmail_service.send(subject, body, recipients)
     return "ok"

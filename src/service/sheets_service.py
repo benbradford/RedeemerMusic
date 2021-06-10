@@ -1,9 +1,9 @@
-from __future__ import print_function
 from credentials import get_credentials
 
 from googleapiclient.discovery import build
 
 sheets_id = '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY'
+songs_id = '1tkKaiOsae9eNxUOSawa_e_OfAfnzNPhwZBmcXTp_-qU'
 
 class SheetsService:
 
@@ -11,6 +11,18 @@ class SheetsService:
         self._service = build('sheets', 'v4', credentials=creds)
         self._sheets = self._service.spreadsheets()
         self._headings = self._get_headings()
+
+    def list_song_names(self):
+        songs = []
+        result = self._sheets.values().get(spreadsheetId=songs_id,
+                                        range='A2:A').execute()
+        values = result.get('values', [])
+        if not values:
+            print('No data found.')
+        else:
+            for row in values:
+                songs.append(row[0])
+        return songs
 
     def get_service(self, service_id):
         services = self.get_services()

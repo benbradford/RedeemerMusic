@@ -1,18 +1,12 @@
 from helper.slides_helper import SlidesHelper
-from helper.songs_retriever import SongsRetriever
 
 class HelperFactory:
 
     def __init__(self, service_factory):
-        self._initialised = True
         self._slides_helper = SlidesHelper(service_factory.get_drive_service())
-        self._songs_retriever = SongsRetriever(service_factory.get_drive_service())
 
     def get_slides_helper(self):
         return self._slides_helper
-
-    def get_songs_retriever(self):
-        return self._songs_retriever
 
 helper_factory = None
 

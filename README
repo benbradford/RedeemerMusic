@@ -1,3 +1,2 @@
-api for redeemer_web project.
-
 `python app.py` to deploy then go to localhost:5000 in browser
+add argument '-d remote' to sync with remote data, otherwise it will use local cache (if any exists)
