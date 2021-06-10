@@ -1,4 +1,5 @@
 import io
+from operator import itemgetter
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
@@ -42,20 +43,26 @@ class DriveService:
 
             page_token = files.get('nextPageToken')
             if not page_token:
+                items.sort(key=itemgetter("name"))
                 return items
 
 
     def get_file_id(self, song_name, component):
         folder_id = folder_ids[component]
         song_file_name = song_name + " (" + component + ")"
+        if component == 'slides':
+            song_file_name += ".txt"
         results = self._service.files().list(
-            pageSize=100,
+            pageSize=5,
             fields="nextPageToken, files(id, name)",
             includeItemsFromAllDrives=True,
             supportsAllDrives=True,
-            q="name contains '" + song_file_name + "' and '" + folder_id + "' in parents"
+            q="name ='" + song_file_name + "' and '" + folder_id + "' in parents"
         ).execute()
         items = results.get('files', [])
+        if len(items) == 0:
+            print "WARN Cannot find " + component + " for " + song_name
+            return None
         return items[0]['id']
 
     def upload_slide_file(self, filename):

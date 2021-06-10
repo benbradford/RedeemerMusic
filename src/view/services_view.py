@@ -15,3 +15,4 @@ class ServicesView:
 
     def _display_option(self, name, id):
         return '<option value="' + id + '">' + name + '</option>'
+    

@@ -13,7 +13,8 @@ class SongsRetriever:
         for component in components:
             try:
                 id = self._drive_service.get_file_id(song['name'], component)
-                song['file_ids'][component] = id
+                if id is not None:
+                    song['file_ids'][component] = id
             except:
                 print("[WARN] Cannot find " + component + " for " + song['name'])
         return song

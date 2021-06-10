@@ -8,49 +8,58 @@ from service.service_factory import get_service_factory
 from helper.helper_factory import get_helper_factory
 from view.email_view import EmailView
 from view.services_view import ServicesView
+from view.service_view import ServiceView
 
 slides_helper = get_helper_factory().get_slides_helper()
 service_retriever = get_helper_factory().get_songs_retriever()
 sheets_service = get_service_factory().get_sheets_service()
 gmail_service = get_service_factory().get_gmail_service()
 
-def _get_service_from_param():
+def _get_service_from_id_param():
     service_id = extract_required_param('id')
     service = sheets_service.get_service(service_id)
     if service is None:
         return {}
     return service
 
+optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6']
+
+def _get_service_from_params():
+    service = {}
+    service['id'] = extract_required_param('id')
+    for opt in optional_service_params:
+        print "got param {} value {}".format(opt, extract_optional_param(opt, ''))
+        service[opt] = extract_optional_param(opt, '').replace("%20", ' ')
+    return service
+
 @app.route('/slides', methods=['GET'])
 def slides_api():
-    service = _get_service_from_param()
+    service = _get_service_from_id_param()
     slides_helper.create_powerpoint(service, '../bin/powerpoint.pptx')
     return "ok"
 
 @app.route('/services', methods=['GET'])
 def services_api():
+    # add service using dropdowns https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#setdatavalidationrequest
     res = sheets_service.get_services()
     return ServicesView().render(res)
 
 @app.route('/service', methods=['GET'])
 def service_api():
-    service = _get_service_from_param()
-    recipients = extract_optional_param('recipients', "ben.bradford80@gmail.com")
-    #'ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com'
-    return EmailView(service_retriever).render_with_prompt(service, recipients)
+    service = _get_service_from_id_param()
+    recipients = extract_optional_param('recipients', "ben.bradford80@gmail.com")#"ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com")
+    return EmailView(service_retriever).render_with_prompt(service, recipients, optional_service_params)
+
+@app.route('/edit_service', methods=['GET'])
+def service_edit_api():
+    service = _get_service_from_params()
+    return jsonify(service)
 
 @app.route('/send_music_email', methods=['GET'])
 def send_music_email_api():
-    service = _get_service_from_param()
+    service = _get_service_from_id_param() # todo this could be passed in
     recipients = extract_required_param('recipients')
     body = EmailView(service_retriever).render(service)
     subject = "Redeemer Music for " + service['date']
     gmail_service.send(subject, body, recipients)
-    return "ok"
-
-# curl -X POST -d'{"band1": "BenB_Guitar","band2": "Emma_Vox","band3": "","band4": "","band5": "","date": "Sunday 1st November","id": "2","lead": "Ben B","message": "","song1": "Amazing Grace","song2": "","song3": "","song4": "","song5": ""}' localhost:5000/service
-@app.route('/service', methods=['POST'])
-def add_service_api():
-    new_service = extract_body_from_request()
-    sheets_service.add_service(new_service)
     return "ok"
