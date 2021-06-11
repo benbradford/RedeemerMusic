@@ -8,8 +8,8 @@ class EmailView: # todo split remove email creation to helper and rename this to
         self._data_retriever = data_retriever
 
     def render(self, service):
-        return ViewBase().render(self._main_section(service)\
-            .replace("_PUBLISH_BUTTON_", ""))
+        return self._main_section(service)\
+            .replace("_PUBLISH_BUTTON_", "")
 
     def render_with_prompt(self, service, recipients):
         return self._main_section(service)\

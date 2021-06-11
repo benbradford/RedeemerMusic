@@ -43,7 +43,7 @@ def service_api():
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
-    service = _get_service_from_params()
+    service = data_retriever.get_service(extract_required_param('id'))
     return jsonify(service)
 
 @app.route('/send_music_email', methods=['GET'])

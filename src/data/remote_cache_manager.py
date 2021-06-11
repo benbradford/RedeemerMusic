@@ -7,8 +7,7 @@ services_file = cache_dir + 'services.json'
 slides_file = cache_dir + 'slides.json'
 
 class RemoteCacheManager:
-    def __init__(self, cache, drive, sheets, slides_helper, local_cache_manager):
-        self._cache = cache
+    def __init__(self, drive, sheets, slides_helper, local_cache_manager):
         self._drive = drive
         self._sheets = sheets
         self._slides_helper = slides_helper
@@ -16,14 +15,15 @@ class RemoteCacheManager:
         self._local_cache_manager = local_cache_manager
 
     def sync(self):
-        self.sync_songs()
+        songs = self.sync_songs()
         self.sync_services()
-        self.sync_slides()
+        self.sync_slides(songs)
+        self._local_cache_manager.sync()
 
     def sync_songs(self):
         print "getting song names"
         song_names = self._sheets.list_song_names()
-        self._cache.songs = []
+        songs = {}
         for name in song_names:
             print "syncing song " + name
             song = {}
@@ -34,24 +34,33 @@ class RemoteCacheManager:
                 if file_id is not None:
                     song['file_ids'][component] = file_id
                     print "got file id for " + component
-            self._cache.songs.append(song)
-        self._local_cache_manager.update_songs_files()
+            songs[name] = song
+        with open(songs_file, 'w') as f:
+            json.dump(songs, f, indent=4)
+        return songs
 
     def sync_services(self):
-        self._cache.services = self._sheets.get_services()
-        self._local_cache_manager.update_services_files()
+        services = {}
+        services_arr = self._sheets.get_services()
+        for service in services_arr:
+            services[service['id']] = service
+        with open(services_file, 'w') as f:
+            json.dump(services, f, indent=4)
 
-    def sync_slides(self):
-        self._cache.slides = []
-        for song in self._cache.songs:
-            file = cache_dir + song['name'] + '.txt'
+    def sync_slides(self, songs):
+        for name, song in songs.iteritems():
+            file = cache_dir + name + '.txt'
             if 'slides' in song['file_ids']:
                 self._drive.download_slide(song['file_ids']['slides'], file)
                 slides_from_song = self._slides_helper.paginate_lyrics(file)
             else:
-                print "[WARN] No slides available for " + song['name']
+                print "[WARN] No slides available for " + name
                 slides_from_song = "missing"
-            slide = {}
-            slide['name'] = song['name']
-            slide['slides'] = slides_from_song
-            self._cache.slides.append(slide)
+
+    def update_slides_files(self):
+        print "updating slides"
+        for slide in self._cache.slides:
+            file_name = cache_dir + song + '.txt'
+            f = open(file_name, "w")
+            f.write(slide['slides'])
+            f.close()
