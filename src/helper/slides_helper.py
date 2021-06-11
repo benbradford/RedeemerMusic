@@ -5,42 +5,27 @@ from pptx.enum.text import PP_ALIGN
 import json
 
 class SlidesHelper:
-    def __init__(self, drive_service):
-        self._drive_service = drive_service
+    def __init__(self, data_retriever):
+        self._data_retriever = data_retriever
 
     def create_powerpoint(self, service, out_file):
-        song_files = self._download_song_files(service)
+        slides = self._get_slides_from_service(service)
         presentation = self._create_empty_presentation()
 
-        for song_file in song_files:
-            self._add_slides_for_song(presentation, song_file)
+        for name, slide in slides:
+            self._add_slides_for_song(presentation, slide)
             self._add_blank_page(presentation)
 
         presentation.save(out_file)
         return out_file
 
-    def paginate_lyrics(self, song_file):
-        # '\n' denotes a line seperator
-        paginated_lyrics = []
-        file = open(song_file, "r")
-
-        next_line = file.readline()
-        while next_line != '':
-            self._append_lyrics_block(next_line, file, paginated_lyrics)
-            next_line = self._skip_blank_lines(file)
-
-        return paginated_lyrics
-
-    def _download_song_files(self, service):
-        song_files = []
+    def _get_slides_from_service(self, service):
+        slides = {}
         for index in [1,2,3,4,5, 6]:
             song_key = "song" + str(index)
             if song_key in service and service[song_key] != "":
-                song_file = "../bin/" + service[song_key] + ".txt"
-                file_id = self._drive_service.get_file_id(service[song_key], 'slides')
-                self._drive_service.download_slide(file_id, song_file)
-                song_files.append(song_file)
-        return song_files
+                slides[song_key] = self._data_retriever.get_slide(service[song_key])
+        return slides
 
     def _create_empty_presentation(self):
         empty = Presentation()
@@ -48,12 +33,11 @@ class SlidesHelper:
         blank_slide_layout = empty.slide_layouts[6]
         return empty
 
-    def _add_slides_for_song(self, presentation, song_file):
-        paginated_lyrics = self.paginate_lyrics(song_file)
-        num_slides_with_lyrics = len(paginated_lyrics)
+    def _add_slides_for_song(self, presentation, slide):
+        num_slides_with_lyrics = len(slide)
 
         for i in range(num_slides_with_lyrics):
-            self._assemble_page(paginated_lyrics[i], presentation, i == num_slides_with_lyrics-1, song_file)
+            self._assemble_page(slide[i], presentation, i == num_slides_with_lyrics-1, song_file)
 
     def _assemble_page(self, lyrics_on_page, presentation, is_last_slide, song):
         num_lines = lyrics_on_page.count('\n') + 1
@@ -65,19 +49,6 @@ class SlidesHelper:
 
     def _add_blank_page(self, presentation):
         self._create_slide(presentation)
-
-    def _append_lyrics_block(self, accumulated, file, paginated_lyrics):
-        next = file.readline()
-        while next != '\n' and next != '' and len(next) > 2:
-            accumulated = accumulated + next
-            next = file.readline()
-        paginated_lyrics.append(accumulated.replace('\r', ''))
-
-    def _skip_blank_lines(self, file):
-        accumulated = file.readline()
-        while accumulated == '\n' or accumulated == '\r' or accumulated == ' ':
-            accumulated = file.readline()
-        return accumulated
 
     def _create_slide(self, presentation):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])

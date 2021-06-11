@@ -10,12 +10,11 @@ app = flask.Flask(__name__)
 CORS(app)
 app.config["DEBUG"] = True
 
-init_helper_factory(get_service_factory())
 init_data_factory(
     get_service_factory().get_drive_service(),
-    get_service_factory().get_sheets_service(),
-    get_helper_factory().get_slides_helper()
+    get_service_factory().get_sheets_service()
 )
+init_helper_factory(get_service_factory().get_drive_service())
 
 def extract_required_param(name):
     if name in request.args:

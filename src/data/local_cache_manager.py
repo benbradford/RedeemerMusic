@@ -1,5 +1,17 @@
 import json
 
+import threading
+
+class LocalFilesLock:
+    def __init__(self):
+        self._lock = threading.Lock()
+
+    def __enter__(self):
+        self._lock.acquire()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._lock.release()
+
 cache_dir = '../bin/cache/'
 
 songs_file = cache_dir + 'songs.json'
@@ -9,27 +21,64 @@ slides_file = cache_dir + 'slides.json'
 class LocalCacheManager:
     def __init__(self, cache):
         self._cache = cache
-        pass
+        self._songFilesLock = LocalFilesLock()
+        self._servicesFilesLock = LocalFilesLock()
+        self._slidesFilesLock = {}
+        self._masterSlidesLock = LocalFilesLock()
 
     def sync(self):
-        self._sync_songs()
-        self._sync_services()
-        self._sync_slides()
+        self.sync_songs()
+        self.sync_services()
+        self.sync_slides()
 
-    def _sync_songs(self):
-        # sync from local
-        local_songs = open(songs_file, "r").read()
-        self._cache.songs = json.loads(local_songs)
+    def save_to_songs(self, songs):
+        with self._songFilesLock:
+            with open(songs_file, 'w') as f:
+                json.dump(songs, f, indent=4)
 
-    def _sync_services(self):
-        local_services = open(services_file, 'r').read()
-        self._cache.services = json.loads(local_services)
+    def save_to_services(self, services):
+        with self._servicesFilesLock:
+            with open(services_file, 'w') as f:
+                json.dump(services, f, indent=4)
 
-    def _sync_slides(self):
-        self._cache.slides = {}
-        for name, song in self._cache.songs.iteritems():
-            slides = {}
-            slides['name'] = name
-            file_name = cache_dir + name + '.txt'
-            slides['slides'] = open(file_name, 'r').read()
-            self._cache.slides['name'] = slides
+    def slide_lock(self, name):
+        with self._masterSlidesLock:
+            if name not in self._slidesFilesLock:
+                self._slidesFilesLock[name] = LocalFilesLock()
+
+        return self._slidesFilesLock[name]
+
+    def sync_songs(self):
+        local_songs = ""
+        with self._songFilesLock:
+            local_songs = open(songs_file, "r").read()
+        self._cache.update_songs(json.loads(local_songs))
+
+    def sync_services(self):
+        local_services = ""
+        with self._servicesFilesLock:
+            local_services = open(services_file, 'r').read()
+        self._cache.update_services(json.loads(local_services))
+
+    def sync_slides(self):
+        slides = {}
+        with self._cache.songs_lock():
+            for name, song in self._cache.get_songs().iteritems():
+                s = {}
+                file_name = cache_dir + name + '.txt'
+                with self.slide_lock(name):
+                    slides[name] = open(file_name, 'r').read()
+        self._cache.update_slides(slides)
+
+    def _append_lyrics_block(self, accumulated, file, paginated_lyrics):
+        next = file.readline()
+        while next != '\n' and next != '' and len(next) > 2:
+            accumulated = accumulated + next
+            next = file.readline()
+        paginated_lyrics.append(accumulated.replace('\r', ''))
+
+    def _skip_blank_lines(self, file):
+        accumulated = file.readline()
+        while accumulated == '\n' or accumulated == '\r' or accumulated == ' ':
+            accumulated = file.readline()
+        return accumulated

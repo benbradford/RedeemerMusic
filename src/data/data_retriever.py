@@ -6,31 +6,33 @@ class DataRetriever:
         self._cache = cache
 
     def get_song(self, song_name):
-        for name, song in self._cache.songs.iteritems():
-            if name == song_name:
-                return copy.deepcopy(song)
+        with self._cache.songs_lock():
+            if song_name in self._cache.get_songs():
+                return copy.deepcopy(self._cache.get_songs()[song_name])
         return None
 
     def get_song_names(self):
         song_names = []
-        for name in self._cache.songs.keys():
-            song_names.append(copy.deepcopy(name))
+        with self._cache.songs_lock():
+            for name in self._cache.get_songs().keys():
+                song_names.append(copy.deepcopy(name))
         return sorted(song_names)
 
     def get_slide(self, song_name):
-        for key, service in self._cache.slides.iteritems():
-            if service['name'] == song_name:
-                return copy.deepcopy(s['slides'])
+        with self._cache.slides_lock():
+            if song_name in self._cache.get_slides():
+                return self._cache.get_slides()[song_name]
         return None
 
     def get_service(self, id):
-        for key, service in self._cache.services.iteritems():
-            if service['id'] == id:
-                return copy.deepcopy(service)
+        with self._cache.services_lock():
+            if id in self._cache.get_services():
+                return copy.deepcopy(self._cache.get_services()[id])
         return None
 
     def get_services(self):
         services = []
-        for key, service in self._cache.services.iteritems():
-            services.append(copy.deepcopy(service))
+        with self._cache.services_lock():
+            for key, service in self._cache.get_services().iteritems():
+                services.append(copy.deepcopy(service))
         return services
