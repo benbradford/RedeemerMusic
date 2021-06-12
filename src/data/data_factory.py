@@ -1,19 +1,19 @@
-from remote_cache_manager import RemoteCacheManager
+from remote_data_manager import RemoteDataManager
 from local_cache_manager import LocalCacheManager
 from data_retriever import DataRetriever
 from cache import Cache
 
 class DataFactory:
-    def __init__(self, drive_service, sheets_service):
+    def __init__(self, drive_client, sheets_client):
         cache = Cache()
         self._retriever = DataRetriever(cache)
         self._lcm = LocalCacheManager(cache)
-        self._rcm = RemoteCacheManager(drive_service, sheets_service, self._lcm)
+        self._rcm = RemoteDataManager(drive_client, sheets_client, self._lcm)
 
     def get_local_cache_manager(self):
         return self._lcm
 
-    def get_remote_cache_manager(self):
+    def get_remote_data_manager(self):
         return self._rcm
 
     def get_data_retriever(self):
@@ -21,10 +21,10 @@ class DataFactory:
 
 data_factory = None
 
-def init_data_factory(drive_service, sheets_service):
+def init_data_factory(drive_client, sheets_client):
     global data_factory
     if data_factory is None:
-        data_factory = DataFactory(drive_service, sheets_service)
+        data_factory = DataFactory(drive_client, sheets_client)
 
 def get_data_factory():
     return data_factory

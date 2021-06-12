@@ -64,11 +64,18 @@ class LocalCacheManager:
         slides = {}
         with self._cache.songs_lock():
             for name, song in self._cache.get_songs().iteritems():
-                s = {}
                 file_name = cache_dir + name + '.txt'
                 with self.slide_lock(name):
                     slides[name] = open(file_name, 'r').read()
         self._cache.update_slides(slides)
+
+    def sync_slide(self, song):
+        slides = ""
+        with self._cache.songs_lock():
+            file_name = cache_dir + song['name'] + '.txt'
+            with self.slide_lock(song['name']):
+                slides = open(file_name, 'r').read()
+        self._cache.add_or_update_slide(song['name'], slides)
 
     def _append_lyrics_block(self, accumulated, file, paginated_lyrics):
         next = file.readline()

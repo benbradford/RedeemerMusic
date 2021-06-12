@@ -14,7 +14,7 @@ folder_ids = {
     'slides': '10_hTK6keFv1gWx-OkFuImuDtqFU8PVRN'
 }
 
-class DriveService:
+class DriveClient:
 
     def __init__(self, creds):
         self._service = build('drive', 'v3', credentials=creds)

@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 sheets_id = '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY'
 songs_id = '1tkKaiOsae9eNxUOSawa_e_OfAfnzNPhwZBmcXTp_-qU'
 
-class SheetsService:
+class SheetsClient:
 
     def __init__(self, creds):
         self._service = build('sheets', 'v4', credentials=creds)

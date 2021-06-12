@@ -3,9 +3,9 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-from service.sheets_service import SheetsService
-from service.gmail_service import GmailService
-from service.drive_service import DriveService
+from sheets_client import SheetsClient
+from gmail_client import GmailClient
+from drive_client import DriveClient
 
 
 SCOPES = [
@@ -15,27 +15,27 @@ SCOPES = [
     'https://www.googleapis.com/auth/gmail.compose'
 ]
 
-class ServiceFactory:
+class ClientFactory:
     def __init__(self):
         self._credentials=self._get_credentials()
-        self._drive_service = None
-        self._sheets_service = None
-        self._gmail_service = None
+        self._drive_client = None
+        self._sheets_client = None
+        self._gmail_client = None
 
-    def get_drive_service(self):
-        if self._drive_service == None:
-            self._drive_service = DriveService(self._credentials)
-        return self._drive_service
+    def get_drive_client(self):
+        if self._drive_client == None:
+            self._drive_client = DriveClient(self._credentials)
+        return self._drive_client
 
-    def get_sheets_service(self):
-        if self._sheets_service is None:
-            self._sheets_service = SheetsService(self._credentials)
-        return self._sheets_service
+    def get_sheets_client(self):
+        if self._sheets_client is None:
+            self._sheets_client = SheetsClient(self._credentials)
+        return self._sheets_client
 
-    def get_gmail_service(self):
-        if self._gmail_service is None:
-            self._gmail_service = GmailService(self._credentials)
-        return self._gmail_service
+    def get_gmail_client(self):
+        if self._gmail_client is None:
+            self._gmail_client = GmailClient(self._credentials)
+        return self._gmail_client
 
     def _get_credentials(self):
         creds = None
@@ -55,7 +55,7 @@ class ServiceFactory:
                 token.write(creds.to_json())
         return creds
 
-service_factory = ServiceFactory()
+client_factory = ClientFactory()
 
-def get_service_factory():
-    return service_factory
+def get_client_factory():
+    return client_factory

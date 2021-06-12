@@ -1,8 +1,8 @@
 import io
 from operator import itemgetter
 
-from service.service_factory import get_service_factory
-sheets_service = get_service_factory().get_sheets_service()
+from client.client_factory import get_client_factory
+sheets_client = get_client_factory().get_sheets_client()
 
 old_services = [
         {
@@ -64,4 +64,4 @@ services.sort(key=itemgetter("id"))
 
 for service in services:
     print service
-    sheets_service.add_service(service)
+    sheets_client.add_service(service)

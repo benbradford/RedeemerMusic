@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 
 from credentials import get_credentials
 
-class GmailService:
+class GmailClient:
 
     def __init__(self, creds):
         self._service = build('gmail', 'v1', credentials=creds)

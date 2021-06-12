@@ -6,7 +6,7 @@ songs_file = cache_dir + 'songs.json'
 services_file = cache_dir + 'services.json'
 slides_file = cache_dir + 'slides.json'
 
-class RemoteCacheManager:
+class RemoteDataManager:
     def __init__(self, drive, sheets, local_cache_manager):
         self._drive = drive
         self._sheets = sheets
@@ -54,3 +54,10 @@ class RemoteCacheManager:
             else:
                 print "[WARN] No slides available for " + name
                 slides_from_song = "missing"
+
+    def sync_slides_for_song(self, song):
+        file = cache_dir + song['name'] + '.txt'
+        with self._local_cache_manager.slide_lock(song['name']):
+            self._drive.download_slide(song['file_ids']['slides'], file)
+            print "downloaded new slide to " + file
+        self._local_cache_manager.sync_slide(song)

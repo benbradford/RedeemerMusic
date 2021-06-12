@@ -1,5 +1,5 @@
-from service.service_factory import get_service_factory
-ds = get_service_factory().get_drive_service()
+from client.client_factory import get_client_factory
+ds = get_client_factory().get_drive_client()
 
 songList = [
 

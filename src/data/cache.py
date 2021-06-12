@@ -32,8 +32,8 @@ class Cache:
         with self._slidesLock:
             self._slides = slides
 
-    def add_slide(self, name, slide):
-        with self._slides_Lock:
+    def add_or_update_slide(self, name, slide):
+        with self._slidesLock:
             self._slides[name] = slide
 
     def songs_lock(self):

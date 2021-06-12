@@ -2,19 +2,19 @@ import flask
 from flask_cors import CORS
 from flask import request, jsonify, send_file
 
-from helper.helper_factory import init_helper_factory, get_helper_factory
-from service.service_factory import get_service_factory
-from data.data_factory import init_data_factory
+from helper.helper_factory import init_helper_factory
+from client.client_factory import get_client_factory
+from data.data_factory import get_data_factory, init_data_factory
 
 app = flask.Flask(__name__)
 CORS(app)
 app.config["DEBUG"] = True
 
 init_data_factory(
-    get_service_factory().get_drive_service(),
-    get_service_factory().get_sheets_service()
+    get_client_factory().get_drive_client(),
+    get_client_factory().get_sheets_client()
 )
-init_helper_factory(get_service_factory().get_drive_service())
+init_helper_factory(get_data_factory().get_data_retriever())
 
 def extract_required_param(name):
     if name in request.args:

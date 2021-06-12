@@ -35,4 +35,5 @@ class DataRetriever:
         with self._cache.services_lock():
             for key, service in self._cache.get_services().iteritems():
                 services.append(copy.deepcopy(service))
-        return services
+
+        return sorted(services, key=itemgetter("id"))

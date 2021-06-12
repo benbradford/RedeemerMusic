@@ -3,6 +3,7 @@ from view_base import ViewBase
 class SongView:
     def __init__(self, data_retriever):
         self._template = open('../res/display_song.html', "r").read()
+        self._refresh = open ('../res/refresh_slides.html', 'r').read()
         self._data_retriever = data_retriever
 
     def render(self, song):
@@ -24,7 +25,8 @@ class SongView:
             return "No slides present for this song"
         output = ""
         #slides_file = '../bin/' + song['name'] + ".txt"
-        #self._drive_service.download_slide(song['file_ids']['slides'], slides_file)
+        #self._drive_client.download_slide(song['file_ids']['slides'], slides_file)
         slides = self._data_retriever.get_slide(song['name'])
         output = output + "<p>" + slides.replace('\n', '</br>').decode('utf-8') + "</p>"
+        output += self._refresh.replace("_SONG_NAME_", song['name'])
         return output
