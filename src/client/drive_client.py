@@ -1,4 +1,5 @@
 import io
+import os
 from operator import itemgetter
 
 from googleapiclient.discovery import build
@@ -64,18 +65,23 @@ class DriveClient:
             return None
         return items[0]['id']
 
-    def upload_slide_file(self, filename):
+    def update_slide_file(self, song, lyrics):
+        file_name = song['name'] + " (slides).txt"
+        outF = open(file_name, "w")
+        outF.write(lyrics)
+        outF.write("\n")
+        outF.close()
         file_metadata = {
-            'name': filename,
+            'name': file_name,
             'parents': [folder_ids['slides']]
         }
-        upload = MediaFileUpload(filename, mimetype='text/plain' )
-        file = self._service.files().create(
-            body=file_metadata,
+        upload = MediaFileUpload(file_name, mimetype='text/plain' )
+        file = self._service.files().update(
             media_body=upload,
-            fields='id',
+            fileId=song['file_ids']['slides'],
             supportsAllDrives=True
         ).execute()
+        os.remove(file_name)
 
     def download_slide(self, file_id, outfile):
         request = self._service.files().get_media(

@@ -2,8 +2,8 @@ from view_base import ViewBase
 
 class SongView:
     def __init__(self, data_retriever):
-        self._template = open('../res/display_song.html', "r").read()
-        self._refresh = open ('../res/refresh_slides.html', 'r').read()
+        self._template = open('../res/song_view.html', "r").read()
+        self._edit = open('../res/edit_slides_button.html', 'r').read()
         self._data_retriever = data_retriever
 
     def render(self, song):
@@ -23,10 +23,10 @@ class SongView:
     def _render_slides(self, song):
         if 'slides' not in song['file_ids']:
             return "No slides present for this song"
-        output = ""
+        output = "<p>" + self._edit.replace('_SONG_NAME_', song['name']) + "</p>"
         #slides_file = '../bin/' + song['name'] + ".txt"
         #self._drive_client.download_slide(song['file_ids']['slides'], slides_file)
         slides = self._data_retriever.get_slide(song['name'])
         output = output + "<p>" + slides.replace('\n', '</br>').decode('utf-8') + "</p>"
-        output += self._refresh.replace("_SONG_NAME_", song['name'])
+
         return output

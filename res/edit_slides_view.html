@@ -1,0 +1,23 @@
+
+<h2>_SONG_NAME_</h2>
+
+<style>
+textarea {
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+}
+</style>
+<div>
+  <textarea rows="40" cols="38" name="lyrics" form="usrform" wrap="soft">
+_SLIDES_
+  </textarea>
+  <form action="http://localhost:5000/update_slides" id="usrform">
+    <input type="submit">
+    <input type="hidden" name="name" value="_SONG_NAME_" />
+  </form>
+  <form action="http://localhost:5000/song" id="usrform">
+    <input type="submit" value="Cancel">
+    <input type="hidden" name="name" value="_SONG_NAME_" />
+  </form>
+</div>

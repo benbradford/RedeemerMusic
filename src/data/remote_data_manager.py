@@ -6,6 +6,15 @@ songs_file = cache_dir + 'songs.json'
 services_file = cache_dir + 'services.json'
 slides_file = cache_dir + 'slides.json'
 
+class SlideDownloader:
+    def __init__(self, drive, file_id, file):
+        self._drive = drive
+        self._file_id = file_id
+        self._file = file
+
+    def download(self):
+        self._drive.download_slide(self._file_id, self._file)
+
 class RemoteDataManager:
     def __init__(self, drive, sheets, local_cache_manager):
         self._drive = drive
@@ -48,16 +57,18 @@ class RemoteDataManager:
         for name, song in songs.iteritems():
             file = cache_dir + name + '.txt'
             if 'slides' in song['file_ids']:
-                # TODO tell local cache manager to lock slide and download directly
-                with self._local_cache_manager.slide_lock(name):
-                    self._drive.download_slide(song['file_ids']['slides'], file)
+                downloader = SlideDownloader(self._drive, song['file_ids']['slides'], file)
+                self._local_cache_manager.with_slide_locked(name, downloader.download)
             else:
                 print "[WARN] No slides available for " + name
                 slides_from_song = "missing"
 
     def sync_slides_for_song(self, song):
         file = cache_dir + song['name'] + '.txt'
-        with self._local_cache_manager.slide_lock(song['name']):
-            self._drive.download_slide(song['file_ids']['slides'], file)
-            print "downloaded new slide to " + file
+        downloader = SlideDownloader(self._drive, song['file_ids']['slides'], file)
+        self._local_cache_manager.with_slide_locked(song['name'], downloader.download)
         self._local_cache_manager.sync_slide(song)
+
+    def update_slide_for_song(self, song, lyrics):
+        self._drive.update_slide_file(song, lyrics)
+        self.sync_slides_for_song(song)

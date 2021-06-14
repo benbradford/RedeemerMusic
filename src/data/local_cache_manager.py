@@ -41,12 +41,9 @@ class LocalCacheManager:
             with open(services_file, 'w') as f:
                 json.dump(services, f, indent=4)
 
-    def slide_lock(self, name):
-        with self._masterSlidesLock:
-            if name not in self._slidesFilesLock:
-                self._slidesFilesLock[name] = LocalFilesLock()
-
-        return self._slidesFilesLock[name]
+    def with_slide_locked(self, name, func):
+        with self._slide_lock(name):
+            func()
 
     def sync_songs(self):
         local_songs = ""
@@ -65,17 +62,24 @@ class LocalCacheManager:
         with self._cache.songs_lock():
             for name, song in self._cache.get_songs().iteritems():
                 file_name = cache_dir + name + '.txt'
-                with self.slide_lock(name):
-                    slides[name] = open(file_name, 'r').read()
+                with self._slide_lock(name):
+                    slides[name] = open(file_name, 'r').read().replace('\r', '')
         self._cache.update_slides(slides)
 
     def sync_slide(self, song):
         slides = ""
         with self._cache.songs_lock():
             file_name = cache_dir + song['name'] + '.txt'
-            with self.slide_lock(song['name']):
+            with self._slide_lock(song['name']):
                 slides = open(file_name, 'r').read()
         self._cache.add_or_update_slide(song['name'], slides)
+
+    def _slide_lock(self, name):
+        with self._masterSlidesLock:
+            if name not in self._slidesFilesLock:
+                self._slidesFilesLock[name] = LocalFilesLock()
+
+        return self._slidesFilesLock[name]
 
     def _append_lyrics_block(self, accumulated, file, paginated_lyrics):
         next = file.readline()

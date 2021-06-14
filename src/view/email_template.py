@@ -1,23 +1,12 @@
-from view_base import ViewBase
 
-class EmailView: # todo split remove email creation to helper and rename this to ServiceView
+class EmailTemplate:
+
     def __init__(self, data_retriever):
         self._template = open('../res/email_template.html', "r").read()
-        self._confirmation_template = open('../res/email_send_confirmation_template.html' ,"r").read()
         self._components = ['lyrics', 'chords', 'lead']
         self._data_retriever = data_retriever
 
-    def render(self, service):
-        return self._main_section(service)\
-            .replace("_PUBLISH_BUTTON_", "")
-
-    def render_with_prompt(self, service, recipients):
-        return self._main_section(service)\
-            .replace("_PUBLISH_BUTTON_", self._confirmation_template)\
-            .replace("_SERVICE_", service['id'])\
-            .replace("_RECIPIENTS_", recipients)
-
-    def _main_section(self, service):
+    def get_template(self, service):
         return self._template\
             .replace("_DATE_", service['date'])\
             .replace("_EXTRA_", self._get_message(service))\

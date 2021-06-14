@@ -100,15 +100,14 @@ class SlidesHelper:
              4: 1.7,
              5: 1.4,
              6: 1.0,
-             7: 0.7,
-             8: 0.3,
-             9: 0.1,
-             10: 0
+             7: 0.4,
+             8: 0,
+             9: 0
         }
         try:
             return lines_to_inches[num_lines]
         except:
-            raise Exception("Exceeded max allowed lines on a page {}/{}".format(num_lines, 10))
+            raise Exception("Exceeded max allowed lines on a page {}/{}".format(num_lines, 9))
 
     def _add_footer(self, slide, footer):
         width = height = Inches(1)

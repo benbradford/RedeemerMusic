@@ -2,7 +2,7 @@ from view_base import ViewBase
 
 class ServicesView:
     def __init__(self):
-        self._template = open('../res/services_select.html', "r").read()
+        self._template = open('../res/services_view.html', "r").read()
 
     def render(self, services):
         return ViewBase().render(self._template.replace("_SERVICES_", self._display_options(services)))
@@ -15,4 +15,3 @@ class ServicesView:
 
     def _display_option(self, name, id):
         return '<option value="' + id + '">' + name + '</option>'
-    
