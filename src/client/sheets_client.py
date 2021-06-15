@@ -52,14 +52,15 @@ class SheetsClient:
         return services
 
     def add_service(self, service):
-        row_number = str(len(self._sheets.values().get(
-            spreadsheetId=sheets_id,
-            range='A1:O')
-        .execute().get('values', [])) + 1)
+        res = self._sheets.values().get(spreadsheetId=sheets_id, range='A1:O').execute()
+        res = res.get('values', [])
+        row_number = str(len(res) + 1)
+        last_id = res[len(res)-1][0]
+        next_id = int(last_id) + 1
+        service['id'] = str(next_id)
         r = 'A' + row_number + ':O' + row_number
         print("Adding range " + r)
         rows = []
-
         row = []
         for j in range(0, len(self._headings)):
             self._add_to_row(row, service,self._headings[j])

@@ -1,20 +1,19 @@
 from view.manipulate_service_base_view import ManipulateServiceBaseView
 
-class EditServiceView(ManipulateServiceBaseView):
+class AddServiceView(ManipulateServiceBaseView):
     def __init__(self, data_retriever):
         ManipulateServiceBaseView.__init__(self, data_retriever)
 
     def title(self):
-        return "Edit"
+        return "Add"
 
     def method_name(self):
-        return "update_service"
+        return "add_service"
 
     def hidden_value(self, service):
-        return '<input type="hidden" name="id" value="' + service['id'] + '" />'
+        return ""
 
     def cancel_action(self, service):
-        return '<form action="http://localhost:5000/service" id="usrform">' +\
-                    self.hidden_value(service) +\
+        return '<form action="http://localhost:5000/services" id="usrform">' +\
                     '<input type="submit" value="Cancel">' + \
                 '</form>'

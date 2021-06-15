@@ -72,3 +72,8 @@ class RemoteDataManager:
     def update_slide_for_song(self, song, lyrics):
         self._drive.update_slide_file(song, lyrics)
         self.sync_slides_for_song(song)
+
+    def add_service(self, service):
+        self._sheets.add_service(service)
+        self.sync_services()
+        self._local_cache_manager.sync_services()

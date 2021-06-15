@@ -45,7 +45,10 @@ class EmailTemplate:
         for index in [1,2,3,4,5]:
             member_key = "band" + str(index)
             if member_key in service and service[member_key] != "":
-                output = output + '<li>{}</li>'.format(service[member_key])
+                member_value = service[member_key]
+                if 'lead' in service and member_value.startswith(service['lead']):
+                    member_value += ' (lead)'
+                output = output + '<li>{}</li>'.format(member_value)
         return output
 
     def _edit_params(self, service, optional_service_params): # todo duplicate

@@ -1,16 +1,21 @@
+<style>
+  input.submitEmailButton {
+    border: 4px solid red;
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+</style>
+
 <br/>
 <br/>
 <div>
 <form class="form" id="form" action="http://localhost:5000/send_music_email" >
-    <input type="submit" class="submitBtn" value="Send Email" " />
+    <input type="submit" class="submitEmailButton" value="Send Email" " />
     <input type="hidden" name="id" value="_SERVICE_" />
     <input type="hidden" name="recipients" value="_RECIPIENTS_" />
 </form>
 
-</div>
-<div>
-<form class="form" id="form" action="http://localhost:5000/edit_service" >
-    <input type="submit" class="submitBtn" value="Edit " />
-    <input type="hidden" name="id" value="_SERVICE_" />
-</form>
 </div>

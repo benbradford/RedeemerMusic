@@ -10,12 +10,14 @@ from view.service_view import ServiceView
 from view.email_template import EmailTemplate
 from view.services_view import ServicesView
 from view.service_view import ServiceView
+from view.add_service_view import AddServiceView
 from view.edit_service_view import EditServiceView
 from data.data_factory import get_data_factory
 
 data_retriever = get_data_factory().get_data_retriever()
 slides_helper = get_helper_factory().get_slides_helper()
 gmail_client = get_client_factory().get_gmail_client()
+remote_data_manager = get_data_factory().get_remote_data_manager()
 
 def _get_service_from_id_param():
     service_id = extract_required_param('id')
@@ -26,9 +28,10 @@ def _get_service_from_id_param():
 
 optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6']
 
-def _get_updated_service_from_params():
+def _get_updated_service_from_params(requires_id):
     service = {}
-    service['id'] = extract_required_param('id')
+    if requires_id:
+        service['id'] = extract_required_param('id')
     for opt in optional_service_params:
         print "got param {} value {}".format(opt, extract_optional_param(opt, ''))
         service[opt] = extract_optional_param(opt, '').replace("%20", ' ')
@@ -45,10 +48,21 @@ def services_api():
     res = data_retriever.get_services()
     return ServicesView().render(res)
 
+@app.route("/add_service_page", methods=['GET'])
+def add_service_page_api():
+    service = {}
+    return AddServiceView(data_retriever).render(service)
+
+@app.route("/add_service", methods=['GET'])
+def add_service_api():
+    service =  _get_updated_service_from_params(False)
+    remote_data_manager.add_service(service)
+    return ServicesView().render(data_retriever.get_services())
+
 @app.route('/service', methods=['GET'])
 def service_api():
     service = data_retriever.get_service(extract_required_param('id'))
-    recipients = extract_optional_param('recipients', "ben.bradford80@gmail.com")#, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com")
+    recipients = extract_optional_param('recipients', "ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com")
     return ServiceView(data_retriever).render(service, recipients)
 
 @app.route('/edit_service', methods=['GET'])
@@ -58,7 +72,7 @@ def service_edit_api():
 
 @app.route('/update_service', methods=['GET'])
 def update_service_api():
-    service = _get_updated_service_from_params()
+    service = _get_updated_service_from_params(True)
     return jsonify(service)
 
 @app.route('/send_music_email', methods=['GET'])
