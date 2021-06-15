@@ -33,7 +33,6 @@ def _get_updated_service_from_params(requires_id):
     if requires_id:
         service['id'] = extract_required_param('id')
     for opt in optional_service_params:
-        print "got param {} value {}".format(opt, extract_optional_param(opt, ''))
         service[opt] = extract_optional_param(opt, '').replace("%20", ' ')
     return service
 
@@ -73,7 +72,8 @@ def service_edit_api():
 @app.route('/update_service', methods=['GET'])
 def update_service_api():
     service = _get_updated_service_from_params(True)
-    return jsonify(service)
+    remote_data_manager.update_service(service)
+    return ServicesView().render(data_retriever.get_services())
 
 @app.route('/send_music_email', methods=['GET'])
 def send_music_email_api():

@@ -23,18 +23,37 @@ def index():
 
 if __name__ == "__main__":
     argv = sys.argv[1:]
-    cache_source = get_data_factory().get_local_cache_manager()
-    run_service = True
-    opts, args = getopt.getopt(argv,"d:",["data-source="])
-
+    cache_source = get_data_factory().get_remote_data_manager()
+    opts, args = getopt.getopt(argv,"s:lnh",["sync=", "local-data", "no-run", "help"])
+    no_run = False
     for opt, arg in opts:
-        if opt == '-d':
-            if arg =='r' or arg == 'remote':
-                cache_source = get_data_factory().get_remote_data_manager()
-                run_service = False
-            elif arg !='l' and arg != 'local':
-                raise Exception("Invalid argument for data-source. Must be local or remote")
-
+        if opt in ['-s', '--sync']:
+            if arg == 'services':
+                cache_source.sync_services()
+            elif arg == 'songs':
+                cache_source.sync_songs()
+            elif arg == 'slides':
+                cache_source.sync_slides()
+            elif arg == 'all':
+                cache_source.sync()
+            else:
+                print "Error - Unknown sync component " + arg
+                raise Exception("Unkown sync component")
+            cache_source = get_data_factory().get_local_cache_manager()
+        elif opt in ['n', '--no-run']:
+            no_run = True
+        elif opt in ['-l', '--local-data']:
+            cache_source = get_data_factory().get_local_cache_manager()
+        elif opt in ['-h', '--help']:
+            print "Usage: python app.py (-s | --sync-only (services | songs | slides | all)) | (-l | --local-data)"
+            print "--sync: Will sync up local data with what is stored in drive. Choose the component to sync or 'all' for all components"
+            print "--local-data: Will use the currently cached local data instead (will not sync with drive)"
+            print "--no-run: Will not run the servuce"
+            print "<no-options>: Normal launch by syncing local data with remote then launch the service"
+            exit()
+        else:
+            raise Exception("Unknown command option")
     cache_source.sync()
-    if run_service:
-        app.run()
+    if no_run:
+        exit()
+    app.run()

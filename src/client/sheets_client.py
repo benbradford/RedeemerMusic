@@ -52,35 +52,66 @@ class SheetsClient:
         return services
 
     def add_service(self, service):
-        res = self._sheets.values().get(spreadsheetId=sheets_id, range='A1:O').execute()
-        res = res.get('values', [])
-        row_number = str(len(res) + 1)
-        last_id = res[len(res)-1][0]
-        next_id = int(last_id) + 1
-        service['id'] = str(next_id)
-        r = 'A' + row_number + ':O' + row_number
-        print("Adding range " + r)
-        rows = []
-        row = []
-        for j in range(0, len(self._headings)):
-            self._add_to_row(row, service,self._headings[j])
-        rows.append(row)
+        res = self._get_next_row_and_id()
+        row_number = res[0]
+        service['id'] = res[1]
+        range = 'A' + row_number + ':O' + row_number
+        row = self._create_row_for_service(service)
 
         self._sheets.values().append(
             spreadsheetId=sheets_id,
-            range=r,
+            range=range,
             body={
                 "majorDimension": "ROWS",
-                "values": rows
+                "values": [row]
             },
             valueInputOption = 'USER_ENTERED'
         ).execute()
 
-    def _add_to_row(self, row, service, key):
+    def update_service(self, service):
+        row_number = self._find_row_matching_service(service)
+        range = 'A' + row_number + ':O' + row_number
+        row = self._create_row_for_service(service)
+        self._sheets.values().update(
+            spreadsheetId=sheets_id,
+            range=range,
+            body={
+                "majorDimension": "ROWS",
+                "values": [row]
+            },
+            valueInputOption = 'USER_ENTERED'
+        ).execute()
+
+    def _create_row_for_service(self, service):
+        row = []
+        for j in range(0, len(self._headings)):
+            row.append(self._add_to_row(service,self._headings[j]))
+        return row
+
+    def _get_next_row_and_id(self):
+        res = self._sheets.values().get(spreadsheetId=sheets_id, range='A2:A').execute()
+        current_ids = res.get('values', [])
+        row_number = str(len(res) + 1)
+        ids = []
+        for id in current_ids:
+            if id[0] != 'id':
+                ids.append(int(id[0]))
+        return [row_number, str(max(ids) + 1)]
+
+    def _add_to_row(self, service, key):
         if key in service:
-            row.append(service[key])
+            return service[key]
         else:
-            row.append('')
+            return ''
+
+    def _find_row_matching_service(self, service):
+        res = self._sheets.values().get(spreadsheetId=sheets_id, range='A2:A').execute()
+        current_ids = res.get('values', [])
+        for i in range(len(current_ids)):
+            if current_ids[i][0] == service['id']:
+                return str(i + 2)
+        print "Error - cannot find service with id " + service['id']
+        raise Exception("Cannot find existing service")
 
     def _get_headings(self):
         headings = []
