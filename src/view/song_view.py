@@ -1,9 +1,10 @@
 from view_base import ViewBase
+from view_common import read_template_file
 
 class SongView:
     def __init__(self, data_retriever):
-        self._template = open('../res/song_view.html', "r").read()
-        self._edit = open('../res/edit_slides_button.html', 'r').read()
+        self._template = read_template_file('song_view.html')
+        self._edit = read_template_file('edit_slides_button.html')
         self._data_retriever = data_retriever
 
     def render(self, song):

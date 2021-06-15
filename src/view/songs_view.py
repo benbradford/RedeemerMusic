@@ -1,8 +1,9 @@
 from view_base import ViewBase
+from view_common import read_template_file
 
 class SongsView:
     def __init__(self):
-        self._template = open('../res/songs_view.html', "r").read()
+        self._template = read_template_file('songs_view.html')
 
     def render(self, song_names):
         return ViewBase().render(self._template.replace("_SONGS_", self._display_options(song_names)))

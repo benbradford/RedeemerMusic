@@ -1,9 +1,10 @@
 from view_base import ViewBase
 from email_template import EmailTemplate
+from view_common import read_template_file
 
 class ServiceView:
     def __init__(self, data_retriever):
-        self._confirmation_template = open('../res/email_send_confirmation_template.html' ,"r").read()
+        self._confirmation_template = read_template_file('email_send_confirmation_template.html')
         self._email_template = EmailTemplate(data_retriever)
 
     def render(self, service, recipients):

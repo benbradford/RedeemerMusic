@@ -5,7 +5,6 @@ from flask import request, jsonify, send_file
 
 from api_common import app, extract_required_param, extract_optional_param, extract_body_from_request
 from client.client_factory import get_client_factory
-from helper.helper_factory import get_helper_factory
 from view.service_view import ServiceView
 from view.email_template import EmailTemplate
 from view.services_view import ServicesView
@@ -13,9 +12,9 @@ from view.service_view import ServiceView
 from view.add_service_view import AddServiceView
 from view.edit_service_view import EditServiceView
 from data.data_factory import get_data_factory
+from helper.slides_helper import SlidesHelper
 
 data_retriever = get_data_factory().get_data_retriever()
-slides_helper = get_helper_factory().get_slides_helper()
 gmail_client = get_client_factory().get_gmail_client()
 remote_data_manager = get_data_factory().get_remote_data_manager()
 
@@ -39,7 +38,7 @@ def _get_updated_service_from_params(requires_id):
 @app.route('/slides', methods=['GET'])
 def slides_api():
     service = _get_service_from_id_param()
-    slides_helper.create_powerpoint(service, '../bin/powerpoint.pptx')
+    SlidesHelper(data_retriever).create_powerpoint(service, '../bin/powerpoint.pptx')
     return "ok"
 
 @app.route('/services', methods=['GET'])

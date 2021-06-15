@@ -1,8 +1,9 @@
 from view_base import ViewBase
+from view_common import read_template_file
 
 class ServicesView:
     def __init__(self):
-        self._template = open('../res/services_view.html', "r").read()
+        self._template = read_template_file('services_view.html')
 
     def render(self, services):
         return ViewBase().render(self._template.replace("_SERVICES_", self._display_options(services)))

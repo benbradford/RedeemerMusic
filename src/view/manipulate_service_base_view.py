@@ -1,8 +1,9 @@
 from view.view_base import ViewBase
+from view_common import read_template_file
 
 class ManipulateServiceBaseView:
     def __init__(self, data_retriever):
-        self._template = open('../res/edit_service_view.html', "r").read()
+        self._template = read_template_file('edit_service_view.html')
         self._leaders = ["Ben B", "Chris W"]
         self._players = ["Ben B - Vocals and Guitar", "Chris W - Guitar", "Ellie - Vocals", "Emma - Vocals"]
         self._data_retriever = data_retriever

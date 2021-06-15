@@ -1,14 +1,15 @@
+from view_common import read_template_file
 
 class EmailTemplate:
 
     def __init__(self, data_retriever):
-        self._template = open('../res/email_template.html', "r").read()
+        self._template = read_template_file('email_template.html')
         self._components = ['lyrics', 'chords', 'lead']
         self._data_retriever = data_retriever
 
     def get_template(self, service):
         return self._template\
-            .replace("_DATE_", service['date'])\
+            .replace("_DATE_", service['date']).replace('2020', '').replace('2021', '')\
             .replace("_EXTRA_", self._get_message(service))\
             .replace("_SONGS_", self._get_songs(service))\
             .replace("_MEMBERS_", self._get_members(service))\
