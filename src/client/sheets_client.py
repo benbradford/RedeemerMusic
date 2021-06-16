@@ -11,11 +11,12 @@ class SheetsClient:
         self._service = build('sheets', 'v4', credentials=creds)
         self._sheets = self._service.spreadsheets()
         self._headings = self._get_headings()
+        self._last_column = 'P'
 
     def list_song_names(self):
         songs = []
         result = self._sheets.values().get(spreadsheetId=songs_id,
-                                        range='A2:A').execute()
+                                        range='A2:' + self._last_column).execute()
         values = result.get('values', [])
         if not values:
             print('No data found.')
@@ -33,7 +34,7 @@ class SheetsClient:
 
     def get_services(self):
         result = self._sheets.values().get(spreadsheetId=sheets_id,
-                                range='A2:O').execute()
+                                range='A2:' + self._last_column).execute()
         values = result.get('values', [])
 
         services = []
@@ -55,7 +56,7 @@ class SheetsClient:
         res = self._get_next_row_and_id()
         row_number = res[0]
         service['id'] = res[1]
-        range = 'A' + row_number + ':O' + row_number
+        range = 'A' + row_number + ':' + row_number
         row = self._create_row_for_service(service)
 
         self._sheets.values().append(
@@ -70,7 +71,7 @@ class SheetsClient:
 
     def update_service(self, service):
         row_number = self._find_row_matching_service(service)
-        range = 'A' + row_number + ':O' + row_number
+        range = 'A' + row_number + ':' + row_number
         row = self._create_row_for_service(service)
         self._sheets.values().update(
             spreadsheetId=sheets_id,
@@ -116,7 +117,7 @@ class SheetsClient:
     def _get_headings(self):
         headings = []
         result = self._sheets.values().get(spreadsheetId=sheets_id,
-                                range='A1:O1').execute()
+                                range='A1:P1').execute()
         values = result.get('values', [])
         if not values:
             print('No data found.')

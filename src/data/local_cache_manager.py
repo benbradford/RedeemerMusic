@@ -1,5 +1,5 @@
+import os
 import json
-
 import threading
 
 class LocalFilesLock:
@@ -12,7 +12,8 @@ class LocalFilesLock:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._lock.release()
 
-cache_dir = '../bin/cache/'
+
+cache_dir = os.path.join(os.path.dirname(__file__), '../../bin/cache/')
 
 songs_file = cache_dir + 'songs.json'
 services_file = cache_dir + 'services.json'

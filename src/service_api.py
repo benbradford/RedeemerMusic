@@ -13,6 +13,9 @@ from view.add_service_view import AddServiceView
 from view.edit_service_view import EditServiceView
 from data.data_factory import get_data_factory
 from helper.slides_helper import SlidesHelper
+from helper.recipients_helper import RecipientsHelper
+
+powerpoint_location = os.path.join(os.path.dirname(__file__), '../bin/')
 
 data_retriever = get_data_factory().get_data_retriever()
 gmail_client = get_client_factory().get_gmail_client()
@@ -25,7 +28,7 @@ def _get_service_from_id_param():
         return {}
     return service
 
-optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6']
+optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6', 'email_status']
 
 def _get_updated_service_from_params(requires_id):
     service = {}
@@ -38,7 +41,7 @@ def _get_updated_service_from_params(requires_id):
 @app.route('/slides', methods=['GET'])
 def slides_api():
     service = _get_service_from_id_param()
-    SlidesHelper(data_retriever).create_powerpoint(service, '../bin/powerpoint.pptx')
+    SlidesHelper(data_retriever).create_powerpoint(service, powerpoint_location + service['date'] + ' powerpoint.pptx')
     return "ok"
 
 @app.route('/services', methods=['GET'])
@@ -60,13 +63,12 @@ def add_service_api():
 @app.route('/service', methods=['GET'])
 def service_api():
     service = data_retriever.get_service(extract_required_param('id'))
-    recipients = extract_optional_param('recipients', "ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk, emmasarahsutton@gmail.com, elaughton7@gmail.com, ben1ayers1@gmail.com, g.yorke20@gmail.com, david.3longley@btinternet.com, chriswatkins123@gmail.com")
-    return ServiceView(data_retriever).render(service, recipients)
+    return ServiceView(data_retriever).render(service, RecipientsHelper())
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
     service = data_retriever.get_service(extract_required_param('id'))
-    return EditServiceView(data_retriever).render(service)
+    return EditServiceView(data_retriever).render(service, RecipientsHelper())
 
 @app.route('/update_service', methods=['GET'])
 def update_service_api():
@@ -81,5 +83,10 @@ def send_music_email_api():
     body = EmailTemplate(data_retriever).get_template(service)\
                 .replace("_PUBLISH_BUTTON_", "")
     subject = "Redeemer Music for " + service['date']
-    gmail_client.send(subject, body, recipients)
+    #gmail_client.send(subject, body, recipients, recipients_helper.get_from_address())
+    if service['email_status'] == 'not sent test':
+        service['email_status'] = 'not sent'
+    else:
+        service['email_status'] = 'sent'
+    remote_data_manager.update_service(service)
     return "ok"

@@ -11,10 +11,11 @@ class EditServiceView(ManipulateServiceBaseView):
         return "update_service"
 
     def hidden_value(self, service):
-        return '<input type="hidden" name="id" value="' + service['id'] + '" />'
+        return '<input type="hidden" name="id" value="' + service['id'] + '" />'\
+                '<input type="hidden" name="email_status" value="' + service['email_status'] + '" />'
 
     def cancel_action(self, service):
         return '<form action="http://localhost:5000/service" id="usrform">' +\
-                    self.hidden_value(service) +\
+                    '<input type="hidden" name="id" value="' + service['id'] + '" />' +\
                     '<input type="submit" value="Cancel">' + \
                 '</form>'

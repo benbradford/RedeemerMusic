@@ -8,7 +8,7 @@ class DataFactory:
         cache = Cache()
         self._retriever = DataRetriever(cache)
         self._lcm = LocalCacheManager(cache)
-        self._rcm = RemoteDataManager(drive_client, sheets_client, self._lcm)
+        self._rcm = RemoteDataManager(drive_client, sheets_client, self._lcm, self._retriever)
 
     def get_local_cache_manager(self):
         return self._lcm

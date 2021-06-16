@@ -4,7 +4,7 @@
     background-color: white;
     color: black;
     padding: 14px 28px;
-    font-size: 24px;
+    font-size: _FONT_SIZE_;
     cursor: pointer;
   }
 </style>
@@ -13,9 +13,9 @@
 <br/>
 <div>
 <form class="form" id="form" action="http://localhost:5000/send_music_email" >
-    <input type="submit" class="submitEmailButton" value="Send Email" " />
+    <input type="submit" class="submitEmailButton" value="_SEND_EMAIL_LABEL_" " />
     <input type="hidden" name="id" value="_SERVICE_" />
     <input type="hidden" name="recipients" value="_RECIPIENTS_" />
 </form>
-
+_RECIPIENTS_
 </div>

@@ -25,8 +25,6 @@ class SongView:
         if 'slides' not in song['file_ids']:
             return "No slides present for this song"
         output = "<p>" + self._edit.replace('_SONG_NAME_', song['name']) + "</p>"
-        #slides_file = '../bin/' + song['name'] + ".txt"
-        #self._drive_client.download_slide(song['file_ids']['slides'], slides_file)
         slides = self._data_retriever.get_slide(song['name'])
         output = output + "<p>" + slides.replace('\n', '</br>').decode('utf-8') + "</p>"
 

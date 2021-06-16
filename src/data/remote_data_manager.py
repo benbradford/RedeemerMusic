@@ -16,11 +16,12 @@ class SlideDownloader:
         self._drive.download_slide(self._file_id, self._file)
 
 class RemoteDataManager:
-    def __init__(self, drive, sheets, local_cache_manager):
+    def __init__(self, drive, sheets, local_cache_manager, retriever):
         self._drive = drive
         self._sheets = sheets
         self._song_components = ['lyrics', 'chords', 'lead', 'slides']
         self._local_cache_manager = local_cache_manager
+        self._data_retriever = retriever
 
     def sync(self):
         songs = self.sync_songs()
@@ -29,7 +30,6 @@ class RemoteDataManager:
         self._local_cache_manager.sync()
 
     def sync_songs(self):
-        print "getting song names"
         song_names = self._sheets.list_song_names()
         songs = {}
         for name in song_names:
@@ -62,6 +62,12 @@ class RemoteDataManager:
             else:
                 print "[WARN] No slides available for " + name
                 slides_from_song = "missing"
+
+    def sync_slides_based_on_local(self):
+        self._local_cache_manager.sync_songs()
+        self._local_cache_manager.sync_slides()
+        songs = self._data_retriever.get_songs()
+        self.sync_slides(songs)
 
     def sync_slides_for_song(self, song):
         file = cache_dir + song['name'] + '.txt'
