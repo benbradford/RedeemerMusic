@@ -1,6 +1,7 @@
-import os
 import json
 import threading
+import copy
+from data_common import cache_dir
 
 class LocalFilesLock:
     def __init__(self):
@@ -12,8 +13,6 @@ class LocalFilesLock:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._lock.release()
 
-
-cache_dir = os.path.join(os.path.dirname(__file__), '../../bin/cache/')
 
 songs_file = cache_dir + 'songs.json'
 services_file = cache_dir + 'services.json'
@@ -74,6 +73,13 @@ class LocalCacheManager:
             with self._slide_lock(song['name']):
                 slides = open(file_name, 'r').read()
         self._cache.add_or_update_slide(song['name'], slides)
+
+    def sync_song(self, song):
+        with self._cache.songs_lock():
+            songs = copy.deepcopy(self._cache.get_songs())
+        songs[song['name']] = song
+        self.save_to_songs(songs)
+        self.sync_songs()
 
     def _slide_lock(self, name):
         with self._masterSlidesLock:

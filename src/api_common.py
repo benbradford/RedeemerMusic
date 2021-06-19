@@ -2,7 +2,7 @@ import flask
 from flask_cors import CORS
 from flask import request, jsonify, send_file
 
-app = flask.Flask(__name__)
+app = flask.Flask('Redeemer Music')
 CORS(app)
 app.config["DEBUG"] = True
 

@@ -15,6 +15,11 @@ folder_ids = {
     'slides': '10_hTK6keFv1gWx-OkFuImuDtqFU8PVRN'
 }
 
+mime_map = {
+    'pdf': 'application/pdf',
+    'txt': 'text/plain'
+}
+
 class DriveClient:
 
     def __init__(self, creds):
@@ -94,3 +99,38 @@ class DriveClient:
         while done is False:
             status, done = downloader.next_chunk()
             print outfile + " - Download %d%%." % int(status.progress() * 100)
+
+    def upload_song(self, files):
+        for file in files:
+            file_path = file['path']
+            file_name = file_path.split('/')[1]
+            file_type = file['type']
+            print file_path
+            print file_type
+            if '(lyrics)' in file_name:
+                parent = folder_ids['lyrics']
+            elif '(chords)' in file_name:
+                parent = folder_ids['chords']
+            elif '(lead)' in file_name:
+                parent = folder_ids['lead']
+            elif '(slides)' in file_name:
+                parent = folder_ids['slides']
+                file_name = file_path.split('/')[1]
+            else:
+                raise("Unknown file component for " + file_name)
+            media = MediaFileUpload(
+                file_path,
+                mimetype=mime_map[file_type],
+                resumable=True
+            )
+            request = self._service.files().create(
+                media_body=media,
+                supportsAllDrives=True,
+                body={'name': file_name, 'parents': [parent]}
+            )
+            response = None
+            while response is None:
+                status, response = request.next_chunk()
+                if status:
+                    print("Uploaded %d%%." % int(status.progress() * 100))
+            print("Upload Complete!")

@@ -23,4 +23,11 @@ class ServiceView:
         return ViewBase().render(self._email_template.get_template(service)\
             .replace("_PUBLISH_BUTTON_", confirmation)\
             .replace("_SERVICE_", service['id'])\
-            .replace("_RECIPIENTS_", recipients))
+            .replace("_RECIPIENTS_", recipients)\
+            .replace("_RECIPIENT_LIST_", self._recipient_list(recipients)))
+
+    def _recipient_list(self, recipients):
+        output = ""
+        for add in recipients.split(', '):
+            output += '{}<br/>'.format(add)
+        return output

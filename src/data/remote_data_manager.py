@@ -1,10 +1,6 @@
 import json
 
-cache_dir = '../bin/cache/'
-
-songs_file = cache_dir + 'songs.json'
-services_file = cache_dir + 'services.json'
-slides_file = cache_dir + 'slides.json'
+from data_common import cache_dir
 
 class SlideDownloader:
     def __init__(self, drive, file_id, file):
@@ -33,15 +29,7 @@ class RemoteDataManager:
         song_names = self._sheets.list_song_names()
         songs = {}
         for name in song_names:
-            print "syncing song " + name
-            song = {}
-            song['name'] = name
-            song['file_ids'] = {}
-            for component in self._song_components:
-                file_id = self._drive.get_file_id(name, component)
-                if file_id is not None:
-                    song['file_ids'][component] = file_id
-                    print "got file id for " + component
+            song = _get_song(name)
             songs[name] = song
         self._local_cache_manager.save_to_songs(songs)
         return songs
@@ -89,3 +77,24 @@ class RemoteDataManager:
         self._sheets.add_service(service)
         self.sync_services()
         self._local_cache_manager.sync_services()
+
+    def add_song(self, files):
+        self._drive.upload_song(files)
+        file_path = files[0]['path']
+        file_name = file_path.split('/')[1].split('.')[0]
+        file_name = file_name.replace('(lyrics)' , '').replace('(chords)', '').replace('(lead)', '').replace('(slides)', '')
+        print "updating " + file_name
+        song = self._get_song(file_name)
+        self._local_cache_manager.sync_song(song)
+
+    def _get_song(self, name):
+        print "syncing song " + name
+        song = {}
+        song['name'] = name
+        song['file_ids'] = {}
+        for component in self._song_components:
+            file_id = self._drive.get_file_id(name, component)
+            if file_id is not None:
+                song['file_ids'][component] = file_id
+                print "got file id for " + component
+        return song
