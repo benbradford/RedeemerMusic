@@ -1,5 +1,8 @@
 import sys, getopt
 import app_init
+from jinja2 import Template
+from flask import render_template, redirect
+
 from view.view_base import ViewBase
 from view.view_common import read_template_file
 from api_common import app
@@ -10,12 +13,20 @@ import service_api
 from args_factory import ArgsFactory
 
 @app.route('/health', methods=['GET'])
-def home():
+def health():
     return "okidoki"
 
 @app.route('/', methods=['GET'])
 def index():
-    return ViewBase().render(read_template_file('index.html'))
+    return redirect("http://localhost:5000/home", code=302)
+
+@app.route('/home', methods=['GET'])
+def home_api():
+    return render_template('home.html')
+
+@app.route('/about', methods=['GET'])
+def about_api():
+    return render_template('about.html')
 
 if __name__ == "__main__":
     argv = sys.argv[1:]
@@ -32,7 +43,6 @@ if __name__ == "__main__":
         elif opt in ['-h', '--help']:
             args_factory.withHelp()
         else:
-            print "Unkown option " + opt
-            raise Exception("Unknown command option")
+            raise Exception("Unknown command option " + opt)
 
     args_factory.boot()

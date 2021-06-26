@@ -51,8 +51,8 @@ class ArgsFactory:
             return get_data_factory().get_local_cache_manager()
 
     def _show_help(self):
-        print "Usage: python app.py (-s | --sync-only (services | songs | slides | all)) | (-l | --local-data)"
-        print "--sync: Will sync up local data with what is stored in drive. Choose the component to sync or 'all' for all components"
-        print "--local-data: Will use the currently cached local data instead (will not sync with drive)"
-        print "--no-run: Will not run the servuce"
-        print "<no-options>: Normal launch by syncing local data with remote then launch the service"
+        print ("Usage: python app.py (-s | --sync-only (services | songs | slides | all)) | (-l | --local-data)")
+        print ("--sync: Will sync up local data with what is stored in drive. Choose the component to sync or 'all' for all components")
+        print ("--local-data: Will use the currently cached local data instead (will not sync with drive)")
+        print ("--no-run: Will not run the servuce")
+        print ("<no-options>: Normal launch by syncing local data with remote then launch the service")

@@ -1,6 +1,6 @@
 import json
 import base64
-from flask import request, jsonify, send_file
+from flask import request, jsonify, send_file, render_template
 
 from api_common import app, extract_required_param
 from view.songs_view import SongsView
@@ -24,8 +24,6 @@ def get_song_from_params(name, component, files):
             out_path = 'bin/' + file_name
             uploaded_file.save(out_path)
             files.append({'path': out_path, 'type': type})
-    else:
-        print "No " + component + " in song files"
 
 def get_song_files_from_params(song_name):
     files = []
@@ -35,16 +33,48 @@ def get_song_files_from_params(song_name):
     get_song_from_params(song_name, 'slides', files)
     return files
 
+def _get_slides(song):
+    print song['file_ids']
+    if 'slides' not in song['file_ids']:
+        return None
+    lines = data_retriever.get_slide(song['name']).decode('utf-8').split('\n')
+    pages = []
+    page = []
+    for l in lines:
+        if not any(c.isalpha() for c in l):
+            if len(page) > 0:
+                pages.append(page)
+                page = []
+        else:
+            page.append(l)
+    if len(page) > 0:
+        pages.append(page)
+    return pages
+
+def _update_component_file_ids(song, component, components):
+    if component in song['file_ids']:
+        components[component] = song['file_ids'][component]
+    else:
+        components[component] = None
+
 @app.route('/songs', methods=['GET'])
 def songs_api():
     names = data_retriever.get_song_names()
-    return SongsView().render(names)
+    return render_template('songs.html', song_names=data_retriever.get_song_names())
 
 @app.route('/song', methods=['GET'])
 def song_api():
     song_name = extract_required_param('name').replace("%20", " ")
     song = data_retriever.get_song(song_name)
-    return SongView(data_retriever).render(song)
+    components = {}
+    _update_component_file_ids(song, 'lyrics', components)
+    _update_component_file_ids(song, 'chords', components)
+    _update_component_file_ids(song, 'lead', components)
+    return render_template('song.html',
+        song_name=song_name,
+        components=components,
+        slides=_get_slides(song)
+    )
 
 @app.route('/refresh_slides', methods=['GET'])
 def refresh_slides_api():
@@ -79,9 +109,8 @@ def add_song_api():
     ccli = ""
     if 'ccli' in request.form:
         ccli = request.form.get('ccli')
-    print "adding song " + song_name
+    print ("adding song " + song_name)
     if data_retriever.get_song(song_name) is not None:
-        print "error - song already exists"
         return "Error, " + song_name + " already exists"
     files = get_song_files_from_params(song_name)
     remote_data_manager.add_song(song_name, files, ccli)

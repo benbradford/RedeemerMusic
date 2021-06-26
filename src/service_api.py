@@ -1,7 +1,7 @@
 import json
 import base64
 import os
-from flask import request, jsonify, send_file
+from flask import request, jsonify, send_file, render_template
 
 from api_common import app, extract_required_param, extract_optional_param, extract_body_from_request
 from client.client_factory import get_client_factory
@@ -42,7 +42,7 @@ def _get_updated_service_from_params(requires_id):
 @app.route('/services', methods=['GET'])
 def services_api():
     res = data_retriever.get_services()
-    return ServicesView().render(res)
+    return render_template('services.html', services=res)
 
 @app.route("/add_service_page", methods=['GET'])
 def add_service_page_api():

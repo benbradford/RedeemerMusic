@@ -30,11 +30,9 @@ class SlidesHelper:
             else:
                 if len(curr) > 1:
                     pages.append(curr)
-                    print curr
                     curr = ""
 
         if len(curr) > 1:
-            print curr
             pages.append(curr + '\n')
         return pages
 

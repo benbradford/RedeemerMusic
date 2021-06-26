@@ -140,7 +140,7 @@ class SheetsClient:
         for i in range(len(current_ids)):
             if current_ids[i][0] == name:
                 return str(i + 2)
-        print "Error - cannot find service with id " + service['id']
+        print ("Error - cannot find service with id " + service['id'])
         raise Exception("Cannot find existing service")
 
     def _find_row_matching_service(self, service):
@@ -149,7 +149,7 @@ class SheetsClient:
         for i in range(len(current_ids)):
             if current_ids[i][0] == service['id']:
                 return str(i + 2)
-        print "Error - cannot find service with id " + service['id']
+        print ("Error - cannot find service with id " + service['id'])
         raise Exception("Cannot find existing service")
 
     def _get_service_headings(self):

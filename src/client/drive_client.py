@@ -52,7 +52,7 @@ class DriveClient:
 
     def get_file_id(self, song_name, component):
         folder_id = folder_ids[component]
-        print "getting file id for " + song_name
+        print ("getting file id for " + song_name)
         song_file_name = song_name + " (" + component + ")"
         song_file_name = song_file_name.replace("'", "\\'")
         if component == 'slides':
@@ -66,7 +66,7 @@ class DriveClient:
         ).execute()
         items = results.get('files', [])
         if len(items) == 0:
-            print "WARN Cannot find " + component + " for " + song_name
+            print ("WARN Cannot find " + component + " for " + song_name)
             return None
         return items[0]['id']
 
@@ -95,15 +95,13 @@ class DriveClient:
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            print outfile + " - Download %d%%." % int(status.progress() * 100)
+            print (outfile + " - Download %d%%." % int(status.progress() * 100))
 
     def upload_song(self, files):
         for file in files:
             file_path = file['path']
             file_name = file_path.split('/')[1]
             file_type = file['type']
-            print file_path
-            print file_type
             if '(lyrics)' in file_name:
                 parent = folder_ids['lyrics']
             elif '(chords)' in file_name:
@@ -137,8 +135,6 @@ class DriveClient:
             file_path = file['path']
             file_name = file_path.split('/')[1]
             file_type = file['type']
-            print file_path
-            print file_type
             file_id = None
             if '(lyrics)' in file_name:
                 component = 'lyrics'

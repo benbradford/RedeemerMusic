@@ -10,7 +10,6 @@ def extract_required_param(name):
     if name in request.args:
         return request.args[name]
     else:
-        print "Error: Missing required parameters " + name
         raise Exception("Error: Missing required parameters ")
 
 def extract_optional_param(name, default):

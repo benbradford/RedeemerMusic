@@ -48,7 +48,7 @@ class RemoteDataManager:
                 downloader = SlideDownloader(self._drive, song['file_ids']['slides'], file)
                 self._local_cache_manager.with_slide_locked(name, downloader.download)
             else:
-                print "[WARN] No slides available for " + name
+                print ("[WARN] No slides available for " + name)
                 slides_from_song = "missing"
 
     def sync_slides_based_on_local(self):
@@ -94,7 +94,7 @@ class RemoteDataManager:
         return updated
 
     def _get_song(self, name):
-        print "syncing song " + name
+        print ("syncing song " + name)
         song = {}
         song['name'] = name
         song['file_ids'] = {}
@@ -102,5 +102,4 @@ class RemoteDataManager:
             file_id = self._drive.get_file_id(name, component)
             if file_id is not None:
                 song['file_ids'][component] = file_id
-                print "got file id for " + component
         return song
