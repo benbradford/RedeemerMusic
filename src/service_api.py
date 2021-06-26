@@ -83,7 +83,7 @@ def send_music_email_api():
     body = EmailTemplate(data_retriever).get_template(service)\
                 .replace("_PUBLISH_BUTTON_", "")
     subject = "Redeemer Music for " + service['date']
-    #gmail_client.send(subject, body, recipients, recipients_helper.get_from_address())
+    gmail_client.send(subject, body, recipients, RecipientsHelper().get_from_address())
     if service['email_status'] == 'not sent test':
         service['email_status'] = 'not sent'
     else:

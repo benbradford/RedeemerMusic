@@ -1,0 +1,13 @@
+<form method="POST" action="http://localhost:5000/update_song" enctype="multipart/form-data">
+  <input type="hidden" name="previous" value="_SONG_NAME_" />
+  <p>Name: <input type="text" id="name" name="name" value="_SONG_NAME_"/></p>
+  <p>Ccli: <input type="text" id="ccli" name="CCLI number" value="_CCLI_"/></p>
+  <p>Lyrics: <input type="file" name="lyrics"> _LYRICS_ </p>
+  <p>Chords: <input type="file" name="chords"> _CHORDS_ </p>
+  <p>Lead: <input type="file" name="lead"> _LEAD_ </p>
+  <p><input type="submit" value="Update"></p>
+</form>
+
+<form action="http://localhost:5000/song" id="usrform">'
+  <input type="submit" value="Cancel">'
+</form>'

@@ -18,7 +18,7 @@ class SongView:
     def _render_component(self, song, component):
         if component in song['file_ids']:
             href = "https://drive.google.com/file/d/" + song['file_ids'][component] + "/view?usp=sharing"
-            return '<li> <a href="{}">[{}]</a> </li>'.format(href, component)
+            return '<li> <a target="_blank" rel="noopener noreferrer" href="{}">[{}]</a></li>'.format(href, component)
         return ""
 
     def _render_slides(self, song):

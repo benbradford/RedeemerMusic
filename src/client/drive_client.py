@@ -76,10 +76,7 @@ class DriveClient:
         outF.write(lyrics)
         outF.write("\n")
         outF.close()
-        file_metadata = {
-            'name': file_name,
-            'parents': [folder_ids['slides']]
-        }
+
         upload = MediaFileUpload(file_name, mimetype='text/plain' )
         file = self._service.files().update(
             media_body=upload,
@@ -134,3 +131,50 @@ class DriveClient:
                 if status:
                     print("Uploaded %d%%." % int(status.progress() * 100))
             print("Upload Complete!")
+
+    def update_song(self, file_ids, files): # Todo this doesn't allow name changing
+        for file in files:
+            file_path = file['path']
+            file_name = file_path.split('/')[1]
+            file_type = file['type']
+            print file_path
+            print file_type
+            file_id = None
+            if '(lyrics)' in file_name:
+                component = 'lyrics'
+            elif '(chords)' in file_name:
+                component = 'chords'
+            elif '(lead)' in file_name:
+                component = 'lead'
+            elif '(slides)' in file_name:
+                component = 'slides'
+                file_name = file_path.split('/')[1]
+            else:
+                raise("Unknown file component for " + file_name)
+            parent = folder_ids[component]
+            if component in file_ids:
+                file_id = file_ids[component]
+            if file_id is None:
+                media = MediaFileUpload(
+                    file_path,
+                    mimetype=mime_map[file_type],
+                    resumable=True
+                )
+                request = self._service.files().create(
+                    media_body=media,
+                    supportsAllDrives=True,
+                    body={'name': file_name, 'parents': [parent]}
+                )
+                response = None
+                while response is None:
+                    status, response = request.next_chunk()
+                    if status:
+                        print("Uploaded %d%%." % int(status.progress() * 100))
+                print("Upload Complete!")
+            else:
+                upload = MediaFileUpload(file_path, mime_map[file_type] )
+                file = self._service.files().update(
+                    media_body=upload,
+                    fileId=file_ids[component],
+                    supportsAllDrives=True
+                ).execute()

@@ -29,7 +29,7 @@ class RemoteDataManager:
         song_names = self._sheets.list_song_names()
         songs = {}
         for name in song_names:
-            song = _get_song(name)
+            song = self._get_song(name)
             songs[name] = song
         self._local_cache_manager.save_to_songs(songs)
         return songs
@@ -78,14 +78,20 @@ class RemoteDataManager:
         self.sync_services()
         self._local_cache_manager.sync_services()
 
-    def add_song(self, files):
+    def add_song(self, name, files, ccli):
+        self._sheets.add_song(name, ccli)
         self._drive.upload_song(files)
-        file_path = files[0]['path']
-        file_name = file_path.split('/')[1].split('.')[0]
-        file_name = file_name.replace('(lyrics)' , '').replace('(chords)', '').replace('(lead)', '').replace('(slides)', '')
-        print "updating " + file_name
-        song = self._get_song(file_name)
+        song = self._get_song(name)
+        self.sync_slides_for_song(song)
         self._local_cache_manager.sync_song(song)
+
+    def update_song(self, old_name, song_name, file_ids, files, ccli):
+        if old_name != song_name:
+            self._sheets.update_song(old_name, song_name, ccli)
+        self._drive.update_song(file_ids, files)
+        updated = self._get_song(song_name)
+        self._local_cache_manager.sync_song(updated)
+        return updated
 
     def _get_song(self, name):
         print "syncing song " + name

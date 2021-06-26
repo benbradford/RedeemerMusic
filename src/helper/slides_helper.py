@@ -87,7 +87,7 @@ class SlidesHelper:
         return tf.add_paragraph()
 
     def _add_lyrics_to_paragraph(self, p, lyrics):
-        p.text = lyrics
+        p.text = lyrics.replace('\r', '')
         p.font.size = Pt(54)
         p.font.color.rgb = RGBColor(255, 255, 255)
         p.alignment = PP_ALIGN.CENTER

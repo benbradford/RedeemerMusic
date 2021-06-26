@@ -37,7 +37,7 @@ class EmailTemplate:
         for component in self._components:
             if component in file_ids:
                 href = "https://drive.google.com/file/d/" + file_ids[component] + "/view?usp=sharing"
-                output = output + ' <a href="{}">[{}]</a>' .format(href, component)
+                output = output + ' <a target="_blank" rel="noopener noreferrer" href="{}">[{}]</a>' .format(href, component)
         output += '</li>'
         return output
 

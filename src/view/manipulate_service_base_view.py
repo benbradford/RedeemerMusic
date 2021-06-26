@@ -18,7 +18,7 @@ class ManipulateServiceBaseView:
                           .replace("_TYPE_", self.title())\
                           .replace("_METHOD_NAME_", self.method_name())\
                           .replace("_HIDDEN_", self.hidden_value(service))
-                          .replace("_CANCEL_ACTION", self.cancel_action(service)))
+                          .replace("_CANCEL_ACTION_", self.cancel_action(service)))
 
     def title(self):
         pass
