@@ -5,6 +5,7 @@ from flask import request, jsonify, send_file
 
 from api_common import app, extract_required_param, extract_optional_param, extract_body_from_request
 from client.client_factory import get_client_factory
+from view.view_common import read_template_file
 from view.service_view import ServiceView
 from view.email_template import EmailTemplate
 from view.services_view import ServicesView
@@ -38,12 +39,6 @@ def _get_updated_service_from_params(requires_id):
         service[opt] = extract_optional_param(opt, '').replace("%20", ' ')
     return service
 
-@app.route('/slides', methods=['GET'])
-def slides_api():
-    service = _get_service_from_id_param()
-    SlidesHelper(data_retriever).create_powerpoint(service, powerpoint_location + service['date'] + ' powerpoint.pptx')
-    return "ok"
-
 @app.route('/services', methods=['GET'])
 def services_api():
     res = data_retriever.get_services()
@@ -63,7 +58,7 @@ def add_service_api():
 @app.route('/service', methods=['GET'])
 def service_api():
     service = data_retriever.get_service(extract_required_param('id'))
-    return ServiceView(data_retriever).render(service, RecipientsHelper())
+    return ServiceView(data_retriever, RecipientsHelper()).render(service)
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
@@ -89,4 +84,27 @@ def send_music_email_api():
     else:
         service['email_status'] = 'sent'
     remote_data_manager.update_service(service)
-    return "ok"
+    return ServiceView(data_retriever, RecipientsHelper()).render(service)
+
+@app.route('/email_slides', methods=['GET'])
+def email_slides_api():
+    service = _get_service_from_id_param()
+    ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
+    SlidesHelper(data_retriever).create_powerpoint(service, ppt_filename)
+    recipients = extract_required_param('recipients')
+    body = read_template_file('powerpoint_email_template.html').replace('_DATE_', service['date'])
+    subject = "Powerpoint slides for " + service['date']
+    gmail_client.send_attachment(subject, body, recipients, RecipientsHelper().get_from_address(), ppt_filename)
+    if service['slides_email_status'] == 'not sent test':
+        service['slides_email_status'] = 'not sent'
+    else:
+        service['slides_email_status'] = 'sent'
+    remote_data_manager.update_service(service)
+    return ServiceView(data_retriever, RecipientsHelper()).render(service)
+
+@app.route('/preview_slides', methods=['GET'])
+def preview_slides_api():
+    service = _get_service_from_id_param()
+    ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
+    SlidesHelper(data_retriever).create_powerpoint(service, ppt_filename)
+    return send_file(ppt_filename, as_attachment=True)

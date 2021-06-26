@@ -9,3 +9,6 @@ class RecipientsHelper:
 
     def get_from_address(self):
         return "ben.bradford80@gmail.com"
+
+    def get_ppt_recipients(self):
+        return "ben.bradford80@gmail.com, jonny@redeemerfolkestone.org, mark.davey9@live.co.uk"

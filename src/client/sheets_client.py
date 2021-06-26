@@ -10,8 +10,8 @@ class SheetsClient:
     def __init__(self, creds):
         self._service = build('sheets', 'v4', credentials=creds)
         self._sheets = self._service.spreadsheets()
+        self._last_column = 'Q'
         self._service_headings = self._get_service_headings()
-        self._last_column = 'P'
 
     def list_song_names(self):
         songs = []
@@ -155,7 +155,7 @@ class SheetsClient:
     def _get_service_headings(self):
         headings = []
         result = self._sheets.values().get(spreadsheetId=sheets_id,
-                                range='A1:P1').execute()
+                                range='A1:' + self._last_column + '1').execute()
         values = result.get('values', [])
         if not values:
             print('No data found.')

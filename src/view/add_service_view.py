@@ -11,7 +11,8 @@ class AddServiceView(ManipulateServiceBaseView):
         return "add_service"
 
     def hidden_value(self, service):
-        return '<input type="hidden" name="email_status" value="not sent test" />'
+        return '<input type="hidden" name="email_status" value="not sent test" />' +\
+            '<input type="hidden" name="slides_email_status" value="not sent test" />'
 
     def cancel_action(self, service):
         return '<form action="http://localhost:5000/services" id="usrform">' +\
