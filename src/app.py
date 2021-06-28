@@ -3,13 +3,9 @@ import app_init
 from jinja2 import Template
 from flask import render_template, redirect
 
-from view.view_base import ViewBase
-from view.view_common import read_template_file
 from api_common import app
-
 import songs_api
 import service_api
-
 from args_factory import ArgsFactory
 
 @app.route('/health', methods=['GET'])

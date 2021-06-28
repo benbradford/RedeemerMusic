@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="POST" action="http://localhost:5000/update_song" enctype="multipart/form-data">
+  <input type="hidden" name="previous" value="{{song['name']}}" />
+  <p>Name: <input type="text" id="name" name="name" value="{{song['name']}}"/></p>
+  <p>Ccli: <input type="text" id="ccli" name="CCLI number" value="{{ccli}}"/></p>
+  <p>Lyrics: <input type="file" name="lyrics">
+    <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/{{song['file_ids']['lyrics']}}/view?usp=sharing">[[current]]</a>
+  </p>
+  <p>Chords: <input type="file" name="chords">
+    <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/{{song['file_ids']['chords']}}/view?usp=sharing">[[current]]</a>
+  </p>
+  <p>Lead: <input type="file" name="lead">
+    <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/{{song['file_ids']['lead']}}/view?usp=sharing">[[current]]</a>
+  </p>
+  <p><input type="submit" value="Update"></p>
+</form>
+
+<form action="http://localhost:5000/song" id="usrform">
+    <input type="hidden" name="name" value="{{song['name']}}" />
+  <input type="submit" value="Cancel">
+</form>
+
+{% endblock %}

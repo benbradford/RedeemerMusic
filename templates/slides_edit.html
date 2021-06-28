@@ -1,5 +1,7 @@
+{% extends "layout.html" %}
+{% block content %}
 
-<h2>_SONG_NAME_</h2>
+<h2>{{song['name']}}</h2>
 
 <style>
 textarea {
@@ -10,14 +12,16 @@ textarea {
 </style>
 <div>
   <textarea rows="40" cols="38" name="lyrics" form="usrform" wrap="soft">
-_SLIDES_
+    {{slides}}
   </textarea>
   <form action="http://localhost:5000/update_slides" id="usrform">
     <input type="submit">
-    <input type="hidden" name="name" value="_SONG_NAME_" />
+    <input type="hidden" name="name" value="{{song['name']}}" />
   </form>
   <form action="http://localhost:5000/song" id="usrform">
     <input type="submit" value="Cancel">
-    <input type="hidden" name="name" value="_SONG_NAME_" />
+    <input type="hidden" name="name" value="{{song['name']}}" />
   </form>
 </div>
+
+{% endblock %}
