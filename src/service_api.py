@@ -2,6 +2,7 @@ import json
 import base64
 import os
 from flask import request, jsonify, send_file, render_template
+from jinja2 import Template
 
 from api_common import app, extract_required_param, extract_optional_param, extract_body_from_request
 from client.client_factory import get_client_factory
@@ -39,6 +40,20 @@ def _get_updated_service_from_params(requires_id):
         service[opt] = extract_optional_param(opt, '').replace("%20", ' ')
     return service
 
+def _get_email_details(service, label_name, email_component, all_recipients):
+    email_details = {}
+    email_details['recipients'] = all_recipients
+    email_details['font_size'] = "24px"
+    email_details['email_label'] = 'Send {} Email'.format(label_name)
+    if service[email_component] == 'sent':
+        email_details['email_label'] = "Resend {} Email".format(label_name)
+        email_details['font_size'] = "12px"
+    elif service[email_component] == 'not sent test':
+        email_details['email_label'] = "Send Test {} Email".format(label_name)
+        email_details['recipients'] = RecipientsHelper().get_test_recipient()
+
+    return email_details
+
 @app.route('/services', methods=['GET'])
 def services_api():
     res = data_retriever.get_services()
@@ -47,7 +62,10 @@ def services_api():
 @app.route("/add_service_page", methods=['GET'])
 def add_service_page_api():
     service = {}
-    return AddServiceView(data_retriever).render(service)
+    return render_template('service_add.html',\
+                            service=service,\
+                            songs=data_retriever.get_songs(),\
+                            song_names=data_retriever.get_song_names())
 
 @app.route("/add_service", methods=['GET'])
 def add_service_api():
@@ -58,12 +76,21 @@ def add_service_api():
 @app.route('/service', methods=['GET'])
 def service_api():
     service = data_retriever.get_service(extract_required_param('id'))
-    return ServiceView(data_retriever, RecipientsHelper()).render(service)
+    service_email_details = _get_email_details(service, 'Service', 'email_status', RecipientsHelper().get_all_recipients())
+    ppt_email_details = _get_email_details(service, 'Powerpoint', 'slides_email_status', RecipientsHelper().get_ppt_recipients())
+    return render_template( 'service.html',\
+                            service=service,\
+                            service_email_params=service_email_details,\
+                            ppt_email_params=ppt_email_details,\
+                            songs=data_retriever.get_songs())
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
     service = data_retriever.get_service(extract_required_param('id'))
-    return EditServiceView(data_retriever).render(service, RecipientsHelper())
+    return render_template('service_edit.html',\
+                            service=service,\
+                            songs=data_retriever.get_songs(),\
+                            song_names=data_retriever.get_song_names())
 
 @app.route('/update_service', methods=['GET'])
 def update_service_api():
@@ -73,10 +100,12 @@ def update_service_api():
 
 @app.route('/send_music_email', methods=['GET'])
 def send_music_email_api():
-    service = _get_service_from_id_param() # todo this could be passed in
+    service = data_retriever.get_service(extract_required_param('id'))
+    template_filename = os.path.join(os.path.dirname(__file__), '../templates/service_email_template.html')
+    template_file = open(template_filename, 'r').read()
+    template = Template( template_file )
+    body = template.render(service=service, songs=data_retriever.get_songs())
     recipients = extract_required_param('recipients')
-    body = EmailTemplate(data_retriever).get_template(service)\
-                .replace("_PUBLISH_BUTTON_", "")
     subject = "Redeemer Music for " + service['date']
     gmail_client.send(subject, body, recipients, RecipientsHelper().get_from_address())
     if service['email_status'] == 'not sent test':
@@ -84,7 +113,7 @@ def send_music_email_api():
     else:
         service['email_status'] = 'sent'
     remote_data_manager.update_service(service)
-    return ServiceView(data_retriever, RecipientsHelper()).render(service)
+    return render_template('services', services=data_retriever.get_services())
 
 @app.route('/email_slides', methods=['GET'])
 def email_slides_api():

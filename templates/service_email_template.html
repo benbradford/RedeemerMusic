@@ -1,0 +1,43 @@
+Hello all,
+<div/><br/>
+The music and band for this coming {{service['date']}} is as follows.
+<div/><br/>
+
+<b>Music:</b>
+<ol>
+{% for index in ['song1', 'song2', 'song3', 'song4', 'song5', 'song6'] %}
+  {% if index in service and service[index]|length > 1 %}
+  <li>
+    {{songs[service[index]]['name']}}
+    {% for component in ['lyrics', 'chords', 'lead'] %}
+      {% if component in songs[service[index]]['file_ids'] %}
+        <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/{{songs[service[index]]['file_ids'][component]}}/view?usp=sharing">
+          [{{component}}]
+        </a>
+      {% endif %}
+    {% endfor %}
+  </li>
+  {% endif %}
+{% endfor %}
+</ol>
+
+<b>Band:</b>
+<ul>
+{% for index in ['band1', 'band2', 'band3', 'band4', 'band5'] %}
+  {% if index in service and service[index]|length > 1 %}
+    <li>
+      {{service[index]}}
+      {% if 'lead' in service and service[index].startswith(service['lead']) %}
+      &nbsp(lead)
+      {% endif %}
+    </li>
+  {% endif %}
+{% endfor %}
+</ul>
+
+{{service['message']}}
+<br/>
+Thanks,
+<br/><br/>
+Ben
+<p>

@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% block form_start %} {% endblock %}
+  <label for="date">Date:</label>
+  <input type="text" id="date" name="date" value="{{service['date']}}"/><br/>
+  <label for="lead">Lead:</label>
+  <select id="lead" name="lead">
+    {% for leader in ["Ben B", "Chris W"] %}
+      {% if leader == service['lead'] %}
+        <option selected=="selected" value="{{leader}}">{{leader}}</option>
+      {% else %}
+        <option value="{{leader}}">{{leader}}</option>
+      {% endif %}
+    {% endfor %}
+    {{service['lead']}}
+  </select><br/>
+  <label for="message">Message:</label>
+  <input type="text" id="message" name="message" value="{{service['message']}}"/><br/>
+  {% for index in ['band1', 'band2', 'band3', 'band4', 'band5'] %}
+      <label for="{{index}}">{{index}}</label>
+      <select id="{{index}}" name="{{index}}">
+        {% if index in service and service[index]|length > 0 %}
+            <option value=""> </option>
+        {% else %}
+            <option selected="selected" value=""> </option>
+        {% endif %}
+        {% for player in ["Ben B - Vocals and Guitar", "Chris W - Guitar", "Ellie - Vocals", "Emma - Vocals"] %}
+          {% if index in service and service[index] == player %}
+            <option selected="selected" value={{player}}>{{player}}</option>
+          {% else %}
+            <option value={{player}}>{{player}}</option>
+          {% endif %}
+        {% endfor %}
+      </select><br/>
+
+  {% endfor %}
+
+  {% for index in ['song1', 'song2', 'song3', 'song4', 'song5', 'song6'] %}
+
+        <label for="{{index}}">{{index}}</label>
+        <select id="{{index}}" name="{{index}}">
+          {% if index in service and service[index]|length > 0 %}
+              <option value=""> </option>
+          {% else %}
+              <option selected="selected" value=""> </option>
+          {% endif %}
+          {% for song_name in song_names %}
+            {% if service[index] == song_name %}
+              <option selected="selected" value="{{song_name}}">{{song_name}}</option>
+            {% else %}
+               <option value="{{song_name}}">{{song_name}}</option>
+            {% endif %}
+          {% endfor %}
+        </select><br/>
+
+  {% endfor %}
+  <input type="submit" value="Submit">
+
+{% block form_end %} {% endblock %}
+
+{% endblock %}

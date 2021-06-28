@@ -1,0 +1,16 @@
+{% extends "service_manipulate.html" %}
+
+{% block form_start %}
+<h2>Edit Service</h2>
+<form action="http://localhost:5000/update_service">
+  <input type="hidden" name="id" value="{{service['id']}}" />
+  <input type="hidden" name="email_status" value="{{service['email_status']}}" />
+{% endblock %}
+
+{% block form_end %}
+</form>
+<form action="http://localhost:5000/service" id="usrform">
+  <input type="hidden" name="id" value="{{service['id']}}" />
+  <input type="submit" value="Cancel">
+</form>
+{% endblock %}

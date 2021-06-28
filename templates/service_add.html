@@ -1,0 +1,15 @@
+{% extends "service_manipulate.html" %}
+
+{% block form_start %}
+<h2>Add Service</h2>
+<form action="http://localhost:5000/add_service">
+  <input type="hidden" name="email_status" value="not sent test" />
+  <input type="hidden" name="slides_email_status" value="not sent test" />
+{% endblock %}
+
+{% block form_end %}
+</form>
+<form action="http://localhost:5000/services" id="usrform">
+  <input type="submit" value="Cancel">
+</form>
+{% endblock %}

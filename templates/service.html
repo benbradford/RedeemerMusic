@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block preview %} {% include 'service_email_template.html' %} {% endblock %}
+
+{% block content %}
+
+<style>
+  input.submitEmailButton {
+    border: 4px solid red;
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: {{service_email_params['font_size']}};
+    cursor: pointer;
+  }
+
+  input.submitSlidesButton {
+    border: 4px solid red;
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: {{ppt_email_params['font_size']}};
+    cursor: pointer;
+  }
+  table, th, td {
+    border: 1px solid black;
+  }
+</style>
+
+<form class="form" id="form" action="http://localhost:5000/edit_service" >
+    <input type="submit" class="submitBtn" value="Edit" />
+    <input type="hidden" name="id" value="{{service['id']}}" />
+</form>
+<br/>
+<br/>
+  <table>
+
+    <tr>
+      <th>
+        <form class="form" id="form" action="http://localhost:5000/send_music_email" >
+            <input type="submit" class="submitEmailButton" value="{{service_email_params['email_label']}}" " />
+            <input type="hidden" name="id" value="{{service['id']}}" />
+            <input type="hidden" name="recipients" value="{{service_email_params['recipients']}}" />
+        </form>
+      </th>
+
+      <th></th>
+    </tr>
+
+    <tr>
+      <th>
+        <form class="form" id="form" action="http://localhost:5000/email_slides" >
+            <input type="submit" class="submitSlidesButton" value="{{ppt_email_params['email_label']}}" " />
+            <input type="hidden" name="id" value="{{service['id']}}}" />
+            <input type="hidden" name="recipients" value="{{ppt_email_params['recipients']}}" />
+        </form>
+      </th>
+
+      <th>
+        <form class="form" id="form" action="http://localhost:5000/preview_slides" >
+            <input type="submit" class="previewSlidesEmail" value="Preview Slides" " />
+            <input type="hidden" name="id" value="{{service['id']}}" />
+        </form>
+      </th>
+    </tr>
+  </table>
+
+{% endblock %}
