@@ -38,6 +38,7 @@ class ArgsFactory:
                 remote_cache_manager.sync_songs()
             if 'services' in self._sync_components:
                 remote_cache_manager.sync_services()
+                get_data_factory().get_service_dao().sync(force=True)
             if 'slides' in self._sync_components:
                 remote_cache_manager.sync_slides_based_on_local()
             get_data_factory().get_local_cache_manager().sync()

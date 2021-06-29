@@ -5,6 +5,7 @@
 <form action="http://localhost:5000/update_service">
   <input type="hidden" name="id" value="{{service['id']}}" />
   <input type="hidden" name="email_status" value="{{service['email_status']}}" />
+  <input type="hidden" name="slides_email_status" value="{{service['slides_email_status']}}" />
 {% endblock %}
 
 {% block form_end %}

@@ -7,22 +7,25 @@ from jinja2 import Template
 from api_common import app, extract_required_param, extract_optional_param, extract_body_from_request
 from client.client_factory import get_client_factory
 from data.data_factory import get_data_factory
+from helper.slides_helper import SlidesHelper
 from helper.recipients_helper import RecipientsHelper
+from data.service_dao import ServiceDao
 
 powerpoint_location = os.path.join(os.path.dirname(__file__), '../bin/')
 
 data_retriever = get_data_factory().get_data_retriever()
 gmail_client = get_client_factory().get_gmail_client()
-remote_data_manager = get_data_factory().get_remote_data_manager()
+service_dao = ServiceDao(get_client_factory().get_sheets_client())
 
 def _get_service_from_id_param():
     service_id = extract_required_param('id')
-    service = data_retriever.get_service(service_id)
+    service = service_dao.get(service_id)
     if service is None:
         return {}
     return service
 
-optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6', 'email_status']
+# TODO: sync with sheets_client to get these headings
+optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
 def _get_updated_service_from_params(requires_id):
     service = {}
@@ -48,7 +51,7 @@ def _get_email_details(service, label_name, email_component, all_recipients):
 
 @app.route('/services', methods=['GET'])
 def services_api():
-    return render_template('services.html', services=data_retriever.get_services())
+    return render_template('services.html', services=service_dao.get_all())
 
 @app.route("/add_service_page", methods=['GET'])
 def add_service_page_api():
@@ -61,12 +64,12 @@ def add_service_page_api():
 @app.route("/add_service", methods=['GET'])
 def add_service_api():
     service =  _get_updated_service_from_params(False)
-    remote_data_manager.add_service(service)
-    return render_template('services.html', services=data_retriever.get_services())
+    service_dao.set(service)
+    return render_template('services.html', services=service_dao.get_all())
 
 @app.route('/service', methods=['GET'])
 def service_api():
-    service = data_retriever.get_service(extract_required_param('id'))
+    service = service_dao.get(extract_required_param('id'))
     service_email_details = _get_email_details(service, 'Service', 'email_status', RecipientsHelper().get_all_recipients())
     ppt_email_details = _get_email_details(service, 'Powerpoint', 'slides_email_status', RecipientsHelper().get_ppt_recipients())
     return render_template( 'service.html',\
@@ -77,7 +80,7 @@ def service_api():
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
-    service = data_retriever.get_service(extract_required_param('id'))
+    service = service_dao.get(extract_required_param('id'))
     return render_template('service_edit.html',\
                             service=service,\
                             songs=data_retriever.get_songs(),\
@@ -86,12 +89,12 @@ def service_edit_api():
 @app.route('/update_service', methods=['GET'])
 def update_service_api():
     service = _get_updated_service_from_params(True)
-    remote_data_manager.update_service(service)
-    return render_template('services.html', services=data_retriever.get_services())
+    service_dao.update(service)
+    return render_template('services.html', services=service_dao.get_all())
 
 @app.route('/send_music_email', methods=['GET'])
 def send_music_email_api():
-    service = data_retriever.get_service(extract_required_param('id'))
+    service = service_dao.get(extract_required_param('id'))
     template_filename = os.path.join(os.path.dirname(__file__), '../templates/service_email_template.html')
     template_file = open(template_filename, 'r').read()
     template = Template( template_file )
@@ -103,8 +106,8 @@ def send_music_email_api():
         service['email_status'] = 'not sent'
     else:
         service['email_status'] = 'sent'
-    remote_data_manager.update_service(service)
-    return render_template('services.html', services=data_retriever.get_services())
+    service_dao.update(service)
+    return render_template('services.html', services=service_dao.get_all())
 
 @app.route('/email_slides', methods=['GET'])
 def email_slides_api():
@@ -119,8 +122,8 @@ def email_slides_api():
         service['slides_email_status'] = 'not sent'
     else:
         service['slides_email_status'] = 'sent'
-    remote_data_manager.update_service(service)
-    service = data_retriever.get_service(extract_required_param('id'))
+    service_dao.update(service)
+    service = service_dao.get(extract_required_param('id'))
     service_email_details = _get_email_details(service, 'Service', 'email_status', RecipientsHelper().get_all_recipients())
     ppt_email_details = _get_email_details(service, 'Powerpoint', 'slides_email_status', RecipientsHelper().get_ppt_recipients())
     return render_template( 'service.html',\
