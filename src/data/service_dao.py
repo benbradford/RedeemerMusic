@@ -12,8 +12,13 @@ class ServiceDao(DataProxy):
     def _get_all_remote_data(self):
         return self._sheets_client.get_services()
 
-    def _update_remote_data(self, data):
-        self._sheets_client.update_service(data)
+    def _update_remote_data(self, data, update_data):
+        self._sheets_client.update_service(update_data)
+        return data
+
+    def _set_remote_data(self, data):
+        self._sheets_client.add_service(data)
+        return data
 
     def _get_data_key(self, data):
         return str(data['id'])

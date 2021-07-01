@@ -30,9 +30,9 @@ class DataProxy:
 
     def get_all_keys(self):
         all_data_keys = self._cache_client.get(self._get_cache_key('ALL_DATA_KEYS'))
-        if all is None:
+        if all_data_keys is None:
             return []
-        return all_data_keys.split(',')
+        return all_data_keys.split('|')
 
     def get_all(self):
         all_data_keys = self.get_all_keys()
@@ -41,16 +41,19 @@ class DataProxy:
             all_data.append(self.get(key))
         return all_data
 
-    def update(self, element):
+    def update_with(self, element, update_data):
         cache_key, data_key = self._get_cache_and_data_key(element)
         current = self.get(data_key)
         if current is None:
             raise ("Cannot update, element does not exist")
-        self._update_remote_data(element)
+        element = self._update_remote_data(element, update_data)
         self._cache_client.set(cache_key, json.dumps(element))
 
-    def set(self, element):
-        self._set_remote_data(element)
+    def update(self, element):
+        self.update_with(element, element)
+
+    def set(self, set_data):
+        element = self._set_remote_data(set_data)
         cache_key, data_key = self._get_cache_and_data_key(element)
         self._cache_client.set(cache_key, json.dumps(element))
         self._add_data_key(data_key)
@@ -66,10 +69,10 @@ class DataProxy:
         if all is None:
             all = [data_key]
         else:
-            all = all.split(',')
+            all = all.split('|')
             if data_key not in all:
                 all.append(data_key)
-        self._cache_client.set(self._get_cache_key('ALL_DATA_KEYS'), ','.join(all))
+        self._cache_client.set(self._get_cache_key('ALL_DATA_KEYS'), '|'.join(all))
 
     def _get_cache_key(self, id):
         return self._prefix + str(id)
@@ -83,7 +86,7 @@ class DataProxy:
     def _set_remote_data(self, data):
         pass
 
-    def _update_remote_data(self, data):
+    def _update_remote_data(self, data, update_data):
         pass
 
     def _get_data_key(self, data):

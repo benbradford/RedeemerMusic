@@ -15,31 +15,23 @@ class LocalFilesLock:
 
 
 songs_file = cache_dir + 'songs.json'
-services_file = cache_dir + 'services.json'
 slides_file = cache_dir + 'slides.json'
 
 class LocalCacheManager:
     def __init__(self, cache):
         self._cache = cache
         self._songFilesLock = LocalFilesLock()
-        self._servicesFilesLock = LocalFilesLock()
         self._slidesFilesLock = {}
         self._masterSlidesLock = LocalFilesLock()
 
     def sync(self):
         self.sync_songs()
-        self.sync_services()
         self.sync_slides()
 
     def save_to_songs(self, songs):
         with self._songFilesLock:
             with open(songs_file, 'w') as f:
                 json.dump(songs, f, indent=4)
-
-    def save_to_services(self, services):
-        with self._servicesFilesLock:
-            with open(services_file, 'w') as f:
-                json.dump(services, f, indent=4)
 
     def with_slide_locked(self, name, func):
         with self._slide_lock(name):
@@ -50,12 +42,6 @@ class LocalCacheManager:
         with self._songFilesLock:
             local_songs = open(songs_file, "r").read()
         self._cache.update_songs(json.loads(local_songs))
-
-    def sync_services(self):
-        local_services = ""
-        with self._servicesFilesLock:
-            local_services = open(services_file, 'r').read()
-        self._cache.update_services(json.loads(local_services))
 
     def sync_slides(self):
         slides = {}

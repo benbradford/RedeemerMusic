@@ -7,6 +7,7 @@ from data.data_factory import get_data_factory
 
 data_retriever = get_data_factory().get_data_retriever()
 remote_data_manager = get_data_factory().get_remote_data_manager()
+songs_dao = get_data_factory().get_songs_dao()
 
 def get_song_from_params(name, component, files):
     if component in request.files:
@@ -54,8 +55,8 @@ def _update_component_file_ids(song, component, components):
 
 @app.route('/songs', methods=['GET'])
 def songs_api():
-    names = data_retriever.get_song_names()
-    return render_template('songs.html', song_names=data_retriever.get_song_names())
+    names = sorted(songs_dao.get_song_names())
+    return render_template('songs.html', song_names=names)
 
 @app.route('/song', methods=['GET'])
 def song_api():

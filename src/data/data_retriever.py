@@ -13,7 +13,7 @@ class DataRetriever:
     def get_songs(self):
         with self._cache.songs_lock():
             return copy.deepcopy(self._cache.get_songs())
-            
+
     def get_song(self, song_name):
         with self._cache.songs_lock():
             if song_name in self._cache.get_songs():
@@ -32,17 +32,3 @@ class DataRetriever:
             if song_name in self._cache.get_slides():
                 return self._cache.get_slides()[song_name]
         return None
-
-    def get_service(self, id):
-        with self._cache.services_lock():
-            if id in self._cache.get_services():
-                return copy.deepcopy(self._cache.get_services()[id])
-        return None
-
-    def get_services(self):
-        services = []
-        with self._cache.services_lock():
-            for key, service in self._cache.get_services().iteritems():
-                services.append(copy.deepcopy(service))
-
-        return sorted(services, key=service_id_sorter)

@@ -26,6 +26,7 @@ class DriveClient:
         self._service = build('drive', 'v3', credentials=creds)
 
     def list_files(self, component):
+        print ("getting services")
         folder_id = folder_ids[component]
         items = []
         page_token = None
@@ -52,7 +53,7 @@ class DriveClient:
 
     def get_file_id(self, song_name, component):
         folder_id = folder_ids[component]
-        print ("getting file id for " + song_name)
+        print ("getting " + component + " file id for " + song_name)
         song_file_name = song_name + " (" + component + ")"
         song_file_name = song_file_name.replace("'", "\\'")
         if component == 'slides':

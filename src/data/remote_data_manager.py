@@ -21,7 +21,6 @@ class RemoteDataManager:
 
     def sync(self):
         songs = self.sync_songs()
-        self.sync_services()
         self.sync_slides(songs)
         self._local_cache_manager.sync()
 
@@ -33,13 +32,6 @@ class RemoteDataManager:
             songs[name] = song
         self._local_cache_manager.save_to_songs(songs)
         return songs
-
-    def sync_services(self):
-        services = {}
-        services_arr = self._sheets.get_services()
-        for service in services_arr:
-            services[service['id']] = service
-        self._local_cache_manager.save_to_services(services)
 
     def sync_slides(self, songs):
         for name, song in songs.iteritems():
@@ -65,18 +57,7 @@ class RemoteDataManager:
 
     def update_slide_for_song(self, song, lyrics):
         self._drive.update_slide_file(song, lyrics)
-        self.sync_services()
         self.sync_slides_for_song(song)
-
-    def update_service(self, service):
-        self._sheets.update_service(service)
-        self.sync_services()
-        self._local_cache_manager.sync_services()
-
-    def add_service(self, service):
-        self._sheets.add_service(service)
-        self.sync_services()
-        self._local_cache_manager.sync_services()
 
     def add_song(self, name, files, ccli):
         self._sheets.add_song(name, ccli)
