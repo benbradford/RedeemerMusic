@@ -64,17 +64,17 @@ class DriveClient:
             includeItemsFromAllDrives=True,
             supportsAllDrives=True,
             q="name ='" + song_file_name + "' and '" + folder_id + "' in parents"
-        ).execute()
+        ).execute() # TODO httplib2.Http() https://stackoverflow.com/questions/50172034/google-drive-multythreading-move-files-python
         items = results.get('files', [])
         if len(items) == 0:
             print ("WARN Cannot find " + component + " for " + song_name)
             return None
         return items[0]['id']
 
-    def update_slide_file(self, song, lyrics):
+    def update_slide_file(self, song):
         file_name = song['name'] + " (slides).txt"
         outF = open(file_name, "w")
-        outF.write(lyrics)
+        outF.write(song['slides'])
         outF.write("\n")
         outF.close()
 
@@ -98,22 +98,29 @@ class DriveClient:
             status, done = downloader.next_chunk()
             print (outfile + " - Download %d%%." % int(status.progress() * 100))
 
-    def upload_song(self, files):
-        for file in files:
-            file_path = file['path']
-            file_name = file_path.split('/')[1]
-            file_type = file['type']
-            if '(lyrics)' in file_name:
-                parent = folder_ids['lyrics']
-            elif '(chords)' in file_name:
-                parent = folder_ids['chords']
-            elif '(lead)' in file_name:
-                parent = folder_ids['lead']
-            elif '(slides)' in file_name:
-                parent = folder_ids['slides']
-                file_name = file_path.split('/')[1]
-            else:
-                raise("Unknown file component for " + file_name)
+    def add_song_component(self, component, file_path, file_name, file_type):
+        parent = folder_ids[component]
+        media = MediaFileUpload(
+            file_path,
+            mimetype=mime_map[file_type],
+            resumable=True
+        )
+        request = self._service.files().create(
+            media_body=media,
+            supportsAllDrives=True,
+            body={'name': file_name, 'parents': [parent]}
+        )
+        response = None
+        while response is None:
+            status, response = request.next_chunk()
+            if status:
+                print("Uploaded %d%%." % int(status.progress() * 100))
+        print("Upload Completed! file id is " + response['id'])
+        return response['id']
+
+    def update_song_component(self, component, file_path, file_name, file_type, file_id): # Todo this doesn't allow name changing
+        parent = folder_ids[component]
+        if file_id is None:
             media = MediaFileUpload(
                 file_path,
                 mimetype=mime_map[file_type],
@@ -130,48 +137,12 @@ class DriveClient:
                 if status:
                     print("Uploaded %d%%." % int(status.progress() * 100))
             print("Upload Complete!")
-
-    def update_song(self, file_ids, files): # Todo this doesn't allow name changing
-        for file in files:
-            file_path = file['path']
-            file_name = file_path.split('/')[1]
-            file_type = file['type']
-            file_id = None
-            if '(lyrics)' in file_name:
-                component = 'lyrics'
-            elif '(chords)' in file_name:
-                component = 'chords'
-            elif '(lead)' in file_name:
-                component = 'lead'
-            elif '(slides)' in file_name:
-                component = 'slides'
-                file_name = file_path.split('/')[1]
-            else:
-                raise("Unknown file component for " + file_name)
-            parent = folder_ids[component]
-            if component in file_ids:
-                file_id = file_ids[component]
-            if file_id is None:
-                media = MediaFileUpload(
-                    file_path,
-                    mimetype=mime_map[file_type],
-                    resumable=True
-                )
-                request = self._service.files().create(
-                    media_body=media,
-                    supportsAllDrives=True,
-                    body={'name': file_name, 'parents': [parent]}
-                )
-                response = None
-                while response is None:
-                    status, response = request.next_chunk()
-                    if status:
-                        print("Uploaded %d%%." % int(status.progress() * 100))
-                print("Upload Complete!")
-            else:
-                upload = MediaFileUpload(file_path, mime_map[file_type] )
-                file = self._service.files().update(
-                    media_body=upload,
-                    fileId=file_ids[component],
-                    supportsAllDrives=True
-                ).execute()
+            return response['id']
+        else:
+            upload = MediaFileUpload(file_path, mime_map[file_type] )
+            file = self._service.files().update(
+                media_body=upload,
+                fileId=file_ids[component],
+                supportsAllDrives=True
+            ).execute()
+            return file_id

@@ -13,9 +13,9 @@ from data.service_dao import ServiceDao
 
 powerpoint_location = os.path.join(os.path.dirname(__file__), '../bin/')
 
-data_retriever = get_data_factory().get_data_retriever()
 gmail_client = get_client_factory().get_gmail_client()
-service_dao = ServiceDao(get_client_factory().get_sheets_client())
+service_dao = get_data_factory().get_service_dao()
+songs_dao = get_data_factory().get_songs_dao()
 
 def _get_service_from_id_param():
     service_id = extract_required_param('id')
@@ -58,8 +58,8 @@ def add_service_page_api():
     service = {}
     return render_template('service_add.html',\
                             service=service,\
-                            songs=data_retriever.get_songs(),\
-                            song_names=data_retriever.get_song_names())
+                            songs=songs_dao.get_all(),\
+                            song_names=songs_dao.get_song_names())
 
 @app.route("/add_service", methods=['GET'])
 def add_service_api():
@@ -72,19 +72,21 @@ def service_api():
     service = service_dao.get(extract_required_param('id'))
     service_email_details = _get_email_details(service, 'Service', 'email_status', RecipientsHelper().get_all_recipients())
     ppt_email_details = _get_email_details(service, 'Powerpoint', 'slides_email_status', RecipientsHelper().get_ppt_recipients())
+    print "bebradfo"
+    print service
     return render_template( 'service.html',\
                             service=service,\
                             service_email_params=service_email_details,\
                             ppt_email_params=ppt_email_details,\
-                            songs=data_retriever.get_songs())
+                            songs=songs_dao.get_all())
 
 @app.route('/edit_service', methods=['GET'])
 def service_edit_api():
     service = service_dao.get(extract_required_param('id'))
     return render_template('service_edit.html',\
                             service=service,\
-                            songs=data_retriever.get_songs(),\
-                            song_names=data_retriever.get_song_names())
+                            songs=songs_dao.get_all(),\
+                            song_names=songs_dao.get_song_names())
 
 @app.route('/update_service', methods=['GET'])
 def update_service_api():
@@ -98,7 +100,7 @@ def send_music_email_api():
     template_filename = os.path.join(os.path.dirname(__file__), '../templates/service_email_template.html')
     template_file = open(template_filename, 'r').read()
     template = Template( template_file )
-    body = template.render(service=service, songs=data_retriever.get_songs())
+    body = template.render(service=service, songs=songs_dao.get_all())
     recipients = extract_required_param('recipients')
     subject = "Redeemer Music for " + service['date']
     gmail_client.send(subject, body, recipients, RecipientsHelper().get_from_address())
@@ -113,7 +115,7 @@ def send_music_email_api():
 def email_slides_api():
     service = _get_service_from_id_param()
     ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
-    SlidesHelper(data_retriever).create_powerpoint(service, ppt_filename)
+    SlidesHelper(songs_dao).create_powerpoint(service, ppt_filename)
     recipients = extract_required_param('recipients')
     body = read_template_file('powerpoint_email_template.html').replace('_DATE_', service['date'])
     subject = "Powerpoint slides for " + service['date']
@@ -130,11 +132,11 @@ def email_slides_api():
                             service=service,\
                             service_email_params=service_email_details,\
                             ppt_email_params=ppt_email_details,\
-                            songs=data_retriever.get_songs())
+                            songs=songs_dao.get_all())
 
 @app.route('/preview_slides', methods=['GET'])
 def preview_slides_api():
     service = _get_service_from_id_param()
     ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
-    SlidesHelper(data_retriever).create_powerpoint(service, ppt_filename)
+    SlidesHelper(songs_dao).create_powerpoint(service, ppt_filename)
     return send_file(ppt_filename, as_attachment=True)

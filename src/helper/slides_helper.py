@@ -5,8 +5,8 @@ from pptx.enum.text import PP_ALIGN
 import json
 
 class SlidesHelper:
-    def __init__(self, data_retriever):
-        self._data_retriever = data_retriever
+    def __init__(self, songs_dao):
+        self._songs_dao = songs_dao
 
     def create_powerpoint(self, service, out_file):
         slides = self._get_slides_from_service(service)
@@ -41,7 +41,7 @@ class SlidesHelper:
         for index in [1,2,3,4,5, 6]:
             song_key = "song" + str(index)
             if song_key in service and service[song_key] != "":
-                s = self._data_retriever.get_slide(service[song_key])
+                s = self._songs_dao.get_song(service[song_key])['slides']
                 slides.append(s)
 
         return slides

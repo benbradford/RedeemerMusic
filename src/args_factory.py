@@ -32,28 +32,22 @@ class ArgsFactory:
             app.run()
 
     def _sync(self):
-        remote_cache_manager = get_data_factory().get_remote_data_manager()
         if len(self._sync_components) > 0:
             if 'songs' in self._sync_components:
-                #remote_cache_manager.sync_songs()
                 get_data_factory().get_songs_dao().sync(force=True)
             if 'services' in self._sync_components:
                 get_data_factory().get_service_dao().sync(force=True)
-            if 'slides' in self._sync_components:
-                remote_cache_manager.sync_slides_based_on_local()
-            get_data_factory().get_local_cache_manager().sync()
+        elif self._sync_source == 'remote':
+            get_data_factory().get_service_dao().sync(force=True)
+            get_data_factory().get_songs_dao().sync(force=True)
         else:
-            self._get_cache_manager().sync()
+            get_data_factory().get_service_dao().sync(force=False)
+            get_data_factory().get_songs_dao().sync(force=False)
 
-    def _get_cache_manager(self):
-        if self._sync_source == 'remote':
-            return get_data_factory().get_remote_data_manager()
-        else:
-            return get_data_factory().get_local_cache_manager()
 
     def _show_help(self):
-        print ("Usage: python app.py (-s | --sync-only (services | songs | slides | all)) | (-l | --local-data)")
-        print ("--sync: Will sync up local data with what is stored in drive. Choose the component to sync or 'all' for all components")
+        print ("Usage: python app.py (-s | --sync-only (services | songs)) | (-l | --local-data)")
+        print ("--sync: Will sync up local data with what is stored in drive. Choose the component to sync or none for all components")
         print ("--local-data: Will use the currently cached local data instead (will not sync with drive)")
         print ("--no-run: Will not run the servuce")
         print ("<no-options>: Normal launch by syncing local data with remote then launch the service")
