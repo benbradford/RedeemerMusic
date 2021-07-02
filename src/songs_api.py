@@ -110,7 +110,7 @@ def add_song_api():
 
     songs_dao.set(new_song_data)
     names = sorted(songs_dao.get_song_names())
-    return render_template('songs.html')
+    return render_template('songs.html', song_names=names)
 
 @app.route('/update_song_page', methods=['GET'])
 def update_song_page_api():

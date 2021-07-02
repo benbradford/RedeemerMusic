@@ -33,6 +33,7 @@ class SheetsClient:
         return None
 
     def get_services(self):
+        print "Getting Services"
         result = self._sheets.values().get(spreadsheetId=sheets_id,
                                 range='A2:' + self._last_column).execute()
         values = result.get('values', [])
@@ -49,7 +50,7 @@ class SheetsClient:
                     except:
                         pass
                 services.append(service)
-
+        print services
         return services
 
     def add_song(self, name, ccli):

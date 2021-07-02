@@ -41,7 +41,7 @@ class SlidesHelper:
         for index in [1,2,3,4,5, 6]:
             song_key = "song" + str(index)
             if song_key in service and service[song_key] != "":
-                s = self._songs_dao.get_song(service[song_key])['slides']
+                s = self._songs_dao.get(service[song_key])['slides']
                 slides.append(s)
 
         return slides

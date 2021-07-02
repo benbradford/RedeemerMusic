@@ -41,8 +41,6 @@ class DataProxy:
         all_songs = {}
         for key in all_data_keys:
             all_songs[key.replace('_', ' ')] = self.get(key)
-        print "bebradfo_songs"
-        print all_songs
         return all_songs
 
     def update_with(self, element, update_data):

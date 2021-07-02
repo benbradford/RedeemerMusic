@@ -51,7 +51,8 @@ def _get_email_details(service, label_name, email_component, all_recipients):
 
 @app.route('/services', methods=['GET'])
 def services_api():
-    return render_template('services.html', services=service_dao.get_all())
+    services = service_dao.get_all_services()
+    return render_template('services.html', services=services)
 
 @app.route("/add_service_page", methods=['GET'])
 def add_service_page_api():
@@ -65,15 +66,13 @@ def add_service_page_api():
 def add_service_api():
     service =  _get_updated_service_from_params(False)
     service_dao.set(service)
-    return render_template('services.html', services=service_dao.get_all())
+    return render_template('services.html', services=service_dao.get_all_services())
 
 @app.route('/service', methods=['GET'])
 def service_api():
     service = service_dao.get(extract_required_param('id'))
     service_email_details = _get_email_details(service, 'Service', 'email_status', RecipientsHelper().get_all_recipients())
     ppt_email_details = _get_email_details(service, 'Powerpoint', 'slides_email_status', RecipientsHelper().get_ppt_recipients())
-    print "bebradfo"
-    print service
     return render_template( 'service.html',\
                             service=service,\
                             service_email_params=service_email_details,\
@@ -92,7 +91,7 @@ def service_edit_api():
 def update_service_api():
     service = _get_updated_service_from_params(True)
     service_dao.update(service)
-    return render_template('services.html', services=service_dao.get_all())
+    return render_template('services.html', services=service_dao.get_all_services())
 
 @app.route('/send_music_email', methods=['GET'])
 def send_music_email_api():
@@ -109,7 +108,7 @@ def send_music_email_api():
     else:
         service['email_status'] = 'sent'
     service_dao.update(service)
-    return render_template('services.html', services=service_dao.get_all())
+    return render_template('services.html', services=service_dao.get_all_services())
 
 @app.route('/email_slides', methods=['GET'])
 def email_slides_api():

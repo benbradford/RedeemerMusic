@@ -71,21 +71,6 @@ class DriveClient:
             return None
         return items[0]['id']
 
-    def update_slide_file(self, song):
-        file_name = song['name'] + " (slides).txt"
-        outF = open(file_name, "w")
-        outF.write(song['slides'])
-        outF.write("\n")
-        outF.close()
-
-        upload = MediaFileUpload(file_name, mimetype='text/plain' )
-        file = self._service.files().update(
-            media_body=upload,
-            fileId=song['file_ids']['slides'],
-            supportsAllDrives=True
-        ).execute()
-        os.remove(file_name)
-
     def download_slide(self, file_id, outfile):
         request = self._service.files().get_media(
             fileId=file_id,
@@ -119,26 +104,10 @@ class DriveClient:
         return response['id']
 
     def update_song_component(self, component, file_path, file_name, file_type, file_id): # Todo this doesn't allow name changing
-        parent = folder_ids[component]
         if file_id is None:
-            media = MediaFileUpload(
-                file_path,
-                mimetype=mime_map[file_type],
-                resumable=True
-            )
-            request = self._service.files().create(
-                media_body=media,
-                supportsAllDrives=True,
-                body={'name': file_name, 'parents': [parent]}
-            )
-            response = None
-            while response is None:
-                status, response = request.next_chunk()
-                if status:
-                    print("Uploaded %d%%." % int(status.progress() * 100))
-            print("Upload Complete!")
-            return response['id']
+            return self.add_song_component(component, file_path, file_name, tile_type)
         else:
+            parent = folder_ids[component]
             upload = MediaFileUpload(file_path, mime_map[file_type] )
             file = self._service.files().update(
                 media_body=upload,
