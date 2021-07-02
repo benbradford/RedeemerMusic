@@ -1,8 +1,8 @@
 #import threading, time, random
 #from multiprocessing import Queue
 
-from data_proxy import DataProxy
 from data_common import cache_dir
+from database import db
 
 all_song_components = ['lyrics', 'chords', 'lead', 'slides']
 
@@ -40,72 +40,82 @@ class SongSync:
     #        with self._lock:
     #            self._songs.append(song)
 
-class SongsDao(DataProxy):
+class SongsDao():
     def __init__(self, sheets_client, drive_client):
-        DataProxy.__init__(self, "sng")
         self._sheets_client = sheets_client
         self._drive_client = drive_client
 
-    def get_song_names(self):
-        names = sorted(self.get_all_keys())
-        res = []
-        for name in names:
-            res.append(name.replace('_', ' '))
-        return res
+    def get(self, name):
+        return db.get_song(name)
 
-    def _get_remote_data(self, data_key):
-        return self._get_remote_song(data_key)
+    def sync(self, force=False):
+        if force:
+            sync = SongSync(self._get_remote_song)
+            all_song_names = self._sheets_client.list_song_names()
+            for song_name in all_song_names:
+                sync.add(song_name)
+            songs = sync.execute()
+            db.drop_songs()
+            for song in songs:
+                db.add_song(song)
 
-    def _get_all_remote_data(self):
-        sync = SongSync(self._get_remote_song)
-        all_song_names = self._sheets_client.list_song_names()
-        for song_name in all_song_names:
-            sync.add(song_name)
-        return sync.execute()
+    def get_all(self):
+        return db.get_songs()
 
-    def _set_remote_data(self, add_song_data):
-        self._sheets_client.add_song(add_song_data['name'], '')
+    def update(self, song_data):
+        original = get(song_data['name'])
+        if original is None:
+            raise Exception("Cannot update song as it does not exist")
         song = {}
-        song['name'] = add_song_data['name']
+        song['file_ids'] = original['file_ids']
+        song['name'] = original['name']
+        self._merge_component(song, original, new, 'ccli', '')
+        self._merge_component(song, original, new, 'notes', '')
+        self._update_remote_data(song, song_data)
+        db.update_song(song)
+        return song
+
+    def set(self, song_data):
+        original = db.get_song(song_data['name'])
+        if original:
+            raise Exception("Cannot add song as it already exists")
+        self._sheets_client.add_song(song_data['name'], '')
+        song = {}
+        song['name'] = song_data['name']
         song['file_ids'] = {}
-        if 'slides' in add_song_data:
-            song['slides'] = add_song_data['slides']
-            #self._drive_client.update_slide_file(song)
+        song['ccli'] = ''
+        song['notes'] = ''
         for component in all_song_components:
-            if component in add_song_data:
-                file_path = add_song_data[component]['path']
+            if component in song_data:
+                file_path = song_data[component]['path']
                 file_name = file_path.split('/')[1]
                 file_type = add_song_data[component]['type']
 
                 if component == 'slides':
                     file_name = file_path.split('/')[1]
                 song['file_ids'][component] = self._drive_client.add_song_component(component, file_path, file_name, file_type)
-        self._add_remote_slides(song)
+        self._get_remote_slides(song)
+        db.add_song(song)
         return song
 
-    def _update_remote_data(self, data, update_song_data):
-        #self._sheets_client.update_song(data['name'], data['name'], '')
-        song = {}
-        song['name'] = update_song_data['name']
-        song['file_ids'] = data['file_ids']
-        #self._drive_client.update_slide_file(song)
-        for component in all_song_components:
-            if 'slides' not in component and component in update_song_data:
-                file_path = update_song_data[component]['path']
-                file_name = file_path.split('/')[1]
-                file_type = update_song_data[component]['type']
+    def get_song_names(self):
+        return db.get_song_names()
 
-                if component == 'slides':
+    def _update_remote_data(self, song, song_data):
+        for component in all_song_components:
+            if component in song_data:
+                file_path = song_data[component]['path']
+                file_name = file_path.split('/')[1]
+                file_type = song_data[component]['type']
+
+                if 'slides' in component:
                     file_name = file_path.split('/')[1]
                 file_id = None
                 if component in song['file_ids']:
                     file_id = song['file_ids'][component]
                 song['file_ids'][component] = self._drive_client.update_song_component(component, file_path, file_name, file_type, file_id)
-        self._add_remote_slides(song)
+        self._get_remote_slides(song)
         return song
-
-    def _get_data_key(self, data):
-        return data['name'].replace(' ', '_')
 
     def _get_remote_song(self, song_name):
         song = {}
@@ -115,13 +125,17 @@ class SongsDao(DataProxy):
             res = self._drive_client.get_file_id(song_name, component)
             if res is not None:
                 song['file_ids'][component] = res
-        self._add_remote_slides(song)
+        self._get_remote_slides(song)
         return song
 
-    def _add_remote_slides(self, song):
+    def _get_remote_slides(self, song):
         file = cache_dir + song['name'] + '.txt'
         if 'slides' in song['file_ids']:
             self._drive_client.download_slide(song['file_ids']['slides'], file)
             song['slides'] = open(file, 'r').read()
         else:
             song['slides'] = ''
+
+    def _merge_component(self, data, original, new, component, default):
+        original_comp = original.get(component, default)
+        data[component] = new.get(component, original_comp)
