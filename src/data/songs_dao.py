@@ -88,7 +88,7 @@ class SongsDao(DataProxy):
         song = {}
         song['name'] = update_song_data['name']
         song['file_ids'] = data['file_ids']
-        self._drive_client.update_slide_file(song)
+        #self._drive_client.update_slide_file(song)
         for component in all_song_components:
             if 'slides' not in component and component in update_song_data:
                 file_path = update_song_data[component]['path']

@@ -24,6 +24,15 @@ def _get_service_from_id_param():
         return {}
     return service
 
+def _update_email_status(service, email_status):
+    if email_status not in service:
+        service[email_status] = 'not sent test'
+
+    if service[email_status] == 'not sent test':
+        service[email_status] = 'not sent'
+    else:
+        service[email_status] = 'sent'
+
 # TODO: sync with sheets_client to get these headings
 optional_service_params=['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2', 'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
@@ -103,10 +112,7 @@ def send_music_email_api():
     recipients = extract_required_param('recipients')
     subject = "Redeemer Music for " + service['date']
     gmail_client.send(subject, body, recipients, RecipientsHelper().get_from_address())
-    if service['email_status'] == 'not sent test':
-        service['email_status'] = 'not sent'
-    else:
-        service['email_status'] = 'sent'
+    _update_email_status(service, 'email_status')
     service_dao.update(service)
     return render_template('services.html', services=service_dao.get_all_services())
 
@@ -119,10 +125,7 @@ def email_slides_api():
     body = read_template_file('powerpoint_email_template.html').replace('_DATE_', service['date'])
     subject = "Powerpoint slides for " + service['date']
     gmail_client.send_attachment(subject, body, recipients, RecipientsHelper().get_from_address(), ppt_filename)
-    if service['slides_email_status'] == 'not sent test':
-        service['slides_email_status'] = 'not sent'
-    else:
-        service['slides_email_status'] = 'sent'
+    _update_email_status(service, 'slides_email_status')
     service_dao.update(service)
     service = service_dao.get(extract_required_param('id'))
     service_email_details = _get_email_details(service, 'Service', 'email_status', RecipientsHelper().get_all_recipients())
