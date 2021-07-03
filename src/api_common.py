@@ -14,8 +14,10 @@ def extract_required_param(name):
 
 def extract_optional_param(name, default):
     if name in request.args:
+        print "extracting " + name + " as " + request.args[name]
         return request.args[name]
     else:
+        print "cannot extract " + name + " from " + request.args
         return default
 
 def extract_body_from_request():

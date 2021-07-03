@@ -30,7 +30,7 @@
           {% if index in service and service[index] == player %}
             <option selected="selected" value={{player}}>{{player}}</option>
           {% else %}
-            <option value={{player}}>{{player}}</option>
+            <option value="{{player}}">{{player}}</option>
           {% endif %}
         {% endfor %}
       </select><br/>

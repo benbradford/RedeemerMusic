@@ -2,4 +2,5 @@
 cred/
 TODO
 bin/
+src/data/db/redeemer.db
 .DS_Store

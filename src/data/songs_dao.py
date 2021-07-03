@@ -2,7 +2,7 @@
 #from multiprocessing import Queue
 
 from data_common import cache_dir
-from database import db
+from db_access import DbAccess
 
 all_song_components = ['lyrics', 'chords', 'lead', 'slides']
 
@@ -46,7 +46,7 @@ class SongsDao():
         self._drive_client = drive_client
 
     def get(self, name):
-        return db.get_song(name)
+        return self._db_get_song(name)
 
     def sync(self, force=False):
         if force:
@@ -55,12 +55,13 @@ class SongsDao():
             for song_name in all_song_names:
                 sync.add(song_name)
             songs = sync.execute()
-            db.drop_songs()
+            with DbAccess() as cur:
+                cur.execute("delete from service")
             for song in songs:
-                db.add_song(song)
+                self._db_add_song(song)
 
     def get_all(self):
-        songs = db.get_songs()
+        songs = self._db_get_songs()
         res = {}
         for song in songs:
             res[song['name']] = song
@@ -83,11 +84,11 @@ class SongsDao():
                     file_id = song['file_ids'][component]
                 song['file_ids'][component] = self._drive_client.update_song_component(component, file_path, file_name, file_type, file_id)
         self._get_remote_slides(song)
-        db.update_song(song)
+        self._db_update_song(song)
         return song
 
     def set(self, song_data):
-        original = db.get_song(song_data['name'])
+        original = self._db_get_song(song_data['name'])
         if original:
             raise Exception("Cannot add song as it already exists")
         self._sheets_client.add_song(song_data['name'], '')
@@ -106,11 +107,11 @@ class SongsDao():
                     file_name = file_path.split('/')[1]
                 song['file_ids'][component] = self._drive_client.add_song_component(component, file_path, file_name, file_type)
         self._get_remote_slides(song)
-        db.add_song(song)
+        self._db_add_song(song)
         return song
 
     def get_song_names(self):
-        return db.get_song_names()
+        return self._db_get_song_names()
 
     def _get_remote_song(self, song_name):
         song = {}
@@ -134,3 +135,76 @@ class SongsDao():
     def _merge_component(self, data, original, new, component, default):
         original_comp = original.get(component, default)
         data[component] = new.get(component, original_comp)
+
+    def _db_get_song(self, name):
+        res = None
+        with DbAccess() as cur:
+            res = cur.execute('SELECT * FROM song where name=:song_name', {'song_name': name}).fetchall()
+        if not res:
+            return None
+        return self._db_to_song(res[0])
+
+    def _db_get_songs(self):
+        songs = None
+        with DbAccess() as cur:
+            songs = cur.execute('SELECT * FROM song ORDER BY name').fetchall()
+        res = []
+        for song in songs:
+            r = self._db_to_song(song)
+            res.append(r)
+        return res
+
+    def _db_get_song_names(self):
+        songs = None
+        with DbAccess() as cur:
+            songs = cur.execute('SELECT name FROM song ORDER BY name').fetchall()
+        res = []
+        for song in songs:
+            res.append(song[0])
+        return res
+
+    def _db_add_song(self, song):
+        return self.add_songs([song])
+
+    def _db_add_songs(self, songs):
+        with DbAccess() as cur:
+            for song in songs:
+                cur.execute("delete from song where name =:song_name", {'song_name': song['name']}).fetchall()
+                cur.execute("""
+                insert into song(name, ccli, notes, lyrics_id, chords_id, lead_id, slides_id, slides)
+                values(?, ?, ?, ?, ?, ?, ?, ?);
+                """, (song['name'],\
+                            song.get('ccli', ''),\
+                            song.get('notes', ''),\
+                            song['file_ids'].get('lyrics', None),\
+                            song['file_ids'].get('chords', None),\
+                            song['file_ids'].get('lead', None),\
+                            song['file_ids'].get('slides', None),\
+                            song.get('slides', '')))
+
+    def _db_update_song(self, song):
+        with DbAccess() as cur:
+            cur.execute("""
+                update song set(ccli, notes, lyrics_id, chords_id, lead_id, slides_id, slides)=(?, ?, ?, ?, ?, ?, ?)
+                where(name = ?)
+                """,(song.get('ccli', ''),\
+                song.get('notes', ''),\
+                song['file_ids'].get('lyrics', None),\
+                song['file_ids'].get('chords', None),\
+                song['file_ids'].get('lead', None),\
+                song['file_ids'].get('slides', None),\
+                song.get('slides', ''),\
+                song.get('name')))
+
+    def _db_to_song(self, song):
+        r = {}
+        r['name'] = song[0]
+        r['ccli'] = song[1]
+        r['notes'] = song[2]
+        r['file_ids'] = {}
+        r['file_ids']['lyrics'] = song[3]
+        r['file_ids']['chords'] = song[4]
+        r['file_ids']['lead'] = song[5]
+        r['file_ids']['slides'] = song[6]
+        r['slides'] = song[7]
+        return r

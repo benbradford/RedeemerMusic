@@ -1,7 +1,6 @@
-""
 CREATE TABLE IF NOT EXISTS song (
-	name text PRIMARY KEY,
-	ccli text,
+  name text PRIMARY KEY,
+  ccli text,
   notes text,
   lyrics_id text,
   chords_id text,
@@ -9,4 +8,3 @@ CREATE TABLE IF NOT EXISTS song (
   slides_id text,
   slides text
 );
-""
