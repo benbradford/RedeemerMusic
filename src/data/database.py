@@ -83,7 +83,7 @@ class DB:
         try:
             con = sqlite3.connect(db_file)
             cur = con.cursor()
-            services = cur.execute('SELECT * FROM service ORDER BY id')
+            services = cur.execute('SELECT * FROM service ORDER BY id desc')
             res = []
             for service in services:
                 r = self._db_to_service(service)
@@ -100,7 +100,7 @@ class DB:
         try:
             con = sqlite3.connect(db_file)
             cur = con.cursor()
-            services = cur.execute('SELECT id FROM service ORDER BY id')
+            services = cur.execute('SELECT id FROM service ORDER BY id desc')
             res = []
             if services:
                 for service in services:
@@ -230,7 +230,6 @@ class DB:
             songs = cur.execute('SELECT name FROM song ORDER BY name')
             res = []
             for song in songs:
-                print song
                 res.append(song[0])
             con.commit()
             return res
@@ -330,8 +329,8 @@ class DB:
         r['song4'] = service[11]
         r['song5'] = service[12]
         r['song6'] = service[13]
-        r['email_status text'] = service[14]
-        r['slides_email_status text'] = service[15]
+        r['email_status'] = service[14]
+        r['slides_email_status'] = service[15]
         return r
 
 db = DB(db_file)

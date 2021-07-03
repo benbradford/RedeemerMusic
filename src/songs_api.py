@@ -1,23 +1,26 @@
 import json
 import base64
-from flask import request, jsonify, send_file, render_template
+from flask import request, render_template, redirect
 
 from api_common import app, extract_required_param
 from data.data_factory import get_data_factory
 
 songs_dao = get_data_factory().get_songs_dao()
 
+def convert_song_for_upload(name, filename, component):
+    type = filename.split('.')[1]
+    file_name = name + ' (' + component + ')'
+    if '(slides)' in file_name:
+        file_name = file_name + '.txt'
+    out_path = 'bin/' + file_name # TODO relative path
+    return {'path': out_path, 'type': type}
+
 def get_song_from_params(name, component, new_song_data):
     if component in request.files:
         uploaded_file = request.files[component]
         if uploaded_file.filename != '':
-            type = uploaded_file.filename.split('.')[1]
-            file_name = name + ' (' + component + ')'
-            if '(slides)' in file_name:
-                file_name = file_name + '.txt'
-            out_path = 'bin/' + file_name # TODO relative path
-            uploaded_file.save(out_path)
-            new_song_data[component] = {'path': out_path, 'type': type}
+            new_song_data[component] = convert_song_for_upload(name, uploaded_file.filename, component)
+            uploaded_file.save(new_song_data[component]['path'])
 
 def get_song_file_data_from_params(song_name):
     new_song_data = {}
@@ -79,20 +82,15 @@ def update_slides_api():
     lyrics = extract_required_param('lyrics').replace("%20", " ").replace("%0D%0A", '\n')
     song_name = extract_required_param('name').replace("%20", " ")
     song = songs_dao.get(song_name)
-    update = {}
-    update['name'] = song['name']
-    update['file_ids'] = {}
-    update['slides'] = lyrics
-    songs_dao.update_with(song, update)
-    components = {}
-    _update_component_file_ids(song, 'lyrics', components)
-    _update_component_file_ids(song, 'chords', components)
-    _update_component_file_ids(song, 'lead', components)
-    return render_template('song.html',
-            song_name=song_name,
-            components=components,
-            slides=_get_slides(song)
-        )
+    file_name = "bin/" + song_name + " (slides).txt" # TODO fix path
+    outF = open(file_name, "w")
+    outF.write(lyrics)
+    outF.close()
+    update_data = {}
+    update_data['slides'] = convert_song_for_upload(song_name, file_name, 'slides')
+    songs_dao.update(song_name, update_data)
+
+    return redirect('http://localhost:5000/song?name=' + extract_required_param('name'))
 
 @app.route('/add_song_page', methods=['GET'])
 def add_song_page_api():
@@ -129,13 +127,5 @@ def update_song_api():
     if 'ccli' in request.form:
         ccli = request.form.get('ccli')
     update_data = get_song_file_data_from_params(song_name)
-    song = songs_dao.update_with(song, update_data)
-    components = {}
-    _update_component_file_ids(song, 'lyrics', components) # todo, is this needed?
-    _update_component_file_ids(song, 'chords', components)
-    _update_component_file_ids(song, 'lead', components)
-    return render_template('song.html',
-            song_name=song_name, # TODO pass in song instead
-            components=components,
-            slides=_get_slides(song)
-    )
+    song = songs_dao.update(song_name, update_data)
+    return redirect('http://localhost:5000/song?name=' + request.form.get('name'))

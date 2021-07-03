@@ -11,20 +11,23 @@ class ServiceDao():
         self._sheets_client = sheets_client
 
     def get_all_services(self):
-        return db.get_all_services()
+        return db.get_services()
 
     def get(self, id):
         return db.get_service(id)
 
     def sync(self, force=True):
         if force:
+            db.drop_services()
             services = self._sheets_client.get_services()
             db.add_services(services)
 
     def update(self, service):
         self._sheets_client.update_service(service)
         db.update_service(service)
+        return service
 
     def set(self, service):
         self._sheets_client.update_service(update_data)
         db.add_service(service)
+        return service

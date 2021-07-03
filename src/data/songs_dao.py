@@ -60,18 +60,29 @@ class SongsDao():
                 db.add_song(song)
 
     def get_all(self):
-        return db.get_songs()
+        songs = db.get_songs()
+        res = {}
+        for song in songs:
+            res[song['name']] = song
+        return res
 
-    def update(self, song_data):
-        original = get(song_data['name'])
-        if original is None:
+    def update(self, song_name, file_uploads):
+        song = self.get(song_name)
+        if song is None:
             raise Exception("Cannot update song as it does not exist")
-        song = {}
-        song['file_ids'] = original['file_ids']
-        song['name'] = original['name']
-        self._merge_component(song, original, new, 'ccli', '')
-        self._merge_component(song, original, new, 'notes', '')
-        self._update_remote_data(song, song_data)
+        for component in all_song_components:
+            if component in file_uploads:
+                file_path = file_uploads[component]['path']
+                file_name = file_path.split('/')[1]
+                file_type = file_uploads[component]['type']
+
+                if 'slides' in component:
+                    file_name = file_path.split('/')[1]
+                file_id = None
+                if component in song['file_ids']:
+                    file_id = song['file_ids'][component]
+                song['file_ids'][component] = self._drive_client.update_song_component(component, file_path, file_name, file_type, file_id)
+        self._get_remote_slides(song)
         db.update_song(song)
         return song
 
@@ -100,22 +111,6 @@ class SongsDao():
 
     def get_song_names(self):
         return db.get_song_names()
-
-    def _update_remote_data(self, song, song_data):
-        for component in all_song_components:
-            if component in song_data:
-                file_path = song_data[component]['path']
-                file_name = file_path.split('/')[1]
-                file_type = song_data[component]['type']
-
-                if 'slides' in component:
-                    file_name = file_path.split('/')[1]
-                file_id = None
-                if component in song['file_ids']:
-                    file_id = song['file_ids'][component]
-                song['file_ids'][component] = self._drive_client.update_song_component(component, file_path, file_name, file_type, file_id)
-        self._get_remote_slides(song)
-        return song
 
     def _get_remote_song(self, song_name):
         song = {}

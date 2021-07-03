@@ -104,14 +104,16 @@ class DriveClient:
         return response['id']
 
     def update_song_component(self, component, file_path, file_name, file_type, file_id): # Todo this doesn't allow name changing
+        print '-----------asdasd'
+        print file_type
         if file_id is None:
-            return self.add_song_component(component, file_path, file_name, tile_type)
+            return self.add_song_component(component, file_path, file_name, file_type)
         else:
             parent = folder_ids[component]
             upload = MediaFileUpload(file_path, mime_map[file_type] )
             file = self._service.files().update(
                 media_body=upload,
-                fileId=file_ids[component],
+                fileId=file_id,
                 supportsAllDrives=True
             ).execute()
             return file_id
