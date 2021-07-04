@@ -28,7 +28,7 @@
         {% endif %}
         {% for player in ["Ben B - Vocals and Guitar", "Chris W - Guitar", "Ellie - Vocals", "Emma - Vocals"] %}
           {% if index in service and service[index] == player %}
-            <option selected="selected" value={{player}}>{{player}}</option>
+            <option selected="selected" value="{{player}}">{{player}}</option>
           {% else %}
             <option value="{{player}}">{{player}}</option>
           {% endif %}

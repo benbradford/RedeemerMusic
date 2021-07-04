@@ -67,51 +67,43 @@ class SongsDao():
             res[song['name']] = song
         return res
 
-    def update(self, song_name, file_uploads):
+    def update(self, song_name, song_creation_data):
         song = self.get(song_name)
         if song is None:
             raise Exception("Cannot update song as it does not exist")
         for component in all_song_components:
-            if component in file_uploads:
-                file_path = file_uploads[component]['path']
-                file_name = file_path.split('/')[1]
-                file_type = file_uploads[component]['type']
-
-                if 'slides' in component:
-                    file_name = file_path.split('/')[1]
-                file_id = None
+            if component in song_creation_data:
+                path, name, type = self._get_path_name_type_from_creation_data(song_creation_data, component)
+                file_id = None # move to data param
                 if component in song['file_ids']:
                     file_id = song['file_ids'][component]
-                song['file_ids'][component] = self._drive_client.update_song_component(component, file_path, file_name, file_type, file_id)
-        self._get_remote_slides(song)
+                song['file_ids'][component] = self._drive_client.update_song_component(component, path, name, type, file_id)
+        self._add_remote_slides_to_song(song)
         self._db_update_song(song)
         return song
 
-    def set(self, song_data):
-        original = self._db_get_song(song_data['name'])
+    def set(self, song, song_creation_data):
+        original = self._db_get_song(song['name'])
         if original:
             raise Exception("Cannot add song as it already exists")
-        self._sheets_client.add_song(song_data['name'], '')
-        song = {}
-        song['name'] = song_data['name']
-        song['file_ids'] = {}
-        song['ccli'] = ''
-        song['notes'] = ''
-        for component in all_song_components:
-            if component in song_data:
-                file_path = song_data[component]['path']
-                file_name = file_path.split('/')[1]
-                file_type = add_song_data[component]['type']
 
-                if component == 'slides':
-                    file_name = file_path.split('/')[1]
-                song['file_ids'][component] = self._drive_client.add_song_component(component, file_path, file_name, file_type)
-        self._get_remote_slides(song)
+        self._sheets_client.add_song(song['name'], '')
+
+        for component in all_song_components:
+            if component in song_creation_data:
+                path, name, type = self._get_path_name_type_from_creation_data(song_creation_data, component)
+                song['file_ids'][component] = self._drive_client.add_song_component(component, path, name, type)
+        self._add_remote_slides_to_song(song)
         self._db_add_song(song)
         return song
 
     def get_song_names(self):
         return self._db_get_song_names()
+
+    def _get_path_name_type_from_creation_data(self, song_creation_data, component):
+        return  song_creation_data[component]['file_path'],\
+                song_creation_data[component]['file_name'],\
+                song_creation_data[component]['file_type']
 
     def _get_remote_song(self, song_name):
         song = {}
@@ -121,12 +113,12 @@ class SongsDao():
             res = self._drive_client.get_file_id(song_name, component)
             if res is not None:
                 song['file_ids'][component] = res
-        self._get_remote_slides(song)
+        self._add_remote_slides_to_song(song)
         return song
 
-    def _get_remote_slides(self, song):
+    def _add_remote_slides_to_song(self, song):
         file = cache_dir + song['name'] + '.txt'
-        if 'slides' in song['file_ids']:
+        if 'slides' in song['file_ids'] and song['file_ids']['slides']:
             self._drive_client.download_slide(song['file_ids']['slides'], file)
             song['slides'] = open(file, 'r').read()
         else:
@@ -164,7 +156,7 @@ class SongsDao():
         return res
 
     def _db_add_song(self, song):
-        return self.add_songs([song])
+        return self._db_add_songs([song])
 
     def _db_add_songs(self, songs):
         with DbAccess() as cur:

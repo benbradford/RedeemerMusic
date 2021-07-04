@@ -7,29 +7,27 @@ from data.data_factory import get_data_factory
 
 songs_dao = get_data_factory().get_songs_dao()
 
-def convert_song_for_upload(name, filename, component):
-    type = filename.split('.')[1]
-    file_name = name + ' (' + component + ')'
-    if '(slides)' in file_name:
-        file_name = file_name + '.txt'
-    out_path = 'bin/' + file_name # TODO relative path
-    return {'path': out_path, 'type': type}
-
-def get_song_from_params(name, component, new_song_data):
-    if component in request.files:
-        uploaded_file = request.files[component]
-        if uploaded_file.filename != '':
-            new_song_data[component] = convert_song_for_upload(name, uploaded_file.filename, component)
-            uploaded_file.save(new_song_data[component]['path'])
-
-def get_song_file_data_from_params(song_name):
-    new_song_data = {}
-    new_song_data['name'] = song_name
-    get_song_from_params(song_name, 'lyrics', new_song_data)
-    get_song_from_params(song_name, 'lead', new_song_data)
-    get_song_from_params(song_name, 'chords', new_song_data)
-    get_song_from_params(song_name, 'slides', new_song_data)
-    return new_song_data
+def get_song_creation_data(song_name):
+    creation_data = {}
+    for component in ['lyrics', 'chords', 'lead', 'slides']:
+        if component in request.files:
+            uploaded_file = request.files[component]
+            if uploaded_file.filename != '':
+                upload_data = {}
+                file_type = uploaded_file.filename.split('.')[1]
+                file_name = song_name + ' (' + component + ')'
+                if '(slides)' in file_name:
+                    file_name = file_name + '.txt'
+                file_path = 'bin/' + file_name # TODO relative path
+                uploaded_file.save(file_path)
+                file_name = file_path.split('/')[1]
+                if component == 'slides':
+                    file_name = file_path.split('/')[1]
+                upload_data['file_type'] = file_type
+                upload_data['file_path'] = file_path
+                upload_data['file_name'] = file_name
+                creation_data[component] = upload_data
+    return creation_data
 
 def _get_slides(song):
     lines = song['slides'].decode('utf-8').split('\n')
@@ -82,13 +80,18 @@ def update_slides_api():
     lyrics = extract_required_param('lyrics').replace("%20", " ").replace("%0D%0A", '\n')
     song_name = extract_required_param('name').replace("%20", " ")
     song = songs_dao.get(song_name)
-    file_name = "bin/" + song_name + " (slides).txt" # TODO fix path
-    outF = open(file_name, "w")
+    file_name = song_name + " (slides).txt"
+    file_path = "bin/" + song_name # TODO fix path
+    outF = open(file_path, "w")
     outF.write(lyrics)
     outF.close()
-    update_data = {}
-    update_data['slides'] = convert_song_for_upload(song_name, file_name, 'slides')
-    songs_dao.update(song_name, update_data)
+    upload_data = {}
+    creation_data = {}
+    upload_data['file_type'] = 'txt'
+    upload_data['file_path'] = file_path
+    upload_data['file_name'] = file_name
+    creation_data['slides'] = upload_data
+    songs_dao.update(song_name, creation_data)
 
     return redirect('http://localhost:5000/song?name=' + extract_required_param('name'))
 
@@ -102,11 +105,14 @@ def add_song_api():
     ccli = ""
     if 'ccli' in request.form:
         ccli = request.form.get('ccli')
-    print ("adding song " + song_name)
-
-    new_song_data = get_song_file_data_from_params(song_name)
-
-    songs_dao.set(new_song_data)
+    song = {}
+    song['name'] = song_name
+    song['file_ids'] = {}
+    song['ccli'] = ''
+    song['notes'] = ''
+    song_creation_data = get_song_creation_data(song_name)
+    print song_creation_data
+    songs_dao.set(song, song_creation_data)
     names = sorted(songs_dao.get_song_names())
     return render_template('songs.html', song_names=names)
 
@@ -126,6 +132,6 @@ def update_song_api():
     ccli = ""
     if 'ccli' in request.form:
         ccli = request.form.get('ccli')
-    update_data = get_song_file_data_from_params(song_name)
+    update_data = get_song_creation_data(song_name)
     song = songs_dao.update(song_name, update_data)
     return redirect('http://localhost:5000/song?name=' + request.form.get('name'))

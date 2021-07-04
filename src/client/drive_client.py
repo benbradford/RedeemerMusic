@@ -104,8 +104,6 @@ class DriveClient:
         return response['id']
 
     def update_song_component(self, component, file_path, file_name, file_type, file_id): # Todo this doesn't allow name changing
-        print '-----------asdasd'
-        print file_type
         if file_id is None:
             return self.add_song_component(component, file_path, file_name, file_type)
         else:
