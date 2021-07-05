@@ -29,7 +29,7 @@ class ArgsFactory:
         self._sync()
 
         if self._run_service:
-            app.run()
+            app.run()#ssl_context=('cert.pem', 'key.pem'))
 
     def _sync(self):
         if len(self._sync_components) > 0:

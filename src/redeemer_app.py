@@ -6,6 +6,7 @@ from flask import render_template, redirect
 from api_common import app
 import songs_api
 import service_api
+import user_api
 from args_factory import ArgsFactory
 
 @app.route('/health', methods=['GET'])

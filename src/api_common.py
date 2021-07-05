@@ -2,7 +2,7 @@ import flask
 from flask_cors import CORS
 from flask import request, jsonify, send_file
 
-app = flask.Flask('Redeemer Music')
+app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
 CORS(app)
 app.config["DEBUG"] = True
 
@@ -19,9 +19,3 @@ def extract_optional_param(name, default):
     else:
         print "cannot extract " + name + " from " + request.args
         return default
-
-def extract_body_from_request():
-    body = request.get_json(force=True)
-    if body is None:
-        return "Error: no json body supplied"
-    return body

@@ -4,7 +4,7 @@ import os
 from flask import request, jsonify, send_file, render_template
 from jinja2 import Template
 
-from api_common import app, extract_required_param, extract_optional_param, extract_body_from_request
+from api_common import app, extract_required_param, extract_optional_param
 from client.client_factory import get_client_factory
 from data.data_factory import get_data_factory
 from helper.slides_helper import SlidesHelper
@@ -71,7 +71,7 @@ def add_service_page_api():
                             songs=songs_dao.get_all(),\
                             song_names=songs_dao.get_song_names())
 
-@app.route("/add_service", methods=['GET'])
+@app.route("/add_service", methods=['POST'])
 def add_service_api():
     service =  _get_updated_service_from_params(False)
     service_dao.set(service)
