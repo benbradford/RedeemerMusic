@@ -127,4 +127,6 @@ def update_song_api():
     old_song_name = request.form.get('previous').replace("%20", " ")
     if old_song_name != song_name:
         raise Exception("Currently unable to rename songs")
+    update_data = get_song_creation_data(song_name)
+    songs_dao.update(song_name, update_data)
     return redirect(url_for('song_api', name=request.form.get('name')))

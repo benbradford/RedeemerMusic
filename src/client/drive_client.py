@@ -14,7 +14,9 @@ folder_ids = {
 
 mime_map = {
     'pdf': 'application/pdf',
-    'txt': 'text/plain'
+    'txt': 'text/plain',
+    'doc': 'application/msword',
+    'docx': 'application/msword'
 }
 
 
