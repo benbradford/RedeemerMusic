@@ -1,5 +1,3 @@
-from credentials import get_credentials
-
 from googleapiclient.discovery import build
 
 sheets_id = '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY'
@@ -7,8 +5,8 @@ songs_id = '1tkKaiOsae9eNxUOSawa_e_OfAfnzNPhwZBmcXTp_-qU'
 
 class SheetsClient:
 
-    def __init__(self, creds):
-        self._service = build('sheets', 'v4', credentials=creds)
+    def __init__(self, credentials):
+        self._service = build('sheets', 'v4', credentials=credentials)
         self._sheets = self._service.spreadsheets()
         self._last_column = 'Q'
         self._service_headings = self._get_service_headings()
@@ -33,7 +31,7 @@ class SheetsClient:
         return None
 
     def get_services(self):
-        print "Getting Services"
+        print ("Getting Services")
         result = self._sheets.values().get(spreadsheetId=sheets_id,
                                 range='A2:' + self._last_column).execute()
         values = result.get('values', [])
@@ -50,7 +48,6 @@ class SheetsClient:
                     except:
                         pass
                 services.append(service)
-        print services
         return services
 
     def add_song(self, name, ccli):
@@ -141,16 +138,18 @@ class SheetsClient:
         for i in range(len(current_ids)):
             if current_ids[i][0] == name:
                 return str(i + 2)
-        print ("Error - cannot find service with id " + service['id'])
+        print ("Error - cannot find song with name " + str(name))
         raise Exception("Cannot find existing service")
 
     def _find_row_matching_service(self, service):
+        return str(service['id'] - 2)
         res = self._sheets.values().get(spreadsheetId=sheets_id, range='A2:A').execute()
         current_ids = res.get('values', [])
         for i in range(len(current_ids)):
+            print [i][0]
             if current_ids[i][0] == service['id']:
                 return str(i + 2)
-        print ("Error - cannot find service with id " + service['id'])
+        print ("Error - cannot find service with id " + str(service['id']))
         raise Exception("Cannot find existing service")
 
     def _get_service_headings(self):

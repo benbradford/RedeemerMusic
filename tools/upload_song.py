@@ -29,14 +29,14 @@ def get_song_from_params(component, files):
 def home():
     return open('tools/upload_song.html', "r").read()
 
-@app.route('/up', methods=['POST'])
-def up():
+@app.route('/upload_song', methods=['POST'])
+def up_api():
     files = []
     get_song_from_params('lyrics', files)
     get_song_from_params('lead', files)
     get_song_from_params('chords', files)
     get_song_from_params('slides', files)
     client.upload_song(files)
-    return uploaded_file.filename
+    return "ok"
 
 app.run()

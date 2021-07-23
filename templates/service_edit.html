@@ -2,7 +2,7 @@
 
 {% block form_start %}
 <h2>Edit Service</h2>
-<form action="http://localhost:5000/update_service">
+<form action="{{url_for('update_service_api')}}">
   <input type="hidden" name="id" value="{{service['id']}}" />
   <input type="hidden" name="email_status" value="{{service['email_status']}}" />
   <input type="hidden" name="slides_email_status" value="{{service['slides_email_status']}}" />
@@ -10,7 +10,7 @@
 
 {% block form_end %}
 </form>
-<form action="http://localhost:5000/service" id="usrform">
+<form action="{{url_for('service_api')}}" id="user_form">
   <input type="hidden" name="id" value="{{service['id']}}" />
   <input type="submit" value="Cancel">
 </form>

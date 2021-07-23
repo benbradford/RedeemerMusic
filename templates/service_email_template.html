@@ -27,9 +27,7 @@ The music and band for this coming {{service['date']}} is as follows.
   {% if index in service and service[index]|length > 1 %}
     <li>
       {{service[index]}}
-      {% if 'lead' in service and service[index].startswith(service['lead']) %}
-      &nbsp(lead)
-      {% endif %}
+      {% if 'lead' in service and service[index].startswith(service['lead']) %} (lead) {% endif %}
     </li>
   {% endif %}
 {% endfor %}

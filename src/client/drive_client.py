@@ -1,12 +1,9 @@
 import io
-import os
 from operator import itemgetter
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.http import MediaFileUpload
-
-from credentials import get_credentials
 
 folder_ids = {
     'lyrics': '1A0u-Fixg4uEjipe8ZL7rWoPg7E86cS5b',
@@ -20,13 +17,14 @@ mime_map = {
     'txt': 'text/plain'
 }
 
+
 class DriveClient:
 
-    def __init__(self, creds):
-        self._service = build('drive', 'v3', credentials=creds)
+    def __init__(self, credentials):
+        self._service = build('drive', 'v3', credentials=credentials)
 
     def list_files(self, component):
-        print ("getting services")
+        print("getting services")
         folder_id = folder_ids[component]
         items = []
         page_token = None
@@ -35,10 +33,10 @@ class DriveClient:
             if page_token:
                 param['pageToken'] = page_token
             param['q'] = "'" + folder_id + "' in parents"
-            param['pageSize']=10
-            param['fields']="nextPageToken, files(id, name)"
-            param['includeItemsFromAllDrives']=True
-            param['supportsAllDrives']=True
+            param['pageSize'] = 10
+            param['fields'] = "nextPageToken, files(id, name)"
+            param['includeItemsFromAllDrives'] = True
+            param['supportsAllDrives'] = True
             files = self._service.files().list(
                 **param
             ).execute()
@@ -50,10 +48,9 @@ class DriveClient:
                 items.sort(key=itemgetter("name"))
                 return items
 
-
     def get_file_id(self, song_name, component):
         folder_id = folder_ids[component]
-        print ("getting " + component + " file id for " + song_name)
+        print("getting " + component + " file id for " + song_name)
         song_file_name = song_name + " (" + component + ")"
         song_file_name = song_file_name.replace("'", "\\'")
         if component == 'slides':
@@ -64,10 +61,10 @@ class DriveClient:
             includeItemsFromAllDrives=True,
             supportsAllDrives=True,
             q="name ='" + song_file_name + "' and '" + folder_id + "' in parents"
-        ).execute() # TODO httplib2.Http() https://stackoverflow.com/questions/50172034/google-drive-multythreading-move-files-python
+        ).execute()  # TODO httplib2.Http() https://stackoverflow.com/questions/50172034/google-drive-multythreading-move-files-python
         items = results.get('files', [])
         if len(items) == 0:
-            print ("WARN Cannot find " + component + " for " + song_name)
+            print("WARN Cannot find " + component + " for " + song_name)
             return None
         return items[0]['id']
 
@@ -81,7 +78,7 @@ class DriveClient:
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            print (outfile + " - Download %d%%." % int(status.progress() * 100))
+            print(outfile + " - Download %d%%." % int(status.progress() * 100))
 
     def add_song_component(self, component, file_path, file_name, file_type):
         parent = folder_ids[component]
@@ -103,13 +100,13 @@ class DriveClient:
         print("Upload Completed! file id is " + response['id'])
         return response['id']
 
-    def update_song_component(self, component, file_path, file_name, file_type, file_id): # Todo this doesn't allow name changing
+    def update_song_component(self, component, file_path, file_name, file_type,
+                              file_id):  # Todo this doesn't allow name changing
         if file_id is None:
             return self.add_song_component(component, file_path, file_name, file_type)
         else:
-            parent = folder_ids[component]
-            upload = MediaFileUpload(file_path, mime_map[file_type] )
-            file = self._service.files().update(
+            upload = MediaFileUpload(file_path, mime_map[file_type])
+            self._service.files().update(
                 media_body=upload,
                 fileId=file_id,
                 supportsAllDrives=True

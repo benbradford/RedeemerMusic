@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <h2>{{song_name}}</h2>
+
 <div>
   <ul>
     {% for component, file_id in components.iteritems() %}
@@ -8,32 +9,33 @@
         <li> <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/{{file_id}}/view?usp=sharing">[{{component}}]</a></li>
       {% endif %}
     {% endfor %}
-  <ul>
+  </ul>
 </div>
-<div>
-  <a href="http://localhost:5000/update_song_page?name={{song_name}}">Update Song Details</a>
-</div>
+
+<form class="form" id="form" action="{{url_for('update_song_page_api')}}" >
+
+  <input type="submit" class="submitBtn" value="Edit Song" />
+  <input type="hidden" name="name" value="{{song_name}}" />
+</form>
 <div>
   {% if slides is not none %}
   <div>
-    <div>
-      <form class="form" id="form" action="http://localhost:5000/edit_slides" >
-          <label for="id">Slides</label>
-          <input type="submit" class="submitBtn" value="Edit" />
-          <input type="hidden" name="name" value="{{song_name}}" />
-      </form>
-    </div>
-    <div id="border" style="font-family:Courier;font-size:14px;">
-      {% for page in slides %}
-        <div id="border" style="width:24em;outline:0.03em solid black;text-align:center;">
-          {% for line in page %}
-            {{line}} <br/>
-          {% endfor %}
-          <br/>
-        </div>
-      {% endfor %}
-    </div>
-
+    <form class="form" id="form1" action="{{url_for('edit_slides_api')}}" >
+        <input type="submit" class="submitBtn" value="Edit Slides" />
+        <input type="hidden" name="name" value="{{song_name}}" />
+    </form>
+  </div>
+  <div id="border1" style="font-family:Courier;font-size:14px;">
+    {% for page in slides %}
+      <div id="border2" style="width:24em;outline:0.03em solid black;text-align:center;">
+        {% for line in page %}
+          {{line}} <br/>
+        {% endfor %}
+        <br/>
+      </div>
+    {% endfor %}
+  </div>
   {% endif %}
-</div>
+ </div>
+
 {% endblock %}

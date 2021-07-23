@@ -6,14 +6,14 @@
         <h2>Services</h2>
     </div>
     <div class="int-box">
-      <form action="http://localhost:5000/add_service_page">
+      <form action="{{url_for('add_service_page_api')}}">
         <input type="submit" value="Add New" class="button button_add" style="float: right;" />
       </form>
     </div>
 </div>
 
 <div style="padding-top:50px;">
-  <form action="http://localhost:5000/service">
+  <form action="{{url_for('service_api')}}">
     <label for="id">Choose a service:</label>
     <select id="id" name="id">
       {% for service in services %}

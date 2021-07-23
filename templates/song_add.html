@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<form method="POST" action="http://localhost:5000/add_song" enctype="multipart/form-data">
+<form method="POST" action="{{url_for('add_song_api')}} enctype="multipart/form-data">
   <p>Name: <input type="text" id="name" name="name"/></p>
   <p>Ccli: <input type="text" id="ccli" name="CCLI number"/></p>
   <p>Lyrics: <input type="file" name="lyrics"></p>
@@ -11,7 +11,7 @@
   <p><input type="submit" value="Submit"></p>
 </form>
 
-<form action="http://localhost:5000/songs" id="usrform">
+<form action="{{url_for('songs_api')}}" id="user_form">
   <input type="submit" value="Cancel">
 
 </form>

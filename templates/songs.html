@@ -6,14 +6,14 @@
         <h2>Songs</h2>
     </div>
     <div class="int-box">
-      <form action="http://localhost:5000/add_song_page">
+      <form action="{{url_for('add_song_page_api')}}">
         <input type="submit" value="Add New" class="button button_add" style="float: right;"/>
       </form>
     </div>
 </div>
 
 <div style="padding-top:50px;">
-  <form action="http://localhost:5000/song">
+  <form action="{{url_for('song_api')}}">
     <label for="name">Choose a song:</label>
     <select id="name" name="name">
     _VIEW_SERVICE_PARAMS_

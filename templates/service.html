@@ -27,7 +27,7 @@
   }
 </style>
 
-<form class="form" id="form" action="http://localhost:5000/edit_service" >
+<form class="form" id="form" action="{{url_for('edit_service_api')}}" >
     <input type="submit" class="submitBtn" value="Edit" />
     <input type="hidden" name="id" value="{{service['id']}}" />
 </form>
@@ -37,8 +37,8 @@
 
     <tr>
       <th>
-        <form class="form" id="form" action="http://localhost:5000/send_music_email" >
-            <input type="submit" class="submitEmailButton" value="{{service_email_params['email_label']}}" " />
+        <form class="form" id="form1" action="{{url_for('send_music_email_api')}}" >
+            <input type="submit" class="submitEmailButton" value="{{service_email_params['email_label']}}" />
             <input type="hidden" name="id" value="{{service['id']}}" />
             <input type="hidden" name="recipients" value="{{service_email_params['recipients']}}" />
         </form>
@@ -49,16 +49,16 @@
 
     <tr>
       <th>
-        <form class="form" id="form" action="http://localhost:5000/email_slides" >
-            <input type="submit" class="submitSlidesButton" value="{{ppt_email_params['email_label']}}" " />
-            <input type="hidden" name="id" value="{{service['id']}}}" />
+        <form class="form" id="form2" action="{{url_for('email_slides_api')}}" >
+            <input type="submit" class="submitSlidesButton" value="{{ppt_email_params['email_label']}}" />
+            <input type="hidden" name="id" value="{{service['id']}}" />
             <input type="hidden" name="recipients" value="{{ppt_email_params['recipients']}}" />
         </form>
       </th>
 
       <th>
-        <form class="form" id="form" action="http://localhost:5000/preview_slides" >
-            <input type="submit" class="previewSlidesEmail" value="Preview Slides" " />
+        <form class="form" id="form3" action="{{url_for('preview_slides_api')}}" >
+            <input type="submit" class="previewSlidesEmail" value="Preview Slides" />
             <input type="hidden" name="id" value="{{service['id']}}" />
         </form>
       </th>

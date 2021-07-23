@@ -14,11 +14,11 @@ textarea {
   <textarea rows="40" cols="38" name="lyrics" form="usrform" wrap="soft">
     {{slides}}
   </textarea>
-  <form action="http://localhost:5000/update_slides" id="usrform">
+  <form action="{{url_for('update_slides_api')}}" id="usrform">
     <input type="submit">
     <input type="hidden" name="name" value="{{song['name']}}" />
   </form>
-  <form action="http://localhost:5000/song" id="usrform">
+  <form action="{{url_for('song_api')}}" id="usrform">
     <input type="submit" value="Cancel">
     <input type="hidden" name="name" value="{{song['name']}}" />
   </form>

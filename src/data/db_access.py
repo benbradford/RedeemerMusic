@@ -1,7 +1,6 @@
 import os
 
 import sqlite3
-from sqlite3 import Error
 
 db_dir = os.path.join(os.path.dirname(__file__), './db/')
 
@@ -14,11 +13,11 @@ class DbAccess:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
-            print exc_type
+            print (exc_type)
         if exc_val:
-            print exc_val
+            print (exc_val)
         if exc_tb:
-            print exc_tb
+            print (exc_tb)
         if self._con:
             self._con.close()
 

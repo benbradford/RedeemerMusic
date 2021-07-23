@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<form method="POST" action="http://localhost:5000/update_song" enctype="multipart/form-data">
+<form method="POST" action="{{url_for('update_song_api')}}" enctype="multipart/form-data">
   <input type="hidden" name="previous" value="{{song['name']}}" />
   <p>Name: <input type="text" id="name" name="name" value="{{song['name']}}"/></p>
   <p>Ccli: <input type="text" id="ccli" name="CCLI number" value="{{ccli}}"/></p>
@@ -17,7 +17,7 @@
   <p><input type="submit" value="Update"></p>
 </form>
 
-<form action="http://localhost:5000/song" id="usrform">
+<form action="{{url_for('song_api')}}" id="user_form">
     <input type="hidden" name="name" value="{{song['name']}}" />
   <input type="submit" value="Cancel">
 </form>

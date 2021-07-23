@@ -1,6 +1,7 @@
 from data_common import cache_dir
 from db_access import DbAccess
 
+
 class UserDao:
 
     def __init__(self):
@@ -8,8 +9,8 @@ class UserDao:
 
     def get(self, user_id):
         with DbAccess() as cur:
-            users = cur.execute('SELECT id FROM user').fetchone()
-        if not user:
+            users = cur.execute('SELECT id FROM user where name=:user_name', {'user_name': user_id}).fetchone()
+        if not users:
             return None
         user = {}
         user['id'] = user[0]
