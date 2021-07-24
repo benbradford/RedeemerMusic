@@ -1,32 +1,48 @@
-import sys, getopt
-import app_init
-from flask import render_template, redirect, url_for
+import getopt
+import sys
 
-from api_common import app
-import songs_api
-import service_api
-import user_api
-from args_factory import ArgsFactory
+from api import app
+from data.data_factory import get_data_factory
 
 
-@app.route('/health', methods=['GET'])
-def health():
-    return "okidoki"
+class ArgsFactory:
+    def __init__(self):
+        self._run_service = True
+        self._sync_source = 'remote'
+        self._sync_components = []
+        self._should_show_help = False
 
+    def with_no_run(self):
+        self._run_service = False
 
-@app.route('/', methods=['GET'])
-def index():
-    return redirect(url_for('home_api'), code=302)
+    def with_use_local_data(self):
+        self._sync_source = 'local'
 
+    def with_sync_component(self, component):
+        self._sync_components.append(component)
 
-@app.route('/home', methods=['GET'])
-def home_api():
-    return render_template('home.html')
+    def with_help(self):
+        self._should_show_help = True
 
-
-@app.route('/about', methods=['GET'])
-def about_api():
-    return render_template('about.html')
+    def boot(self):
+        if self._should_show_help:
+            print("Usage: python app.py (-s | --sync (services | songs)) (-l | --local-data) (-n | --no-run))")
+            print("--sync: Will sync up local data with what is stored in drive. Choose the component to sync or none "
+                  "to sync all components")
+            print("--local-data: Will use the currently cached local data instead (will not sync with drive)")
+            print("--no-run: Will not run the service, useful if you want to sync with remote only")
+            print("<no-options>: Normal launch by syncing local data with remote then launch the service")
+            return
+        if len(self._sync_components) > 0:
+            if 'songs' in self._sync_components:
+                get_data_factory().get_songs_dao().sync(force=True)
+            if 'services' in self._sync_components:
+                get_data_factory().get_service_dao().sync(force=True)
+        elif self._sync_source == 'remote':
+            get_data_factory().get_service_dao().sync(force=True)
+            get_data_factory().get_songs_dao().sync(force=True)
+        if self._run_service:
+            app.run()
 
 
 if __name__ == "__main__":

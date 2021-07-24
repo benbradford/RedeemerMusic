@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 sheets_id = '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY'
 songs_id = '1tkKaiOsae9eNxUOSawa_e_OfAfnzNPhwZBmcXTp_-qU'
 
+
 class SheetsClient:
 
     def __init__(self, credentials):
@@ -14,7 +15,7 @@ class SheetsClient:
     def list_song_names(self):
         songs = []
         result = self._sheets.values().get(spreadsheetId=songs_id,
-                                        range='A2:' + self._last_column).execute()
+                                           range='A2:' + self._last_column).execute()
         values = result.get('values', [])
         if not values:
             print('No data found.')
@@ -31,9 +32,9 @@ class SheetsClient:
         return None
 
     def get_services(self):
-        print ("Getting Services")
+        print("Getting Services")
         result = self._sheets.values().get(spreadsheetId=sheets_id,
-                                range='A2:' + self._last_column).execute()
+                                           range='A2:' + self._last_column).execute()
         values = result.get('values', [])
 
         services = []
@@ -62,7 +63,7 @@ class SheetsClient:
                 "majorDimension": "ROWS",
                 "values": [[name, ccli]]
             },
-            valueInputOption = 'USER_ENTERED'
+            valueInputOption='USER_ENTERED'
         ).execute()
 
     def update_song(self, old_song_name, song_name, ccli):
@@ -76,7 +77,7 @@ class SheetsClient:
                 "majorDimension": "ROWS",
                 "values": [[song_name, ccli]]
             },
-            valueInputOption = 'USER_ENTERED'
+            valueInputOption='USER_ENTERED'
         ).execute()
 
     def add_service(self, service):
@@ -93,27 +94,27 @@ class SheetsClient:
                 "majorDimension": "ROWS",
                 "values": [row]
             },
-            valueInputOption = 'USER_ENTERED'
+            valueInputOption='USER_ENTERED'
         ).execute()
 
     def update_service(self, service):
         row_number = self._find_row_matching_service(service)
-        range = 'A' + row_number + ':' + row_number
+        query_range = 'A' + row_number + ':' + row_number
         row = self._create_row_for_service(service)
         self._sheets.values().update(
             spreadsheetId=sheets_id,
-            range=range,
+            range=query_range,
             body={
                 "majorDimension": "ROWS",
                 "values": [row]
             },
-            valueInputOption = 'USER_ENTERED'
+            valueInputOption='USER_ENTERED'
         ).execute()
 
     def _create_row_for_service(self, service):
         row = []
         for j in range(0, len(self._service_headings)):
-            row.append(self._add_to_row(service,self._service_headings[j]))
+            row.append(self._add_to_row(service, self._service_headings[j]))
         return row
 
     def _get_next_row_and_id(self):
@@ -138,24 +139,25 @@ class SheetsClient:
         for i in range(len(current_ids)):
             if current_ids[i][0] == name:
                 return str(i + 2)
-        print ("Error - cannot find song with name " + str(name))
+        print("Error - cannot find song with name " + str(name))
         raise Exception("Cannot find existing service")
 
     def _find_row_matching_service(self, service):
+        print ("matching row is " + str(service['id']))
         return str(service['id'] - 2)
         res = self._sheets.values().get(spreadsheetId=sheets_id, range='A2:A').execute()
         current_ids = res.get('values', [])
         for i in range(len(current_ids)):
-            print [i][0]
+            print[i][0]
             if current_ids[i][0] == service['id']:
                 return str(i + 2)
-        print ("Error - cannot find service with id " + str(service['id']))
+        print("Error - cannot find service with id " + str(service['id']))
         raise Exception("Cannot find existing service")
 
     def _get_service_headings(self):
         headings = []
         result = self._sheets.values().get(spreadsheetId=sheets_id,
-                                range='A1:' + self._last_column + '1').execute()
+                                           range='A1:' + self._last_column + '1').execute()
         values = result.get('values', [])
         if not values:
             print('No data found.')

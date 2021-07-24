@@ -2,7 +2,7 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
-import json
+
 
 class SlidesHelper:
     def __init__(self, songs_dao):
@@ -38,7 +38,7 @@ class SlidesHelper:
 
     def _get_slides_from_service(self, service):
         slides = []
-        for index in [1,2,3,4,5, 6]:
+        for index in [1, 2, 3, 4, 5, 6]:
             song_key = "song" + str(index)
             if song_key in service and service[song_key] != "":
                 s = self._songs_dao.get(service[song_key])['slides']
@@ -49,14 +49,14 @@ class SlidesHelper:
     def _create_empty_presentation(self):
         empty = Presentation()
         empty.slide_width = Inches(14)
-        blank_slide_layout = empty.slide_layouts[6]
+        empty.slide_layouts[6]
         return empty
 
     def _add_slides_for_song(self, presentation, slide):
         num_slides_with_lyrics = len(slide)
 
         for i in range(num_slides_with_lyrics):
-            self._assemble_page(slide[i], presentation, i == num_slides_with_lyrics-1)
+            self._assemble_page(slide[i], presentation, i == num_slides_with_lyrics - 1)
 
     def _assemble_page(self, lyrics_on_page, presentation, is_last_slide):
         num_lines = lyrics_on_page.count('\n') + 1
@@ -92,15 +92,15 @@ class SlidesHelper:
 
     def _get_top_margin_in_inches(self, num_lines):
         lines_to_inches = {
-             1: 2.75,
-             2: 2.4,
-             3: 2.1,
-             4: 1.7,
-             5: 1.4,
-             6: 1.0,
-             7: 0.4,
-             8: 0,
-             9: 0
+            1: 2.75,
+            2: 2.4,
+            3: 2.1,
+            4: 1.7,
+            5: 1.4,
+            6: 1.0,
+            7: 0.4,
+            8: 0,
+            9: 0
         }
         try:
             return lines_to_inches[num_lines]

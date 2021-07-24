@@ -1,14 +1,13 @@
-from data_common import cache_dir
-from db_access import DbAccess
+from db_accessor import DbAccessor
 
 
-class UserDao:
+class UserDao(DbAccessor):
 
     def __init__(self):
-        pass
+        DbAccessor.__init__(self)
 
     def get(self, user_id):
-        with DbAccess() as cur:
+        with self.db_access() as cur:
             users = cur.execute('SELECT id FROM user where name=:user_name', {'user_name': user_id}).fetchone()
         if not users:
             return None
@@ -21,7 +20,7 @@ class UserDao:
         return user
 
     def set(self, user):
-        with DbAccess() as cur:
+        with self.db_access() as cur:
             cur.execute(
                 "INSERT INTO user (id, name, email, profile_pic)"
                 " VALUES (?, ?, ?, ?)",
