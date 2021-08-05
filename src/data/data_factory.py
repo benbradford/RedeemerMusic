@@ -1,6 +1,7 @@
 from service_dao import ServiceDao
 from songs_dao import SongsDao
 from user_dao import UserDao
+from recipient_dao import RecipientDao
 
 
 class DataFactory:
@@ -8,6 +9,7 @@ class DataFactory:
         self._service_dao = ServiceDao(sheets_client)
         self._songs_dao = SongsDao(sheets_client, drive_client)
         self._user_dao = UserDao()
+        self._recipient_dao = RecipientDao()
 
     def get_service_dao(self):
         return self._service_dao
@@ -17,6 +19,9 @@ class DataFactory:
 
     def get_user_dao(self):
         return self._user_dao
+
+    def get_recipient_dao(self):
+        return self._recipient_dao
 
 
 data_factory = None

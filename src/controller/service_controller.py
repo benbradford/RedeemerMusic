@@ -8,14 +8,15 @@ powerpoint_location = os.path.join(os.path.dirname(__file__), '../../bin/')
 optional_service_params = ['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2',
                            'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
+FROM_ADDRESS = 'ben.bradford80@gmail.com'
 
 class ServiceController:
-    def __init__(self, gmail_client, service_dao, songs_dao, slides_helper, recipients_helper):
+    def __init__(self, gmail_client, service_dao, songs_dao, slides_helper, recipients_dao):
         self._gmail_client = gmail_client
         self._service_dao = service_dao
         self._songs_dao = songs_dao
         self._slides_helper = slides_helper
-        self._recipients_helper = recipients_helper
+        self._recipients_dao = recipients_dao
 
     def show_services_page(self):
         services = self._service_dao.get_all_services()
@@ -35,9 +36,9 @@ class ServiceController:
     def show_service(self, service_id):
         service = self._service_dao.get(service_id)
         service_email_details = self._get_email_details(service, 'Service', 'email_status',
-                                                                     self._recipients_helper.get_all_recipients())
+                                                        self._recipients_dao.get_service_email_addresses())
         ppt_email_details = self._get_email_details(service, 'Powerpoint', 'slides_email_status',
-                                                                 self._recipients_helper.get_ppt_recipients())
+                                                    self._recipients_dao.get_ppt_email_addresses())
         return render_template('service.html', service=service, service_email_params=service_email_details,
                                ppt_email_params=ppt_email_details, songs=self._songs_dao.get_all())
 
@@ -55,13 +56,13 @@ class ServiceController:
 
     def send_music_email(self, service_id, recipients):
         service = self._service_dao.get(service_id)
-        template_filename = os.path.join(os.path.dirname(__file__), '../templates/service_email_template.html')
+        template_filename = os.path.join(os.path.dirname(__file__), '../../templates/service_email_template.html')
         template_file = open(template_filename, 'r').read()
         template = Template(template_file)
         body = template.render(service=service, songs=self._songs_dao.get_all())
 
         subject = "Redeemer Music for " + service['date']
-        self._gmail_client.send(subject, body, recipients, self._recipients_helper.get_from_address())
+        self._gmail_client.send(subject, body, recipients, FROM_ADDRESS)
         ServiceController._update_email_status(service, 'email_status')
         self._service_dao.update(service)
         return redirect(url_for('services_api'))
@@ -71,12 +72,13 @@ class ServiceController:
         ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
         self._slides_helper.create_powerpoint(service, ppt_filename)
 
-        template_filename = os.path.join(os.path.dirname(__file__), '../templates/powerpoint_email_template.html')
+        template_filename = os.path.join(os.path.dirname(__file__), '../../templates/powerpoint_email_template.html')
         template_file = open(template_filename, 'r').read()
         template = Template(template_file)
         body = template.render(date=service['date'])
         subject = "Powerpoint slides for " + service['date']
-        self._gmail_client.send_attachment(subject, body, recipients, self._recipients_helper.get_from_address(), ppt_filename,
+        self._gmail_client.send_attachment(subject, body, recipients, FROM_ADDRESS,
+                                           ppt_filename,
                                            service['date'] + ' powerpoint.pptx')
         ServiceController._update_email_status(service, 'slides_email_status')
         self._service_dao.update(service)
@@ -104,7 +106,7 @@ class ServiceController:
             email_details['font_size'] = "12px"
         elif service[email_component] == 'not sent test':
             email_details['email_label'] = "Send Test {} Email".format(label_name)
-            email_details['recipients'] = self._recipients_helper.get_test_recipient()
+            email_details['recipients'] = self._recipients_dao.get_test_email_addresses()
 
         return email_details
 

@@ -2,5 +2,7 @@
 cred/
 bin/
 src/data/db/redeemer.db
+src/data/db/custom_before
+src/data/db/custom_after
 .DS_Store
 secrets/

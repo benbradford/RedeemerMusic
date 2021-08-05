@@ -62,7 +62,8 @@ class UserController:
             return "User email could not be verified by Google.", 400
 
         user = {'id': userinfo_response.json()["sub"], 'email': userinfo_response.json()["email"],
-                'pic': userinfo_response.json()["picture"], 'name': userinfo_response.json()["given_name"]}
+                'pic': userinfo_response.json()["picture"], 'name': userinfo_response.json()["given_name"],
+                'scope': 'rdm/all'}
 
         if not self._user_dao.get(user['id']):
             self._user_dao.set(user)

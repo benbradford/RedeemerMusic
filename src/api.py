@@ -16,10 +16,10 @@ from client.client_factory import get_client_factory
 from data.data_factory import init_data_factory, get_data_factory
 from data.db_init import init_db
 from helper.slides_helper import SlidesHelper
-from helper.recipients_helper import RecipientsHelper
 from controller.song_controller import SongController
 from controller.user_controller import UserController
 from controller.service_controller import ServiceController
+from controller.recipients_controller import RecipientsController
 
 app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
 CORS(app)
@@ -42,8 +42,8 @@ service_controller = ServiceController(get_client_factory().get_gmail_client(),
                                        get_data_factory().get_service_dao(),
                                        get_data_factory().get_songs_dao(),
                                        SlidesHelper(get_data_factory().get_songs_dao()),
-                                       RecipientsHelper())
-
+                                       get_data_factory().get_recipient_dao())
+recipients_controller = RecipientsController(get_data_factory().get_recipient_dao())
 
 def extract_required_param(name):
     if name in request.args:
@@ -103,6 +103,7 @@ def update_song_api(): return song_controller.update_song(request.form.get('name
                                                           request.form.get('previous'),
                                                           request.files)
 
+
 @app.route('/services', methods=['GET'])
 def services_api(): return service_controller.show_services_page()
 
@@ -140,6 +141,29 @@ def email_slides_api(): return service_controller.send_slides_email(extract_requ
 @app.route('/preview_slides', methods=['GET'])
 def preview_slides_api(): return service_controller.preview_slides(extract_required_param('id'))
 
+
+@app.route('/recipients', methods=['GET'])
+def recipients_api(): return recipients_controller.show_recipients_page()
+
+
+@app.route('/add_recipient_page', methods=['GET'])
+def add_recipient_page_api(): return recipients_controller.show_add_new_page()
+
+
+@app.route('/add_recipient', methods=['POST'])
+def add_recipient_api(): return recipients_controller.add_new(request.form)
+
+
+@app.route('/add_recipient_register', methods=['GET'])
+def add_recipient_register_api(): return recipients_controller.add_recipient_register(
+    extract_required_param('email'),
+    extract_required_param('register_index'))
+
+
+@app.route('/remove_recipient_register', methods=['GET'])
+def remove_recipient_register_api(): return recipients_controller.remove_recipient_register(
+    extract_required_param('email'),
+    extract_required_param('register_index'))
 
 @login_manager.unauthorized_handler
 def unauthorized(): return "You must be logged in to access this content.", 403
