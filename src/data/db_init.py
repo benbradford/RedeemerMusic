@@ -21,10 +21,12 @@ def init_db():
     accessor = DbAccessor()
     with accessor.db_access() as cur:
         exec_custom(cur, 'custom_before')
+
         exec_sql_file(cur, 'song_init_table.sql')
         exec_sql_file(cur, 'service_init_table.sql')
         exec_sql_file(cur, 'user_init.sql')
         exec_sql_file(cur, 'recipient_init.sql')
+        exec_sql_file(cur, 'members_init.sql')
         exec_custom(cur, 'custom_after')
 
 

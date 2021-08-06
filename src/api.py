@@ -42,7 +42,8 @@ service_controller = ServiceController(get_client_factory().get_gmail_client(),
                                        get_data_factory().get_service_dao(),
                                        get_data_factory().get_songs_dao(),
                                        SlidesHelper(get_data_factory().get_songs_dao()),
-                                       get_data_factory().get_recipient_dao())
+                                       get_data_factory().get_recipient_dao(),
+                                       get_data_factory().get_band_dao())
 recipients_controller = RecipientsController(get_data_factory().get_recipient_dao())
 
 def extract_required_param(name):

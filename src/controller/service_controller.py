@@ -10,13 +10,15 @@ optional_service_params = ['lead', 'date', 'message', 'band1', 'band2', 'band3',
 
 FROM_ADDRESS = 'ben.bradford80@gmail.com'
 
+
 class ServiceController:
-    def __init__(self, gmail_client, service_dao, songs_dao, slides_helper, recipients_dao):
+    def __init__(self, gmail_client, service_dao, songs_dao, slides_helper, recipients_dao, band_dao):
         self._gmail_client = gmail_client
         self._service_dao = service_dao
         self._songs_dao = songs_dao
         self._slides_helper = slides_helper
         self._recipients_dao = recipients_dao
+        self._band_dao = band_dao
 
     def show_services_page(self):
         services = self._service_dao.get_all_services()
@@ -26,7 +28,8 @@ class ServiceController:
         return render_template('service_add.html',
                                service={},
                                songs=self._songs_dao.get_all(),
-                               song_names=self._songs_dao.get_song_names())
+                               song_names=self._songs_dao.get_song_names(),
+                               members=self._band_dao.get_member_list())
 
     def add_service(self, optional_params):
         service = ServiceController._get_updated_service_from_params(None, optional_params)
@@ -47,7 +50,8 @@ class ServiceController:
         return render_template('service_edit.html',
                                service=service,
                                songs=self._songs_dao.get_all(),
-                               song_names=self._songs_dao.get_song_names())
+                               song_names=self._songs_dao.get_song_names(),
+                               members=self._band_dao.get_member_list())
 
     def update_service(self, service_id, optional_params):
         service = self._get_updated_service_from_params(service_id, optional_params)
