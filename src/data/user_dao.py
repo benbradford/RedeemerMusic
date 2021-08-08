@@ -10,9 +10,9 @@ class UserDao(DbAccessor):
         with self.db_access() as cur:
             return cur.execute('select * from user').fetchall()
 
-    def get(self, email):
+    def get(self, user_id):
         with self.db_access() as cur:
-            res = cur.execute('SELECT * FROM user where email=:user_email', {'user_email': email}).fetchone()
+            res = cur.execute('SELECT * FROM user where id=:user_id', {'user_id': user_id}).fetchone()
         if not res:
             return None
 
@@ -30,3 +30,5 @@ class UserDao(DbAccessor):
     @staticmethod
     def _get_user_from_query_result(res):
         return {'id': res[0], 'name': res[1], 'email': res[2], 'scope': res[3], 'pic': res[4]}
+
+

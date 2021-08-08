@@ -13,7 +13,7 @@
 
 /* Create two equal columns that sits next to each other */
 .column {
-  flex: 50%;
+  flex: 33%;
   padding: 10px;
 }
 </style>
@@ -31,7 +31,7 @@
       {% for i in [0, 1, 2] %}
         <div class="column" style="background-color:#{{column_colours[i]}};">
          <h3>{{headings[i]}}</h3>
-         <hr style="width:50%;text-align:left;margin-left:0">
+         <hr style="width:33%;text-align:left;margin-left:0">
          {% for r in recipients %}
            {% if r['register'][i] == '1' %}
              <div>

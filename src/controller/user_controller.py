@@ -72,10 +72,10 @@ class UserController:
         user = {'id': userinfo_response.json()["sub"], 'email': userinfo_response.json()["email"],
                 'pic': userinfo_response.json()["picture"], 'name': userinfo_response.json()["given_name"],
                 'scope': 'rdm/all'}
-        if self._user_dao.get(user['email']) is None:
+        if self._user_dao.get(user['id']) is None:
             self._user_dao.set(user)
 
-        login_user(User(user))
+        login_user(User(user), remember=True)
 
         return redirect('https://localhost/home')
 

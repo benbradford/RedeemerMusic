@@ -6,7 +6,7 @@ from flask_login import (
     current_user,
     login_required,
     login_user,
-    logout_user,
+    logout_user
 )
 
 from flask_cors import CORS
@@ -23,9 +23,9 @@ from controller.service_controller import ServiceController
 from controller.recipients_controller import RecipientsController
 
 app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
-app.secret_key = os.urandom(24)
+app.secret_key = 'abcdefghijklmnopqrstuvwx'
 CORS(app)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -74,7 +74,6 @@ def about_api(): return render_template('about.html')
 
 @app.route('/songs', methods=['GET'])
 def songs_api(): return song_controller.show_songs_page()
-
 
 @app.route('/song', methods=['GET'])
 def song_api(): return song_controller.show_song_page(extract_required_param('name'))

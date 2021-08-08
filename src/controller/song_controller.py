@@ -6,6 +6,7 @@ class SongController:
         self._songs_dao = songs_dao
 
     def show_songs_page(self):
+
         names = sorted(self._songs_dao.get_song_names())
         return render_template('songs.html', song_names=names)
 

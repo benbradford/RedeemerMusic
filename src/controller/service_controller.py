@@ -111,7 +111,7 @@ class ServiceController:
         elif service[email_component] == 'not sent test':
             email_details['email_label'] = "Send Test {} Email".format(label_name)
             email_details['recipients'] = self._recipients_dao.get_test_email_addresses()
-
+        email_details['recipients'] = ','.join(email_details['recipients'])
         return email_details
 
     @staticmethod

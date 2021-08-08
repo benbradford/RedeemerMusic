@@ -11,7 +11,7 @@ source env/bin/activate
 sudo pip install -r requirements.txt
 deactivate
 rm /etc/nginx/sites-enabled/default
-cp reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
+cp reverse-proxy.conf /etc/nginx/sites-enabled/nginx.conf
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/selfsigned.key -out /etc/ssl/certs/selfsigned.crt
 openssl dhparam -out /etc/nginx/dhparam.pem 4096
 

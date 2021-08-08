@@ -41,6 +41,8 @@ class ArgsFactory:
         elif self._sync_source == 'remote':
             get_data_factory().get_service_dao().sync(force=True)
             get_data_factory().get_songs_dao().sync(force=True)
+        else:
+            app.config["DEBUG"] = True
         if self._run_service:
             app.run()
 
