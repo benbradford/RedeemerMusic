@@ -1,5 +1,6 @@
+import os
 import flask
-from flask import request, render_template, redirect, url_for
+from flask import render_template, redirect, url_for
 from flask_login import (
     LoginManager,
     current_user,
@@ -22,6 +23,7 @@ from controller.service_controller import ServiceController
 from controller.recipients_controller import RecipientsController
 
 app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
+app.secret_key = os.urandom(24)
 CORS(app)
 app.config["DEBUG"] = True
 login_manager = LoginManager()
@@ -45,6 +47,7 @@ service_controller = ServiceController(get_client_factory().get_gmail_client(),
                                        get_data_factory().get_recipient_dao(),
                                        get_data_factory().get_band_dao())
 recipients_controller = RecipientsController(get_data_factory().get_recipient_dao())
+
 
 def extract_required_param(name):
     if name in request.args:
@@ -166,6 +169,7 @@ def remove_recipient_register_api(): return recipients_controller.remove_recipie
     extract_required_param('email'),
     extract_required_param('register_index'))
 
+
 @login_manager.unauthorized_handler
 def unauthorized(): return "You must be logged in to access this content.", 403
 
@@ -175,14 +179,14 @@ def load_user(user_id): return user_controller.load_user(user_id)
 
 
 @app.route("/login")
-def login(): return user_controller.login(requests.get(GOOGLE_DISCOVERY_URL).json(), request.base_url)
+def login(): return user_controller.login(requests.get(GOOGLE_DISCOVERY_URL).json(), 'https://localhost')
 
 
 @app.route("/login/callback")
 def callback(): return user_controller.callback(requests.get(GOOGLE_DISCOVERY_URL).json(),
                                                 request.args.get("code"),
-                                                request.url,
-                                                request.base_url)
+                                                'https' + request.url[4:],
+                                                'https' + request.base_url[4:])
 
 
 @app.route("/logout")

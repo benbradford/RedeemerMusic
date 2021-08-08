@@ -6,9 +6,13 @@ class UserDao(DbAccessor):
     def __init__(self):
         DbAccessor.__init__(self)
 
-    def get(self, user_id):
+    def get_all(self):
         with self.db_access() as cur:
-            res = cur.execute('SELECT * FROM user where name=:user_name', {'user_name': user_id}).fetchone()
+            return cur.execute('select * from user').fetchall()
+
+    def get(self, email):
+        with self.db_access() as cur:
+            res = cur.execute('SELECT * FROM user where email=:user_email', {'user_email': email}).fetchone()
         if not res:
             return None
 

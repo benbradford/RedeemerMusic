@@ -7,19 +7,28 @@ from flask_login import (
     login_required,
     login_user,
     logout_user,
+    UserMixin
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 
 secrets_dir = os.path.join(os.path.dirname(__file__), '../../secrets/')
-GOOGLE_CLIENT_ID = open(secrets_dir + 'client_id.txt', 'r').read()
-GOOGLE_CLIENT_SECRET = open(secrets_dir + 'client_secret.txt').read()
+GOOGLE_CLIENT_ID = '413632508314-l6mhhlm5rljncvd45ise9bhagut83vun.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = 'MY0HVDSooIrPE7lcVjWDQ6Mz'
+
+
+class User(UserMixin):
+    def __init__(self, user):
+        self.id = user['id']
+        self.name = user['name']
+        self.email = user['email']
+        self.profile_pic = user['pic']
 
 
 class UserController:
     def __init__(self, user_dao):
         self._user_dao = user_dao
-        self._client = WebApplicationClient(GOOGLE_CLIENT_ID)  # TODO move to client dir
+        self._client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
     def load_user(self, user_id):
         return self._user_dao.get(user_id)
@@ -27,12 +36,11 @@ class UserController:
     def login(self, google_provider_cfg, base_url):
 
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
-
         # Use library to construct the request for login and provide
         # scopes that let you retrieve user's profile from Google
         request_uri = self._client.prepare_request_uri(
             authorization_endpoint,
-            redirect_uri=base_url + "/callback",
+            redirect_uri=base_url + "/login/callback",
             scope=["openid", "email", "profile"],
         )
         return redirect(request_uri)
@@ -64,14 +72,13 @@ class UserController:
         user = {'id': userinfo_response.json()["sub"], 'email': userinfo_response.json()["email"],
                 'pic': userinfo_response.json()["picture"], 'name': userinfo_response.json()["given_name"],
                 'scope': 'rdm/all'}
-
-        if not self._user_dao.get(user['id']):
+        if self._user_dao.get(user['email']) is None:
             self._user_dao.set(user)
 
-        login_user(user)
+        login_user(User(user))
 
-        return redirect(url_for("index"))
+        return redirect('https://localhost/home')
 
     def logout(self):
         logout_user()
-        return redirect(url_for("index"))
+        return redirect("https://localhost/home")

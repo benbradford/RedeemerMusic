@@ -1,2 +1,2 @@
-`python app.py` to deploy then go to localhost:5000 in browser
-Ensure /usr/local/Cellar/memcached/1.6.9/bin/memcached is running
+to sync: `python app.py -n -s Services -s Songs`
+to deploy: `gunicorn -w 2 -b 127.0.0.1:8080 app:app`
