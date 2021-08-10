@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 
-Home
+{% if user.is_authenticated %}
+  Logged in as {{user.name}}
+{% else %}
+   <a href="{{url_for('login')}}" >Login</a>
+{% endif %}
 
 {% endblock %}

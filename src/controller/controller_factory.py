@@ -1,4 +1,4 @@
-from user_controller import User
+from user import User
 
 
 class ControllerFactory:

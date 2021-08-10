@@ -55,16 +55,18 @@
       {{ nav_link('recipients_api', 'Emails') }}
 
     </ul>
+    <!--
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
+    -->
     <div class="form-inline my-2 my-lg-0" style="margin:10px" >
       {% if user.is_authenticated %}
-        <img title="{{user.email}}" src="{{user.profile_pic}}" alt="https://www.whataview.co/img/placeholders/no-picture.jpg" width="50" height="50">
+        <img title="{{user.name}}" src="{{user.profile_pic}}" alt="https://www.whataview.co/img/placeholders/no-picture.jpg" width="50" height="50">
       {% else %}
         <form action="{{url_for('login')}}">
-          <input type="image" src="https://www.whataview.co/img/placeholders/no-picture.jpg" type="submit" width="50" height="50">
+          <input title="Login" type="image" src="https://www.whataview.co/img/placeholders/no-picture.jpg" type="submit" width="50" height="50">
         </form>
       {% endif %}
     </div>

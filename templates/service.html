@@ -27,42 +27,47 @@
   }
 </style>
 
-<form class="form" id="form" action="{{url_for('edit_service_api')}}" >
-    <input type="submit" class="submitBtn" value="Edit" />
-    <input type="hidden" name="id" value="{{service['id']}}" />
-</form>
-<br/>
-<br/>
-  <table>
+{% if user.is_authenticated %}
+  {% if user.can_edit() %}
+  <form class="form" id="form" action="{{url_for('edit_service_api')}}" >
+      <input type="submit" class="submitBtn" value="Edit" />
+      <input type="hidden" name="id" value="{{service['id']}}" />
+  </form>
+  {% endif %}
+  {% if user.can_email() %}
+    <br/>
+    <br/>
+    <table>
 
-    <tr>
-      <th>
-        <form class="form" id="form1" action="{{url_for('send_music_email_api')}}" >
-            <input type="submit" class="submitEmailButton" value="{{service_email_params['email_label']}}" />
-            <input type="hidden" name="id" value="{{service['id']}}" />
-            <input type="hidden" name="recipients" value="{{service_email_params['recipients']}}" />
-        </form>
-      </th>
+      <tr>
+        <th>
+          <form class="form" id="form1" action="{{url_for('send_music_email_api')}}" >
+              <input type="submit" class="submitEmailButton" value="{{service_email_params['email_label']}}" />
+              <input type="hidden" name="id" value="{{service['id']}}" />
+              <input type="hidden" name="recipients" value="{{service_email_params['recipients']}}" />
+          </form>
+        </th>
 
-      <th></th>
-    </tr>
+        <th></th>
+      </tr>
 
-    <tr>
-      <th>
-        <form class="form" id="form2" action="{{url_for('email_slides_api')}}" >
-            <input type="submit" class="submitSlidesButton" value="{{ppt_email_params['email_label']}}" />
-            <input type="hidden" name="id" value="{{service['id']}}" />
-            <input type="hidden" name="recipients" value="{{ppt_email_params['recipients']}}" />
-        </form>
-      </th>
+      <tr>
+        <th>
+          <form class="form" id="form2" action="{{url_for('email_slides_api')}}" >
+              <input type="submit" class="submitSlidesButton" value="{{ppt_email_params['email_label']}}" />
+              <input type="hidden" name="id" value="{{service['id']}}" />
+              <input type="hidden" name="recipients" value="{{ppt_email_params['recipients']}}" />
+          </form>
+        </th>
 
-      <th>
-        <form class="form" id="form3" action="{{url_for('preview_slides_api')}}" >
-            <input type="submit" class="previewSlidesEmail" value="Preview Slides" />
-            <input type="hidden" name="id" value="{{service['id']}}" />
-        </form>
-      </th>
-    </tr>
-  </table>
-
+        <th>
+          <form class="form" id="form3" action="{{url_for('preview_slides_api')}}" >
+              <input type="submit" class="previewSlidesEmail" value="Preview Slides" />
+              <input type="hidden" name="id" value="{{service['id']}}" />
+          </form>
+        </th>
+      </tr>
+    </table>
+  {% endif %} <!-- user can email -->
+{% endif %} <!-- user is authenticated -->
 {% endblock %}

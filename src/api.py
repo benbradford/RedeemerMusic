@@ -193,5 +193,4 @@ def callback(): return user_controller.callback(requests.get(GOOGLE_DISCOVERY_UR
 
 
 @app.route("/logout")
-@login_required
-def logout(): return user_controller.logout()
+def logout(): return UserController.logout()

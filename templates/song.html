@@ -11,30 +11,33 @@
     {% endfor %}
   </ul>
 </div>
+{% if user.is_authenticated and user.can_edit() %}
+  <form class="form" id="form" action="{{url_for('update_song_page_api')}}" >
 
-<form class="form" id="form" action="{{url_for('update_song_page_api')}}" >
-
-  <input type="submit" class="submitBtn" value="Edit Song" />
-  <input type="hidden" name="name" value="{{song_name}}" />
-</form>
+    <input type="submit" class="submitBtn" value="Edit Song" />
+    <input type="hidden" name="name" value="{{song_name}}" />
+  </form>
+{% endif %}
 <div>
   {% if slides is not none %}
-  <div>
-    <form class="form" id="form1" action="{{url_for('edit_slides_api')}}" >
-        <input type="submit" class="submitBtn" value="Edit Slides" />
-        <input type="hidden" name="name" value="{{song_name}}" />
-    </form>
-  </div>
-  <div id="border1" style="font-family:Courier;font-size:14px;">
-    {% for page in slides %}
-      <div id="border2" style="width:24em;outline:0.03em solid black;text-align:center;">
-        {% for line in page %}
-          {{line}} <br/>
-        {% endfor %}
-        <br/>
+    {% if user.is_authenticated and user.can_edit() %}
+      <div>
+        <form class="form" id="form1" action="{{url_for('edit_slides_api')}}" >
+            <input type="submit" class="submitBtn" value="Edit Slides" />
+            <input type="hidden" name="name" value="{{song_name}}" />
+        </form>
       </div>
-    {% endfor %}
-  </div>
+    {% endif %}
+    <div id="border1" style="font-family:Courier;font-size:14px;">
+      {% for page in slides %}
+        <div id="border2" style="width:24em;outline:0.03em solid black;text-align:center;">
+          {% for line in page %}
+            {{line}} <br/>
+          {% endfor %}
+          <br/>
+        </div>
+      {% endfor %}
+    </div>
   {% endif %}
  </div>
 

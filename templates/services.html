@@ -5,11 +5,13 @@
     <div class="int-box">
         <h2>Services</h2>
     </div>
-    <div class="int-box">
-      <form action="{{url_for('add_service_page_api')}}">
-        <input type="submit" value="Add New" class="button button_add" style="float: right;" />
-      </form>
-    </div>
+    {% if user.is_authenticated and user.can_edit() %}
+      <div class="int-box">
+        <form action="{{url_for('add_service_page_api')}}">
+          <input type="submit" value="Add New" class="button button_add" style="float: right;" />
+        </form>
+      </div>
+    {% endif %}
 </div>
 
 <div style="padding-top:50px;">

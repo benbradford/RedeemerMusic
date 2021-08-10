@@ -1,34 +1,20 @@
 import os
 import json
-from flask import redirect, url_for
+from flask import redirect
 from flask_login import (
     LoginManager,
     current_user,
     login_required,
     login_user,
-    logout_user,
-    UserMixin
+    logout_user
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
+from user import User
 
 secrets_dir = os.path.join(os.path.dirname(__file__), '../../secrets/')
 GOOGLE_CLIENT_ID = '413632508314-l6mhhlm5rljncvd45ise9bhagut83vun.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'MY0HVDSooIrPE7lcVjWDQ6Mz'
-
-
-class User(UserMixin):
-    def __init__(self, user):
-        if user is None:
-            return
-        self.id = user['id']
-        self.name = user['name']
-        self.email = user['email']
-        self.profile_pic = user['pic']
-
-    @staticmethod
-    def default():
-        return User(None)
 
 
 class UserController:
@@ -42,8 +28,6 @@ class UserController:
     def login(self, google_provider_cfg, base_url):
 
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
-        # Use library to construct the request for login and provide
-        # scopes that let you retrieve user's profile from Google
         request_uri = self._client.prepare_request_uri(
             authorization_endpoint,
             redirect_uri=base_url + "/login/callback",
@@ -77,7 +61,7 @@ class UserController:
 
         user = {'id': userinfo_response.json()["sub"], 'email': userinfo_response.json()["email"],
                 'pic': userinfo_response.json()["picture"], 'name': userinfo_response.json()["given_name"],
-                'scope': 'rdm/all'}
+                'scope': User.get_default_scope()}
         if self._user_dao.get(user['id']) is None:
             self._user_dao.set(user)
 
@@ -85,6 +69,7 @@ class UserController:
 
         return redirect('https://localhost/home')
 
-    def logout(self):
+    @staticmethod
+    def logout():
         logout_user()
         return redirect("https://localhost/home")

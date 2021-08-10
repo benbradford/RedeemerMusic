@@ -21,11 +21,13 @@
     <div class="int-box">
         <h2>Email Recipients</h2>
     </div>
-    <div class="int-box">
-      <form action="{{url_for('add_recipient_page_api')}}">
-        <input type="submit" value="Add New" class="button button_add" style="float: right;" />
-      </form>
-    </div>
+    {% if user.is_authenticated and user.can_email %}
+      <div class="int-box">
+        <form action="{{url_for('add_recipient_page_api')}}">
+          <input type="submit" value="Add New" class="button button_add" style="float: right;" />
+        </form>
+      </div>
+    {% endif %}
 </div>
     <div class="row">
       {% for i in [0, 1, 2] %}
@@ -35,29 +37,34 @@
          {% for r in recipients %}
            {% if r['register'][i] == '1' %}
              <div>
-               {{r['email']}} <a href="{{url_for('remove_recipient_register_api', email=r['email'], register_index=i)}}" style="color:#F00;font-size=10;border:none;background-color:#{{column_colours[i]}};">X</a>
+               {{r['email']}}
+               {% if user.is_authenticated and user.can_email %}
+                <a href="{{url_for('remove_recipient_register_api', email=r['email'], register_index=i)}}" style="color:#F00;font-size=10;border:none;background-color:#{{column_colours[i]}};">X</a>
+               {% endif %}
              </div>
            {% endif %}
          {% endfor %}
         </div>
       {% endfor %}
     </div>
-    <div class="row">
-        {% for i in [0, 1, 2] %}
-            <div class="column" style="background-color:#FFF;">
-                <form action="{{url_for('add_recipient_register_api')}}">
-                    <input type="hidden" name="register_index" value="{{i}}" />
-                    <label for="email">Update:</label>
-                    <select id="email" name="email">
-                      {% for r in recipients %}
-                        {% if r['register'][i] != '1' %}
-                          <option value="{{r['email']}}">{{r['email']}}</option>
-                        {% endif %}
-                      {% endfor %}
-                    </select>
-                    <input type="submit" value="Add" />
-                  </form>
-            </div>
-        {% endfor %}
-    </div>
+    {% if user.is_authenticated and user.can_email %}
+      <div class="row">
+          {% for i in [0, 1, 2] %}
+              <div class="column" style="background-color:#FFF;">
+                  <form action="{{url_for('add_recipient_register_api')}}">
+                      <input type="hidden" name="register_index" value="{{i}}" />
+                      <label for="email">Update:</label>
+                      <select id="email" name="email">
+                        {% for r in recipients %}
+                          {% if r['register'][i] != '1' %}
+                            <option value="{{r['email']}}">{{r['email']}}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                      <input type="submit" value="Add" />
+                    </form>
+              </div>
+          {% endfor %}
+      </div>
+    {% endif %} <!-- can email -->
 {% endblock %}
