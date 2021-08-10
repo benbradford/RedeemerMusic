@@ -59,15 +59,16 @@
               <input type="hidden" name="recipients" value="{{ppt_email_params['recipients']}}" />
           </form>
         </th>
-
+        {% endif %} <!-- user can email -->
+      {% endif %} <!-- user is authenticated -->
         <th>
-          <form class="form" id="form3" action="{{url_for('preview_slides_api')}}" >
-              <input type="submit" class="previewSlidesEmail" value="Preview Slides" />
-              <input type="hidden" name="id" value="{{service['id']}}" />
-          </form>
-        </th>
-      </tr>
-    </table>
-  {% endif %} <!-- user can email -->
-{% endif %} <!-- user is authenticated -->
+
+       <form class="form" id="form3" action="{{url_for('preview_slides_api')}}" >
+          <input type="submit" class="previewSlidesEmail" value="Preview Slides" />
+          <input type="hidden" name="id" value="{{service['id']}}" />
+      </form>
+    </th>
+  </tr>
+</table>
+
 {% endblock %}

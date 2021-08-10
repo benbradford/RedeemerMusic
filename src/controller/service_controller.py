@@ -9,6 +9,7 @@ optional_service_params = ['lead', 'date', 'message', 'band1', 'band2', 'band3',
                            'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
 FROM_ADDRESS = 'ben.bradford80@gmail.com'
+UNAUTHORISED = "The current user is not authorised to perform that operation"
 
 
 class ServiceController:
@@ -26,6 +27,8 @@ class ServiceController:
         return render_template('services.html', user=self._user, services=services)
 
     def show_add_service_page(self):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         return render_template('service_add.html',
                                user=self._user,
                                service={},
@@ -34,6 +37,8 @@ class ServiceController:
                                members=self._band_dao.get_member_list())
 
     def add_service(self, optional_params):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         service = ServiceController._get_updated_service_from_params(None, optional_params)
         self._service_dao.set(service)
         return redirect(url_for('services_api'))
@@ -52,6 +57,8 @@ class ServiceController:
                                songs=self._songs_dao.get_all())
 
     def show_edit_service_page(self, service_id):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         service = self._service_dao.get(service_id)
         return render_template('service_edit.html',
                                user=self._user,
@@ -61,11 +68,15 @@ class ServiceController:
                                members=self._band_dao.get_member_list())
 
     def update_service(self, service_id, optional_params):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         service = self._get_updated_service_from_params(service_id, optional_params)
         self._service_dao.update(service)
         return redirect(url_for('services_api'))
 
     def send_music_email(self, service_id, recipients):
+        if not self._user.is_authenticated or not self._user.can_email():
+            return UNAUTHORISED
         service = self._service_dao.get(service_id)
         template_filename = os.path.join(os.path.dirname(__file__), '../../templates/service_email_template.html')
         template_file = open(template_filename, 'r').read()
@@ -79,6 +90,8 @@ class ServiceController:
         return redirect(url_for('services_api'))
 
     def send_slides_email(self, service_id, recipients):
+        if not self._user.is_authenticated or not self._user.can_email():
+            return UNAUTHORISED
         service = self._get_service_from_id(service_id)
         ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
         self._slides_helper.create_powerpoint(service, ppt_filename)

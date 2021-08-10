@@ -1,5 +1,7 @@
 from flask import render_template, redirect, url_for
 
+UNAUTHORISED = "The current user is not authorised to perform that operation"
+
 
 class SongController:
 
@@ -25,10 +27,14 @@ class SongController:
                                )
 
     def show_edit_slides_page(self, song_name):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         song = self._songs_dao.get(song_name)
         return render_template('slides_edit.html', user=self._user, song=song, slides=song['slides'])  # todo no need to pass in 2 params
 
     def update_slides(self, song_name, lyrics):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         file_name = song_name + " (slides).txt"
         file_path = "bin/" + song_name  # TODO fix path
         out_f = open(file_path, "w")
@@ -40,19 +46,27 @@ class SongController:
         return redirect(url_for('song_api', name=song_name))
 
     def show_add_song_page(self):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         return render_template('song_add.html', user=self._user)
 
     def add_song(self, song_name, ccli, files):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         song = {'name': song_name, 'file_ids': {}, 'ccli': ccli, 'notes': ''}
         song_creation_data = SongController.get_song_creation_data(song_name, files)
         self._songs_dao.set(song, song_creation_data)
         return redirect(url_for('songs_api'))
 
     def show_update_song_page(self, song_name):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         song = self._songs_dao.get(song_name)
         return render_template('song_edit.html', user=self._user, song=song, ccli='')
 
     def update_song(self, song_name, old_song_name, files):
+        if not self._user.is_authenticated or not self._user.can_edit():
+            return UNAUTHORISED
         if old_song_name != song_name:
             raise Exception("Currently unable to rename songs")
         update_data = SongController.get_song_creation_data(song_name, files)

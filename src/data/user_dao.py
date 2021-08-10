@@ -8,7 +8,13 @@ class UserDao(DbAccessor):
 
     def get_all(self):
         with self.db_access() as cur:
-            return cur.execute('select * from user').fetchall()
+            res = cur.execute('select * from user').fetchall()
+        if res is None:
+            return []
+        users = []
+        for r in res:
+            users.append(UserDao._get_user_from_query_result(r))
+        return users
 
     def get(self, user_id):
         with self.db_access() as cur:
@@ -26,6 +32,9 @@ class UserDao(DbAccessor):
                 (user['id'], user['name'], user['email'], user['scope'], user['pic']),
             )
 
+    def update_scope(self, user, scope):
+        with self.db_access() as cur:
+            cur.execute('UPDATE user set scope=? WHERE id=?' (scope, user['id']))
 
     @staticmethod
     def _get_user_from_query_result(res):

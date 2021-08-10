@@ -53,7 +53,9 @@
       {{ nav_link('services_api', 'Services') }}
       {{ nav_link('songs_api', 'Songs') }}
       {{ nav_link('recipients_api', 'Emails') }}
-
+      {% if user.is_authenticated and user.is_admin() %}
+        {{ nav_link('users_edit_page_api', 'Admin') }}
+      {% endif %}
     </ul>
     <!--
     <form class="form-inline my-2 my-lg-0">

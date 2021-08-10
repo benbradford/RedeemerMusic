@@ -22,6 +22,7 @@ from controller.song_controller import SongController
 from controller.user_controller import UserController
 from controller.service_controller import ServiceController
 from controller.recipients_controller import RecipientsController
+from controller.admin_controller import AdminController
 
 app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
 app.secret_key = 'abcdefghijklmnopqrstuvwx'
@@ -48,6 +49,7 @@ service_factory = ControllerFactory(ServiceController, {'gmail_client': get_clie
                                         'recipients_dao': get_data_factory().get_recipient_dao(),
                                         'band_dao': get_data_factory().get_band_dao()})
 recipients_factory = ControllerFactory(RecipientsController, get_data_factory().get_recipient_dao())
+admin_factory = ControllerFactory(AdminController, get_data_factory().get_user_dao())
 
 
 def extract_required_param(name):
@@ -171,6 +173,15 @@ def add_recipient_register_api(): return recipients_factory.get(current_user).ad
 def remove_recipient_register_api(): return recipients_factory.get(current_user).remove_recipient_register(
     extract_required_param('email'),
     extract_required_param('register_index'))
+
+
+@app.route('/users_edit', methods=['GET'])
+def users_edit_page_api(): return admin_factory.get(current_user).show_users_edit_page()
+
+
+@app.route('/update_user', methods=['POST'])
+def update_user_api(): return admin_factory.get(current_user).update_user(request.form.get('id'),
+                                                                          request.form.get('scope'))
 
 
 @login_manager.unauthorized_handler

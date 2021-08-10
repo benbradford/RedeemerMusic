@@ -1,5 +1,7 @@
 from flask import render_template, redirect, url_for
 
+UNAUTHORISED = "The current user is not authorised to perform that operation"
+
 
 class RecipientsController:
     def __init__(self, user, recipients_dao):
@@ -11,9 +13,13 @@ class RecipientsController:
         return render_template('recipients_edit.html', user=self._user, recipients=recipients)
 
     def show_add_new_page(self):
+        if not self._user.is_authenticated or not self._user.can_email():
+            return UNAUTHORISED
         return render_template('recipients_add.html', user=self._user)
 
     def add_new(self, request):
+        if not self._user.is_authenticated or not self._user.can_email():
+            return UNAUTHORISED
         name = request['name']
         email = request['email']
         self._recipients_dao.set_recipient(email,
@@ -24,6 +30,8 @@ class RecipientsController:
         return redirect(url_for('recipients_api'))
 
     def add_recipient_register(self, email, register_index):
+        if not self._user.is_authenticated or not self._user.can_email():
+            return UNAUTHORISED
         recipient = self._recipients_dao.get_recipient(email)
         name = recipient['name']
         test = None
@@ -39,6 +47,8 @@ class RecipientsController:
         return redirect(url_for('recipients_api'))
 
     def remove_recipient_register(self, email, register_index):
+        if not self._user.is_authenticated or not self._user.can_email():
+            return UNAUTHORISED
         recipient = self._recipients_dao.get_recipient(email)
         name = recipient['name']
         test = None
