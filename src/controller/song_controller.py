@@ -2,13 +2,14 @@ from flask import render_template, redirect, url_for
 
 
 class SongController:
-    def __init__(self, songs_dao):
+
+    def __init__(self, user, songs_dao):
+        self._user = user
         self._songs_dao = songs_dao
 
     def show_songs_page(self):
-
         names = sorted(self._songs_dao.get_song_names())
-        return render_template('songs.html', song_names=names)
+        return render_template('songs.html', user=self._user, song_names=names)
 
     def show_song_page(self, song_name):
         song = self._songs_dao.get(song_name)
@@ -17,6 +18,7 @@ class SongController:
         SongController._update_component_file_ids(song, 'chords', components)
         SongController._update_component_file_ids(song, 'lead', components)
         return render_template('song.html',
+                               user=self._user,
                                song_name=song_name,
                                components=components,
                                slides=SongController._get_slides(song)
@@ -24,7 +26,7 @@ class SongController:
 
     def show_edit_slides_page(self, song_name):
         song = self._songs_dao.get(song_name)
-        return render_template('slides_edit.html', song=song, slides=song['slides'])  # todo no need to pass in 2 params
+        return render_template('slides_edit.html', user=self._user, song=song, slides=song['slides'])  # todo no need to pass in 2 params
 
     def update_slides(self, song_name, lyrics):
         file_name = song_name + " (slides).txt"
@@ -38,7 +40,7 @@ class SongController:
         return redirect(url_for('song_api', name=song_name))
 
     def show_add_song_page(self):
-        return render_template('song_add.html')
+        return render_template('song_add.html', user=self._user)
 
     def add_song(self, song_name, ccli, files):
         song = {'name': song_name, 'file_ids': {}, 'ccli': ccli, 'notes': ''}
@@ -48,14 +50,14 @@ class SongController:
 
     def show_update_song_page(self, song_name):
         song = self._songs_dao.get(song_name)
-        return render_template('song_edit.html', song=song, ccli='')
+        return render_template('song_edit.html', user=self._user, song=song, ccli='')
 
     def update_song(self, song_name, old_song_name, files):
         if old_song_name != song_name:
             raise Exception("Currently unable to rename songs")
         update_data = SongController.get_song_creation_data(song_name, files)
         self._songs_dao.update(song_name, update_data)
-        return redirect(url_for('song_api', name=song_name))
+        return redirect(url_for('song_api', user=self._user, name=song_name))
 
     @staticmethod
     def get_song_creation_data(song_name, files):

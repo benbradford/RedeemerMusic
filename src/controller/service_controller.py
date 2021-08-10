@@ -12,20 +12,22 @@ FROM_ADDRESS = 'ben.bradford80@gmail.com'
 
 
 class ServiceController:
-    def __init__(self, gmail_client, service_dao, songs_dao, slides_helper, recipients_dao, band_dao):
-        self._gmail_client = gmail_client
-        self._service_dao = service_dao
-        self._songs_dao = songs_dao
-        self._slides_helper = slides_helper
-        self._recipients_dao = recipients_dao
-        self._band_dao = band_dao
+    def __init__(self, user, data):
+        self._user = user
+        self._gmail_client = data['gmail_client']
+        self._service_dao = data['service_dao']
+        self._songs_dao = data['songs_dao']
+        self._slides_helper = data['slides_helper']
+        self._recipients_dao = data['recipients_dao']
+        self._band_dao = data['band_dao']
 
     def show_services_page(self):
         services = self._service_dao.get_all_services()
-        return render_template('services.html', services=services)
+        return render_template('services.html', user=self._user, services=services)
 
     def show_add_service_page(self):
         return render_template('service_add.html',
+                               user=self._user,
                                service={},
                                songs=self._songs_dao.get_all(),
                                song_names=self._songs_dao.get_song_names(),
@@ -42,12 +44,17 @@ class ServiceController:
                                                         self._recipients_dao.get_service_email_addresses())
         ppt_email_details = self._get_email_details(service, 'Powerpoint', 'slides_email_status',
                                                     self._recipients_dao.get_ppt_email_addresses())
-        return render_template('service.html', service=service, service_email_params=service_email_details,
-                               ppt_email_params=ppt_email_details, songs=self._songs_dao.get_all())
+        return render_template('service.html',
+                               user=self._user,
+                               service=service,
+                               service_email_params=service_email_details,
+                               ppt_email_params=ppt_email_details,
+                               songs=self._songs_dao.get_all())
 
     def show_edit_service_page(self, service_id):
         service = self._service_dao.get(service_id)
         return render_template('service_edit.html',
+                               user=self._user,
                                service=service,
                                songs=self._songs_dao.get_all(),
                                song_names=self._songs_dao.get_song_names(),

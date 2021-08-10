@@ -19,10 +19,16 @@ GOOGLE_CLIENT_SECRET = 'MY0HVDSooIrPE7lcVjWDQ6Mz'
 
 class User(UserMixin):
     def __init__(self, user):
+        if user is None:
+            return
         self.id = user['id']
         self.name = user['name']
         self.email = user['email']
         self.profile_pic = user['pic']
+
+    @staticmethod
+    def default():
+        return User(None)
 
 
 class UserController:
@@ -31,7 +37,7 @@ class UserController:
         self._client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
     def load_user(self, user_id):
-        return self._user_dao.get(user_id)
+        return User(self._user_dao.get(user_id))
 
     def login(self, google_provider_cfg, base_url):
 

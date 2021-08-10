@@ -2,15 +2,16 @@ from flask import render_template, redirect, url_for
 
 
 class RecipientsController:
-    def __init__(self, recipients_dao):
+    def __init__(self, user, recipients_dao):
+        self._user = user
         self._recipients_dao = recipients_dao
 
     def show_recipients_page(self):
         recipients = self._recipients_dao.get_recipients()
-        return render_template('recipients_edit.html', recipients=recipients)
+        return render_template('recipients_edit.html', user=self._user, recipients=recipients)
 
     def show_add_new_page(self):
-        return render_template('recipients_add.html')
+        return render_template('recipients_add.html', user=self._user)
 
     def add_new(self, request):
         name = request['name']
