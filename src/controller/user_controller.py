@@ -13,8 +13,10 @@ import requests
 from user import User
 
 secrets_dir = os.path.join(os.path.dirname(__file__), '../../secrets/')
-GOOGLE_CLIENT_ID = '413632508314-l6mhhlm5rljncvd45ise9bhagut83vun.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = 'MY0HVDSooIrPE7lcVjWDQ6Mz'
+with open(secrets_dir + 'client_id.txt', 'r') as file:
+    GOOGLE_CLIENT_ID = file.read()
+with open(secrets_dir + 'client_secret.txt', 'r') as file:
+    GOOGLE_CLIENT_SECRET = file.read()
 
 
 class UserController:
