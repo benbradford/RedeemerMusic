@@ -8,7 +8,7 @@ from flask_login import (
     login_user,
     logout_user
 )
-
+from flask_talisman import Talisman
 from flask_cors import CORS
 from flask import request
 import requests
@@ -25,9 +25,22 @@ from controller.recipients_controller import RecipientsController
 from controller.admin_controller import AdminController
 
 app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
-app.secret_key = 'abcdefghijklmnopqrstuvwx'
+csp = {
+    'default-src': [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'stackpath.bootstrapcdn.com',
+        'code.jquery.com',
+        'cdn.jsdelivr.net'
+    ]
+}
+Talisman(app, content_security_policy=csp)
+secrets_dir = os.path.join(os.path.dirname(__file__), '../secrets/')
+with open(secrets_dir + 'app_id.txt', 'r') as file:
+    app.secret_key = file.read()
 CORS(app)
 app.config["DEBUG"] = False
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 

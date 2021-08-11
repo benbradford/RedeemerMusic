@@ -1,6 +1,5 @@
-from flask import render_template, redirect, url_for
-
-UNAUTHORISED = "The current user is not authorised to perform that operation"
+from flask import render_template
+from util import redirect_url, UNAUTHORISED
 
 
 class RecipientsController:
@@ -27,7 +26,7 @@ class RecipientsController:
                                            'test' in request,
                                            'ppt' in request,
                                            'service' in request)
-        return redirect(url_for('recipients_api'))
+        return redirect_url('recipients_api')
 
     def add_recipient_register(self, email, register_index):
         if not self._user.is_authenticated or not self._user.can_email():
@@ -44,7 +43,7 @@ class RecipientsController:
         if str(register_index) == '2':
             service = True
         self._recipients_dao.update_recipient(email, name, test, ppt, service)
-        return redirect(url_for('recipients_api'))
+        return redirect_url('recipients_api')
 
     def remove_recipient_register(self, email, register_index):
         if not self._user.is_authenticated or not self._user.can_email():
@@ -61,4 +60,4 @@ class RecipientsController:
         if str(register_index) == '2':
             service = False
         self._recipients_dao.update_recipient(email, name, test, ppt, service)
-        return redirect(url_for('recipients_api'))
+        return redirect_url('recipients_api')

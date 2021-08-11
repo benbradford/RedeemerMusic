@@ -3,7 +3,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import os
 
-credentials_location = os.path.join(os.path.dirname(__file__), '../../bin/')
+credentials_location = os.path.join(os.path.dirname(__file__), '../../secrets/')
 
 SCOPES = [
     'https://www.googleapis.com/auth/drive',

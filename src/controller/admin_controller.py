@@ -1,6 +1,5 @@
-from flask import render_template, redirect, url_for
-
-UNAUTHORISED = "The current user is not authorised to perform that operation"
+from flask import render_template
+from util import redirect_url, UNAUTHORISED
 
 
 class AdminController:
@@ -25,4 +24,4 @@ class AdminController:
         elif scope == 'private':
             scope = 'rdm/private'
         self._user_dao.update_scope(id, scope)
-        return redirect(url_for('users_edit_page_api'))
+        return redirect_url('users_edit_page_api')

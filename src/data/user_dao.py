@@ -32,9 +32,9 @@ class UserDao(DbAccessor):
                 (user['id'], user['name'], user['email'], user['scope'], user['pic']),
             )
 
-    def update_scope(self, user, scope):
+    def update_scope(self, user_id, scope):
         with self.db_access() as cur:
-            cur.execute('UPDATE user set scope=? WHERE id=?' (scope, user['id']))
+            cur.execute('UPDATE user SET scope=? WHERE id=?', (scope, str(user_id)))
 
     @staticmethod
     def _get_user_from_query_result(res):

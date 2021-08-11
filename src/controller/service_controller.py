@@ -1,6 +1,7 @@
 import os
-from flask import send_file, render_template, redirect, url_for
+from flask import send_file, render_template
 from jinja2 import Template
+from util import redirect_url, UNAUTHORISED
 
 powerpoint_location = os.path.join(os.path.dirname(__file__), '../../bin/')
 
@@ -9,7 +10,6 @@ optional_service_params = ['lead', 'date', 'message', 'band1', 'band2', 'band3',
                            'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
 FROM_ADDRESS = 'ben.bradford80@gmail.com'
-UNAUTHORISED = "The current user is not authorised to perform that operation"
 
 
 class ServiceController:
@@ -41,7 +41,7 @@ class ServiceController:
             return UNAUTHORISED
         service = ServiceController._get_updated_service_from_params(None, optional_params)
         self._service_dao.set(service)
-        return redirect(url_for('services_api'))
+        return redirect_url('services_api')
 
     def show_service(self, service_id):
         service = self._service_dao.get(service_id)
@@ -72,7 +72,7 @@ class ServiceController:
             return UNAUTHORISED
         service = self._get_updated_service_from_params(service_id, optional_params)
         self._service_dao.update(service)
-        return redirect(url_for('services_api'))
+        return redirect_url('services_api')
 
     def send_music_email(self, service_id, recipients):
         if not self._user.is_authenticated or not self._user.can_email():
@@ -87,7 +87,7 @@ class ServiceController:
         self._gmail_client.send(subject, body, recipients, FROM_ADDRESS)
         ServiceController._update_email_status(service, 'email_status')
         self._service_dao.update(service)
-        return redirect(url_for('services_api'))
+        return redirect_url('services_api')
 
     def send_slides_email(self, service_id, recipients):
         if not self._user.is_authenticated or not self._user.can_email():
@@ -106,7 +106,7 @@ class ServiceController:
                                            service['date'] + ' powerpoint.pptx')
         ServiceController._update_email_status(service, 'slides_email_status')
         self._service_dao.update(service)
-        return redirect(url_for('services_api'))
+        return redirect_url('services_api')
 
     def preview_slides(self, service_id):
         service = self._get_service_from_id(service_id)

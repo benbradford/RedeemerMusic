@@ -2,40 +2,52 @@
 {% block content %}
 {% if user.is_authenticated and user.is_admin() %}
   <table class="table table-hover">
-
-    {% for u in users %}
+    <thead class="thead-dark">
       <tr>
-        <th>
-          {{u['name']}}
-        </th>
-        <form method='POST' action="{{url_for('update_user_api')}}">
-          <th>
-              <input type="radio" id="private" name="scope" value="private" {% if u['scope'] == 'rdm/private' %} checked {% endif %}>
-                <label for="private">Private</label>
-              </input>
-          </th>
-          <th>
-                <input type="radio" id="sergeant" name="scope" value="sergeant"  {% if u['scope'] == 'rdm/sergeant' %} checked {% endif %}>
-                <label for="sergeant">Sergeant</label>
-              </input>
-          </th>
-          <th>
-                <input type="radio" id="captain" name="scope" value="captain"  {% if u['scope'] == 'rdm/captain' %} checked {% endif %}>
-                <label for="captain">Captain</label>
-              </input>
-          </th>
-          <th>
-                <input type="radio" id="field-marshal" name="scope" value="field-marshal"  {% if u['scope'] == 'rdm/all' %} checked {% endif %}>
-                <label for="field-marshal">Field Marshal</label>
-              </input>
-           </th>
-          <th>
-             <input type="submit" class="submitBtn" value="Update" />
-            <input type="hidden" name="id" value="{{u['id']}}" />
-          </th>
-        </form>
+        <th scope="col">Name</th>
+        <th scope="col">Viewer</th>
+        <th scope="col">Editor</th>
+        <th scope="col">Emailer</th>
+        <th scope="col">Admin</th>
+        <th scope="col">Update</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+    <!-- [{'id': 1, 'name': 'ben', 'scope': 'rdm/admin'}, {'id': 2, 'name': 'jo', 'scope': 'rdm/captain'}, {'id': 3, 'name': 'sophia', 'scope': 'rdm/sergeant'}, {'id': 4, 'name': 'jacob', 'scope': 'rdm/private'}] -->
+      {% for u in users %}
+        <tr>
+          <th>
+            {{u['name']}}
+          </th>
+          <form method='POST' action="{{url_for('update_user_api')}}">
+            <th>
+                <input type="radio" id="private" name="scope" value="private" {% if u['scope'] == 'rdm/private' %} checked {% endif %}>
+                  <label for="private">Private</label>
+                </input>
+            </th>
+            <th>
+                  <input type="radio" id="sergeant" name="scope" value="sergeant"  {% if u['scope'] == 'rdm/sergeant' %} checked {% endif %}>
+                  <label for="sergeant">Sergeant</label>
+                </input>
+            </th>
+            <th>
+                  <input type="radio" id="captain" name="scope" value="captain"  {% if u['scope'] == 'rdm/captain' %} checked {% endif %}>
+                  <label for="captain">Captain</label>
+                </input>
+            </th>
+            <th>
+                  <input type="radio" id="field-marshal" name="scope" value="field-marshal"  {% if u['scope'] == 'rdm/all' %} checked {% endif %}>
+                  <label for="field-marshal">Field Marshal</label>
+                </input>
+             </th>
+            <th>
+               <input type="submit" class="submitBtn" value="Apply" />
+              <input type="hidden" name="id" value="{{u['id']}}" />
+            </th>
+          </form>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 {% endif %}
 {% endblock %}

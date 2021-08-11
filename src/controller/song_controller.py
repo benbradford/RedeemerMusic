@@ -1,6 +1,5 @@
-from flask import render_template, redirect, url_for
-
-UNAUTHORISED = "The current user is not authorised to perform that operation"
+from flask import render_template
+from util import redirect_url, UNAUTHORISED
 
 
 class SongController:
@@ -30,7 +29,8 @@ class SongController:
         if not self._user.is_authenticated or not self._user.can_edit():
             return UNAUTHORISED
         song = self._songs_dao.get(song_name)
-        return render_template('slides_edit.html', user=self._user, song=song, slides=song['slides'])  # todo no need to pass in 2 params
+        return render_template('slides_edit.html', user=self._user, song=song,
+                               slides=song['slides'])  # todo no need to pass in 2 params
 
     def update_slides(self, song_name, lyrics):
         if not self._user.is_authenticated or not self._user.can_edit():
@@ -43,7 +43,7 @@ class SongController:
         upload_data = {'file_type': 'txt', 'file_path': file_path, 'file_name': file_name}
         creation_data = {'slides': upload_data}
         self._songs_dao.update(song_name, creation_data)
-        return redirect(url_for('song_api', name=song_name))
+        return redirect_url('song_api', name=song_name)
 
     def show_add_song_page(self):
         if not self._user.is_authenticated or not self._user.can_edit():
@@ -56,7 +56,7 @@ class SongController:
         song = {'name': song_name, 'file_ids': {}, 'ccli': ccli, 'notes': ''}
         song_creation_data = SongController.get_song_creation_data(song_name, files)
         self._songs_dao.set(song, song_creation_data)
-        return redirect(url_for('songs_api'))
+        return redirect_url('songs_api')
 
     def show_update_song_page(self, song_name):
         if not self._user.is_authenticated or not self._user.can_edit():
@@ -71,7 +71,7 @@ class SongController:
             raise Exception("Currently unable to rename songs")
         update_data = SongController.get_song_creation_data(song_name, files)
         self._songs_dao.update(song_name, update_data)
-        return redirect(url_for('song_api', user=self._user, name=song_name))
+        return redirect_url('song_api', user=self._user, name=song_name)
 
     @staticmethod
     def get_song_creation_data(song_name, files):
