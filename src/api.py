@@ -1,5 +1,3 @@
-import os
-import flask
 from flask import render_template, redirect, url_for
 from flask_login import (
     LoginManager,
@@ -8,11 +6,10 @@ from flask_login import (
     login_user,
     logout_user
 )
-from flask_talisman import Talisman
-from flask_cors import CORS
 from flask import request
 import requests
 
+from init_app import app
 from client.client_factory import get_client_factory
 from data.data_factory import init_data_factory, get_data_factory
 from data.db_init import init_db
@@ -23,23 +20,6 @@ from controller.user_controller import UserController
 from controller.service_controller import ServiceController
 from controller.recipients_controller import RecipientsController
 from controller.admin_controller import AdminController
-
-app = flask.Flask(__name__, template_folder='../templates')  # still relative to module
-csp = {
-    'default-src': [
-        '\'self\'',
-        '\'unsafe-inline\'',
-        'stackpath.bootstrapcdn.com',
-        'code.jquery.com',
-        'cdn.jsdelivr.net'
-    ]
-}
-Talisman(app, content_security_policy=csp)
-secrets_dir = os.path.join(os.path.dirname(__file__), '../secrets/')
-with open(secrets_dir + 'app_id.txt', 'r') as file:
-    app.secret_key = file.read()
-CORS(app)
-app.config["DEBUG"] = False
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -65,13 +45,6 @@ recipients_factory = ControllerFactory(RecipientsController, get_data_factory().
 admin_factory = ControllerFactory(AdminController, get_data_factory().get_user_dao())
 
 
-def extract_required_param(name):
-    if name in request.args:
-        return request.args[name]
-    else:
-        raise Exception("Error: Missing required parameters ")
-
-
 @app.route('/health', methods=['GET'])
 def health(): return "okidoki"
 
@@ -93,16 +66,16 @@ def songs_api(): return song_factory.get(current_user).show_songs_page()
 
 
 @app.route('/song', methods=['GET'])
-def song_api(): return song_factory.get(current_user).show_song_page(extract_required_param('name'))
+def song_api(): return song_factory.get(current_user).show_song_page(request.args['name'])
 
 
 @app.route('/edit_slides', methods=['GET'])
-def edit_slides_api(): return song_factory.get(current_user).show_edit_slides_page(extract_required_param('name'))
+def edit_slides_api(): return song_factory.get(current_user).show_edit_slides_page(request.args['name'])
 
 
 @app.route('/update_slides', methods=['GET'])
-def update_slides_api(): return song_factory.get(current_user).update_slides(extract_required_param('name'),
-                                                                             extract_required_param('lyrics')
+def update_slides_api(): return song_factory.get(current_user).update_slides(request.args['name'],
+                                                                             request.args['lyrics']
                                                                              .replace("%20", " ").replace("%0D%0A",
                                                                                                           '\n'))
 
@@ -117,7 +90,7 @@ def add_song_api(): return song_factory.get(current_user).add_song(request.form.
 
 
 @app.route('/update_song_page', methods=['GET'])
-def update_song_page_api(): return song_factory.get(current_user).show_update_song_page(extract_required_param('name'))
+def update_song_page_api(): return song_factory.get(current_user).show_update_song_page(request.args['name'])
 
 
 @app.route('/update_song', methods=['POST'])
@@ -139,29 +112,27 @@ def add_service_api(): return service_factory.get(current_user).add_service(requ
 
 
 @app.route('/service', methods=['GET'])
-def service_api(): return service_factory.get(current_user).show_service(extract_required_param('id'))
+def service_api(): return service_factory.get(current_user).show_service(request.args['id'])
 
 
 @app.route('/edit_service', methods=['GET'])
-def edit_service_api(): return service_factory.get(current_user).show_edit_service_page(extract_required_param('id'))
+def edit_service_api(): return service_factory.get(current_user).show_edit_service_page(request.args['id'])
 
 
 @app.route('/update_service', methods=['GET'])
-def update_service_api(): return service_factory.get(current_user).update_service(extract_required_param('id'), request.args)
+def update_service_api(): return service_factory.get(current_user).update_service(request.args['id'], request.args)
 
 
 @app.route('/send_music_email', methods=['GET'])
-def send_music_email_api(): return service_factory.get(current_user).send_music_email(extract_required_param('id'),
-                                                                       extract_required_param('recipients'))
+def send_music_email_api(): return service_factory.get(current_user).send_music_email(request.args['id'], request.args['recipients'])
 
 
 @app.route('/email_slides', methods=['GET'])
-def email_slides_api(): return service_factory.get(current_user).send_slides_email(extract_required_param('id'),
-                                                                    extract_required_param('recipients'))
+def email_slides_api(): return service_factory.get(current_user).send_slides_email(request.args['id'], request.args['recipients'])
 
 
 @app.route('/preview_slides', methods=['GET'])
-def preview_slides_api(): return service_factory.get(current_user).preview_slides(extract_required_param('id'))
+def preview_slides_api(): return service_factory.get(current_user).preview_slides(request.args['id'])
 
 
 @app.route('/recipients', methods=['GET'])
@@ -178,14 +149,14 @@ def add_recipient_api(): return recipients_factory.get(current_user).add_new(req
 
 @app.route('/add_recipient_register', methods=['GET'])
 def add_recipient_register_api(): return recipients_factory.get(current_user).add_recipient_register(
-    extract_required_param('email'),
-    extract_required_param('register_index'))
+    request.args['email'],
+    request.args['register_index'])
 
 
 @app.route('/remove_recipient_register', methods=['GET'])
 def remove_recipient_register_api(): return recipients_factory.get(current_user).remove_recipient_register(
-    extract_required_param('email'),
-    extract_required_param('register_index'))
+    request.args['email'],
+    request.args['register_index'])
 
 
 @app.route('/users_edit', methods=['GET'])
@@ -206,15 +177,21 @@ def load_user(user_id): return user_controller.load_user(user_id)
 
 
 @app.route("/login")
-def login(): return user_controller.login(requests.get(GOOGLE_DISCOVERY_URL).json(), 'https://localhost')
+def login():
+    host_url = request.host_url.replace('http', 'https')[:-1]
+    print "redirect to " + host_url
+    print str(request.headers)
+    for r in request.headers:
+        print str(r)
+    return user_controller.login(requests.get(GOOGLE_DISCOVERY_URL).json(), host_url)
 
 
 @app.route("/login/callback")
 def callback(): return user_controller.callback(requests.get(GOOGLE_DISCOVERY_URL).json(),
                                                 request.args.get("code"),
-                                                'https' + request.url[4:],
-                                                'https' + request.base_url[4:])
+                                                request.url.replace('http', 'https'),
+                                                request.base_url.replace('http', 'https'))
 
 
 @app.route("/logout")
-def logout(): return UserController.logout()
+def logout(): return UserController.logout(request.url.replace('http', 'https').replace('logout', 'home'))

@@ -9,8 +9,6 @@ powerpoint_location = os.path.join(os.path.dirname(__file__), '../../bin/')
 optional_service_params = ['lead', 'date', 'message', 'band1', 'band2', 'band3', 'band4', 'band5', 'song1', 'song2',
                            'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
-FROM_ADDRESS = 'ben.bradford80@gmail.com'
-
 
 class ServiceController:
     def __init__(self, user, data):
@@ -84,7 +82,7 @@ class ServiceController:
         body = template.render(service=service, songs=self._songs_dao.get_all())
 
         subject = "Redeemer Music for " + service['date']
-        self._gmail_client.send(subject, body, recipients, FROM_ADDRESS)
+        self._gmail_client.send(subject, body, recipients, self._user.email)
         ServiceController._update_email_status(service, 'email_status')
         self._service_dao.update(service)
         return redirect_url('services_api')
@@ -101,7 +99,7 @@ class ServiceController:
         template = Template(template_file)
         body = template.render(date=service['date'])
         subject = "Powerpoint slides for " + service['date']
-        self._gmail_client.send_attachment(subject, body, recipients, FROM_ADDRESS,
+        self._gmail_client.send_attachment(subject, body, recipients, self._user.email,
                                            ppt_filename,
                                            service['date'] + ' powerpoint.pptx')
         ServiceController._update_email_status(service, 'slides_email_status')

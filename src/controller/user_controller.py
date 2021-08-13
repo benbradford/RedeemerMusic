@@ -69,9 +69,9 @@ class UserController:
 
         login_user(User(user), remember=True)
 
-        return redirect('https://localhost/home')
+        return redirect(url.replace('login/callback', 'home'))
 
     @staticmethod
-    def logout():
+    def logout(url):
         logout_user()
-        return redirect("https://localhost/home")
+        return redirect(url)
