@@ -1,10 +1,11 @@
 from flask import render_template
 from util import redirect_url, UNAUTHORISED
+from controller import Controller
 
 
-class RecipientsController:
-    def __init__(self, user, recipients_dao):
-        self._user = user
+class RecipientsController(Controller):
+    def __init__(self, user, log_helper, recipients_dao):
+        Controller.__init__(self, user, log_helper, 'RecipientsController')
         self._recipients_dao = recipients_dao
 
     def show_recipients_page(self):

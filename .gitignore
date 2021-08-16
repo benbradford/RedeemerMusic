@@ -7,3 +7,4 @@ src/data/db/custom_after
 .DS_Store
 secrets/
 env/
+logs/

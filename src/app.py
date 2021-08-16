@@ -1,7 +1,7 @@
 import getopt
 import sys
 
-from api import app
+from api import app, log_helper
 from data.data_factory import get_data_factory
 
 

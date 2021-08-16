@@ -7,7 +7,7 @@
   <input type="text" id="date" name="date" value="{{service['date']}}"/><br/>
   <label for="lead">Lead:</label>
   <select id="lead" name="lead">
-    {% for leader in ["Ben B", "Chris W"] %}
+    {% for leader in ["Ben B", "Chris W", "Gina"] %}
       {% if leader == service['lead'] %}
         <option selected=="selected" value="{{leader}}">{{leader}}</option>
       {% else %}

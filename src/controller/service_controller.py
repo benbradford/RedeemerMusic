@@ -2,6 +2,7 @@ import os
 from flask import send_file, render_template
 from jinja2 import Template
 from util import redirect_url, UNAUTHORISED
+from controller import Controller
 
 powerpoint_location = os.path.join(os.path.dirname(__file__), '../../bin/')
 
@@ -10,9 +11,9 @@ optional_service_params = ['lead', 'date', 'message', 'band1', 'band2', 'band3',
                            'song3', 'song4', 'song5', 'song6', 'email_status', 'slides_email_status']
 
 
-class ServiceController:
-    def __init__(self, user, data):
-        self._user = user
+class ServiceController(Controller):
+    def __init__(self, user, log_helper, data):
+        Controller.__init__(self, user, log_helper, 'ServiceController')
         self._gmail_client = data['gmail_client']
         self._service_dao = data['service_dao']
         self._songs_dao = data['songs_dao']

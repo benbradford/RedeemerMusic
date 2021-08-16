@@ -20,15 +20,15 @@ with open(secrets_dir + 'client_secret.txt', 'r') as file:
 
 
 class UserController:
-    def __init__(self, user_dao):
+    def __init__(self, logger, user_dao):
         self._user_dao = user_dao
         self._client = WebApplicationClient(GOOGLE_CLIENT_ID)
+        self._logger = logger
 
     def load_user(self, user_id):
         return User(self._user_dao.get(user_id))
 
     def login(self, google_provider_cfg, base_url):
-
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
         request_uri = self._client.prepare_request_uri(
             authorization_endpoint,
@@ -67,11 +67,14 @@ class UserController:
         if self._user_dao.get(user['id']) is None:
             self._user_dao.set(user)
 
-        login_user(User(user), remember=True)
+        user_to_login = User(user)
+        self._logger.get_for(user_to_login).info("UserController: Attempting log in for " + user['name'])
+        login_user(user_to_login, remember=True)
+        self._logger.get_for(user_to_login).info("UserController: Login success ")
 
         return redirect(url.replace('login/callback', 'home'))
 
-    @staticmethod
-    def logout(url):
+    def logout(self, url):
+        self._logger.get().info("UserController: Logging out")
         logout_user()
         return redirect(url)

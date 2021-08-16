@@ -1,4 +1,5 @@
-from flask import render_template, redirect, url_for
+import os
+from flask import render_template, redirect, url_for, send_from_directory
 from flask_login import (
     LoginManager,
     current_user,
@@ -9,7 +10,7 @@ from flask_login import (
 from flask import request
 import requests
 
-from init_app import app
+from init_app import app, log_helper
 from client.client_factory import get_client_factory
 from data.data_factory import init_data_factory, get_data_factory
 from data.db_init import init_db
@@ -33,16 +34,25 @@ init_data_factory(
     get_client_factory().get_sheets_client()
 )
 
-song_factory = ControllerFactory(SongController, get_data_factory().get_songs_dao())
-user_controller = UserController(get_data_factory().get_user_dao())
-service_factory = ControllerFactory(ServiceController, {'gmail_client': get_client_factory().get_gmail_client(),
+song_factory = ControllerFactory(SongController, log_helper, get_data_factory().get_songs_dao())
+user_controller = UserController(log_helper, get_data_factory().get_user_dao())
+service_factory = ControllerFactory(ServiceController, log_helper, {'gmail_client': get_client_factory().get_gmail_client(),
                                         'service_dao': get_data_factory().get_service_dao(),
                                         'songs_dao': get_data_factory().get_songs_dao(),
                                         'slides_helper': SlidesHelper(get_data_factory().get_songs_dao()),
                                         'recipients_dao': get_data_factory().get_recipient_dao(),
                                         'band_dao': get_data_factory().get_band_dao()})
-recipients_factory = ControllerFactory(RecipientsController, get_data_factory().get_recipient_dao())
-admin_factory = ControllerFactory(AdminController, get_data_factory().get_user_dao())
+recipients_factory = ControllerFactory(RecipientsController, log_helper, get_data_factory().get_recipient_dao())
+admin_factory = ControllerFactory(AdminController, log_helper, get_data_factory().get_user_dao())
+
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+    print ("getting favicon")
+    path = os.path.join(app.root_path, '../res')
+    print ("path is " + path)
+    return send_from_directory(path,
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/health', methods=['GET'])
@@ -50,7 +60,7 @@ def health(): return "okidoki"
 
 
 @app.route('/', methods=['GET'])
-def index(): return redirect(url_for('home_api'), code=302)
+def index(): return redirect(url_for('home_api', _external=True, _scheme='https', code=302))
 
 
 @app.route('/home', methods=['GET'])
@@ -177,13 +187,7 @@ def load_user(user_id): return user_controller.load_user(user_id)
 
 
 @app.route("/login")
-def login():
-    host_url = request.host_url.replace('http', 'https')[:-1]
-    print "redirect to " + host_url
-    print str(request.headers)
-    for r in request.headers:
-        print str(r)
-    return user_controller.login(requests.get(GOOGLE_DISCOVERY_URL).json(), host_url)
+def login(): return user_controller.login(requests.get(GOOGLE_DISCOVERY_URL).json(), request.host_url.replace('http', 'https')[:-1])
 
 
 @app.route("/login/callback")
@@ -194,4 +198,4 @@ def callback(): return user_controller.callback(requests.get(GOOGLE_DISCOVERY_UR
 
 
 @app.route("/logout")
-def logout(): return UserController.logout(request.url.replace('http', 'https').replace('logout', 'home'))
+def logout(): return user_controller.logout(request.url.replace('http', 'https').replace('logout', 'home'))

@@ -98,7 +98,7 @@ class SheetsClient:
         ).execute()
 
     def update_service(self, service):
-        row_number = self._find_row_matching_service(service)
+        row_number = str(service['id'] - 3)
         query_range = 'A' + row_number + ':' + row_number
         row = self._create_row_for_service(service)
         self._sheets.values().update(
@@ -140,18 +140,6 @@ class SheetsClient:
             if current_ids[i][0] == name:
                 return str(i + 2)
         print("Error - cannot find song with name " + str(name))
-        raise Exception("Cannot find existing service")
-
-    def _find_row_matching_service(self, service):
-        print ("matching row is " + str(service['id']))
-        return str(service['id'] - 2)
-        res = self._sheets.values().get(spreadsheetId=sheets_id, range='A2:A').execute()
-        current_ids = res.get('values', [])
-        for i in range(len(current_ids)):
-            print[i][0]
-            if current_ids[i][0] == service['id']:
-                return str(i + 2)
-        print("Error - cannot find service with id " + str(service['id']))
         raise Exception("Cannot find existing service")
 
     def _get_service_headings(self):

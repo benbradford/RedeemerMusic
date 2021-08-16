@@ -1,11 +1,12 @@
 from flask import render_template
 from util import redirect_url, UNAUTHORISED
+from controller import Controller
 
 
-class AdminController:
+class AdminController(Controller):
 
-    def __init__(self, user, data):
-        self._user = user
+    def __init__(self, user, log_helper, data):
+        Controller.__init__(self, user, log_helper, 'AdminController')
         self._user_dao = data
 
     def show_users_edit_page(self):

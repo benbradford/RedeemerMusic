@@ -1,11 +1,12 @@
 from flask import render_template
 from util import redirect_url, UNAUTHORISED
+from controller import Controller
 
 
-class SongController:
+class SongController(Controller):
 
-    def __init__(self, user, songs_dao):
-        self._user = user
+    def __init__(self, user, log_helper, songs_dao):
+        Controller.__init__(self, user, log_helper, 'SongController')
         self._songs_dao = songs_dao
 
     def show_songs_page(self):
@@ -13,6 +14,7 @@ class SongController:
         return render_template('songs.html', user=self._user, song_names=names)
 
     def show_song_page(self, song_name):
+
         song = self._songs_dao.get(song_name)
         components = {}
         SongController._update_component_file_ids(song, 'lyrics', components)
