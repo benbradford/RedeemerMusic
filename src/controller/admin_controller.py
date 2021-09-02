@@ -16,6 +16,10 @@ class AdminController(Controller):
         return render_template('users_edit.html', user=self._user, users=users)
 
     def update_user(self, id, scope):
+        if not self._user.is_authenticated or not self._user.is_admin():
+            self._log_warn("User unauthorised to update users for " + self._user.email)
+            return UNAUTHORISED
+
         if scope == 'field-marshal':
             scope = 'rdm/admin'
         elif scope == 'captain':
@@ -25,4 +29,5 @@ class AdminController(Controller):
         elif scope == 'private':
             scope = 'rdm/private'
         self._user_dao.update_scope(id, scope)
+        self._log_info("User " + str(id) + " updated to scope " + scope)
         return redirect_url('users_edit_page_api')

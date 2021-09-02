@@ -1,8 +1,8 @@
 class Controller:
 
     def __init__(self, user, log_helper, log_prefix):
-        self._log_helper = log_helper
         self._user = user
+        self._log_helper = log_helper
         self._log_prefix = log_prefix
 
     def _log_debug(self, msg):

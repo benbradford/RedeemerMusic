@@ -48,9 +48,7 @@ admin_factory = ControllerFactory(AdminController, log_helper, get_data_factory(
 
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
-    print ("getting favicon")
     path = os.path.join(app.root_path, '../res')
-    print ("path is " + path)
     return send_from_directory(path,
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 

@@ -27,6 +27,7 @@ class ServiceController(Controller):
 
     def show_add_service_page(self):
         if not self._user.is_authenticated or not self._user.can_edit():
+            self._log_warn("User not authorised to add services")
             return UNAUTHORISED
         return render_template('service_add.html',
                                user=self._user,
@@ -37,9 +38,11 @@ class ServiceController(Controller):
 
     def add_service(self, optional_params):
         if not self._user.is_authenticated or not self._user.can_edit():
+            self._log_warn("User not authorised to add services")
             return UNAUTHORISED
         service = ServiceController._get_updated_service_from_params(None, optional_params)
         self._service_dao.set(service)
+        self._log_info("service added " + str(service['id']))
         return redirect_url('services_api')
 
     def show_service(self, service_id):
@@ -57,6 +60,7 @@ class ServiceController(Controller):
 
     def show_edit_service_page(self, service_id):
         if not self._user.is_authenticated or not self._user.can_edit():
+            self._log_warn("User not authorised to edit services")
             return UNAUTHORISED
         service = self._service_dao.get(service_id)
         return render_template('service_edit.html',
@@ -68,13 +72,16 @@ class ServiceController(Controller):
 
     def update_service(self, service_id, optional_params):
         if not self._user.is_authenticated or not self._user.can_edit():
+            self._log_warn("User not authorised to update services")
             return UNAUTHORISED
         service = self._get_updated_service_from_params(service_id, optional_params)
         self._service_dao.update(service)
+        self._log_info("service updated " + str(service['id']))
         return redirect_url('services_api')
 
     def send_music_email(self, service_id, recipients):
         if not self._user.is_authenticated or not self._user.can_email():
+            self._log_warn("User not authorised to email services")
             return UNAUTHORISED
         service = self._service_dao.get(service_id)
         template_filename = os.path.join(os.path.dirname(__file__), '../../templates/service_email_template.html')
@@ -86,10 +93,12 @@ class ServiceController(Controller):
         self._gmail_client.send(subject, body, recipients, self._user.email)
         ServiceController._update_email_status(service, 'email_status')
         self._service_dao.update(service)
+        self._log_info("service email sent for " + str(service['id']))
         return redirect_url('services_api')
 
     def send_slides_email(self, service_id, recipients):
         if not self._user.is_authenticated or not self._user.can_email():
+            self._log_warn("User not authorised to email slides")
             return UNAUTHORISED
         service = self._get_service_from_id(service_id)
         ppt_filename = powerpoint_location + service['date'] + ' powerpoint.pptx'
@@ -105,6 +114,7 @@ class ServiceController(Controller):
                                            service['date'] + ' powerpoint.pptx')
         ServiceController._update_email_status(service, 'slides_email_status')
         self._service_dao.update(service)
+        self._log_info("ppt email sent for " + str(service['id']))
         return redirect_url('services_api')
 
     def preview_slides(self, service_id):
@@ -116,8 +126,8 @@ class ServiceController(Controller):
     def _get_service_from_id(self, service_id):
         service = self._service_dao.get(service_id)
         if service is None:
-            print("ERROR cannot find service from id " + str(service_id))
-            raise Exception("This is why this is here")
+            self._log_error("Cannot find service from id " + str(service_id))
+            raise Exception("Cannot find service from id")
             return {}
         return service
 

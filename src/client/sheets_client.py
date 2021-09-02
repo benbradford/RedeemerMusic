@@ -1,7 +1,9 @@
 from googleapiclient.discovery import build
 
-sheets_id = '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY'
-songs_id = '1tkKaiOsae9eNxUOSawa_e_OfAfnzNPhwZBmcXTp_-qU'
+sheet_ids = {
+    'services': '1J7iIDUqKHqj5FyCaRZIAUnaRLN3uiffc50GwHpCKZJY',
+    'songs': '1tkKaiOsae9eNxUOSawa_e_OfAfnzNPhwZBmcXTp_-qU'
+}
 
 
 class SheetsClient:
@@ -14,7 +16,7 @@ class SheetsClient:
 
     def list_song_names(self):
         songs = []
-        result = self._sheets.values().get(spreadsheetId=songs_id,
+        result = self._sheets.values().get(spreadsheetId=sheet_ids['songs'],
                                            range='A2:' + self._last_column).execute()
         values = result.get('values', [])
         if not values:
@@ -25,15 +27,15 @@ class SheetsClient:
         return songs
 
     def get_service(self, service_id):
-        services = self.get_services()
+        services = self._get_services
         for service in services:
             if service['id'] == service_id:
                 return service
         return None
 
-    def get_services(self):
+    def _get_services(self):
         print("Getting Services")
-        result = self._sheets.values().get(spreadsheetId=sheets_id,
+        result = self._sheets.values().get(spreadsheetId=sheet_ids['services'],
                                            range='A2:' + self._last_column).execute()
         values = result.get('values', [])
 
@@ -44,21 +46,17 @@ class SheetsClient:
             for row in values:
                 service = {}
                 for j in range(0, len(self._service_headings)):
-                    try:
-                        service[self._service_headings[j]] = row[j]
-                    except:
-                        pass
+                    service[self._service_headings[j]] = row[j] # recently removed an except here
                 services.append(service)
         return services
 
     def add_song(self, name, ccli):
-        res = self._sheets.values().get(spreadsheetId=songs_id, range='A2:A').execute()
-        current_ids = res.get('values', [])
+        res = self._sheets.values().get(spreadsheetId=sheet_ids['songs'], range='A2:A').execute()
         row_number = str(len(res) + 1)
-        range = 'A' + row_number + ':' + row_number
+        add_range = 'A' + row_number + ':' + row_number
         self._sheets.values().append(
-            spreadsheetId=songs_id,
-            range=range,
+            spreadsheetId=sheet_ids['songs'],
+            range=add_range,
             body={
                 "majorDimension": "ROWS",
                 "values": [[name, ccli]]
@@ -68,11 +66,11 @@ class SheetsClient:
 
     def update_song(self, old_song_name, song_name, ccli):
         row_number = self._find_row_with_song_matching_name(old_song_name)
-        range = 'A' + row_number + ':' + row_number
+        update_range = 'A' + row_number + ':' + row_number
 
         self._sheets.values().update(
-            spreadsheetId=songs_id,
-            range=range,
+            spreadsheetId=sheet_ids['songs'],
+            range=update_range,
             body={
                 "majorDimension": "ROWS",
                 "values": [[song_name, ccli]]
@@ -84,12 +82,12 @@ class SheetsClient:
         res = self._get_next_row_and_id()
         row_number = res[0]
         service['id'] = res[1]
-        range = 'A' + row_number + ':B' + row_number
+        add_range = 'A' + row_number + ':B' + row_number
         row = self._create_row_for_service(service)
 
         self._sheets.values().append(
-            spreadsheetId=sheets_id,
-            range=range,
+            spreadsheetId=sheet_ids['services'],
+            range=add_range,
             body={
                 "majorDimension": "ROWS",
                 "values": [row]
@@ -102,7 +100,7 @@ class SheetsClient:
         query_range = 'A' + row_number + ':' + row_number
         row = self._create_row_for_service(service)
         self._sheets.values().update(
-            spreadsheetId=sheets_id,
+            spreadsheetId=sheet_ids['services'],
             range=query_range,
             body={
                 "majorDimension": "ROWS",
@@ -118,7 +116,7 @@ class SheetsClient:
         return row
 
     def _get_next_row_and_id(self):
-        res = self._sheets.values().get(spreadsheetId=sheets_id, range='A2:A').execute()
+        res = self._sheets.values().get(spreadsheetId=sheet_ids['services'], range='A2:A').execute()
         current_ids = res.get('values', [])
         row_number = str(len(res) + 1)
         ids = []
@@ -134,7 +132,7 @@ class SheetsClient:
             return ''
 
     def _find_row_with_song_matching_name(self, name):
-        res = self._sheets.values().get(spreadsheetId=songs_id, range='A2:A').execute()
+        res = self._sheets.values().get(spreadsheetId=sheet_ids['songs'], range='A2:A').execute()
         current_ids = res.get('values', [])
         for i in range(len(current_ids)):
             if current_ids[i][0] == name:
@@ -144,7 +142,7 @@ class SheetsClient:
 
     def _get_service_headings(self):
         headings = []
-        result = self._sheets.values().get(spreadsheetId=sheets_id,
+        result = self._sheets.values().get(spreadsheetId=sheet_ids['services'],
                                            range='A1:' + self._last_column + '1').execute()
         values = result.get('values', [])
         if not values:

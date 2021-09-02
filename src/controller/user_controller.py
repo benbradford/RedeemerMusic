@@ -29,6 +29,7 @@ class UserController:
         return User(self._user_dao.get(user_id))
 
     def login(self, google_provider_cfg, base_url):
+        self._logger.get().debug("UserController: Attempting login")
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
         request_uri = self._client.prepare_request_uri(
             authorization_endpoint,
@@ -38,8 +39,8 @@ class UserController:
         return redirect(request_uri)
 
     def callback(self, google_provider_cfg, authorization_code_from_google, url, base_url):
+        self._logger.get().debug("UserController: login callback")
         token_endpoint = google_provider_cfg["token_endpoint"]
-
         token_url, headers, body = self._client.prepare_token_request(
             token_endpoint,
             authorization_response=url,
@@ -65,6 +66,7 @@ class UserController:
                 'pic': userinfo_response.json()["picture"], 'name': userinfo_response.json()["given_name"],
                 'scope': User.get_default_scope()}
         if self._user_dao.get(user['id']) is None:
+            self._logger.get().debug("UserController: setting new user " + user['email'])
             self._user_dao.set(user)
 
         user_to_login = User(user)

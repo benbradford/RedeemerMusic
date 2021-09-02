@@ -17,7 +17,7 @@ class ServiceDao(DbAccessor):
         if force:
             with self.db_access() as cur:
                 cur.execute("delete from service")
-            services = self._sheets_client.get_services()
+            services = self._sheets_client.get_services
             print("syncing services: ")
             self._db_add_services(services)
 

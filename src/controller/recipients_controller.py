@@ -19,6 +19,7 @@ class RecipientsController(Controller):
 
     def add_new(self, request):
         if not self._user.is_authenticated or not self._user.can_email():
+            self._log_warn("Unauthorised user attempting to add new recipient")
             return UNAUTHORISED
         name = request['name']
         email = request['email']
@@ -27,10 +28,12 @@ class RecipientsController(Controller):
                                            'test' in request,
                                            'ppt' in request,
                                            'service' in request)
+        self._log_info("New recipient added: " + email)
         return redirect_url('recipients_api')
 
     def add_recipient_register(self, email, register_index):
         if not self._user.is_authenticated or not self._user.can_email():
+            self._log_warn("Unauthorised user attempting to alter recipient register")
             return UNAUTHORISED
         recipient = self._recipients_dao.get_recipient(email)
         name = recipient['name']
@@ -44,10 +47,12 @@ class RecipientsController(Controller):
         if str(register_index) == '2':
             service = True
         self._recipients_dao.update_recipient(email, name, test, ppt, service)
+        self._log_info("Recipient register added for " + email)
         return redirect_url('recipients_api')
 
     def remove_recipient_register(self, email, register_index):
         if not self._user.is_authenticated or not self._user.can_email():
+            self._log_warn("Unauthorised user attempting to delete recipient")
             return UNAUTHORISED
         recipient = self._recipients_dao.get_recipient(email)
         name = recipient['name']
@@ -61,4 +66,5 @@ class RecipientsController(Controller):
         if str(register_index) == '2':
             service = False
         self._recipients_dao.update_recipient(email, name, test, ppt, service)
+        self._log_info("Recipient register removed for " + email)
         return redirect_url('recipients_api')
